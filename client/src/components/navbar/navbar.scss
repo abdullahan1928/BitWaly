@@ -1,42 +1,55 @@
-@import '../../utils/sass/variables';
-
-.nav-container {
-  height: 70px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  background: linear-gradient(to right, $yellow , $orange );
-  border-radius: 0px 15px;
-
-  .logo-container {
-    height: 100%;
-    width: 70px;
-    padding: 15px 0px 0px 25px;
-  }
-
-  .nav-links-container {
-    width: 50%;
-    height: 100%;
+nav {
+    color: black;
+    padding: 1rem;
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    justify-content: flex-end;
+    margin: 0 auto;
+    max-width: 1170px;
 
-    .nav-link {
-      padding: 10px 15px;
-      cursor: pointer;
-      border: 1px solid transparent;
-      border-radius: 5px;
-      font-size: 18px;
-      font-weight: bold;
+    .links {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-      &:hover {
-        background: linear-gradient(to right, $dark-blue , $light-blue );
-        color: #fff;
-      }
+        .link {
+            text-decoration: none;
+            margin-left: 5rem;
+            font-size: 1.1rem;
+            color: #36383b;
+
+            &:hover {
+                text-decoration: underline;
+
+            }
+        }
     }
 
-    &:last-child {
-      margin-right: 20px;
+    .auth {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .link {
+            text-decoration: none;
+            margin-left: 3rem;
+            font-size: 1.1rem;
+            color: #36383b;
+
+            &:nth-child(2) {
+                color: #2a5bd7;
+            }
+
+            &:nth-child(3) {
+                background: #2a5bd7;
+                border-radius: 6px;
+                padding: 10px 20px;
+                color: white;
+            }
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
     }
-  }
 }
