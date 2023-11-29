@@ -13,7 +13,7 @@ const shortenUrl = async (req, res) => {
   const { originalUrl } = req.body;
 
   console.log(req.body)
-  
+
   if (!validator.isURL(originalUrl)) {
     return res.status(400).json({ error: 'Invalid URL' });
   }
@@ -46,13 +46,13 @@ const shortenUrl = async (req, res) => {
 
 const retrieveUrl = async (req, res) => {
   const { shortUrl } = req.params;
-  console.log(shortUrl);
 
   try {
     const url = await Url.findOne({ shortUrl });
 
     if (url) {
-      res.send(url.originalUrl);
+      // Redirect to the original URL
+      res.redirect(url.originalUrl);
     } else {
       res.status(404).json({ error: 'URL not found' });
     }

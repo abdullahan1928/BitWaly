@@ -16,9 +16,7 @@ const corsOptions = {
         process.env.CLIENT_DEV_URL,
     ],
     optionsSuccessStatus: 200
-};
-
-console.log(corsOptions)
+};  
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '50mb', extended: true }));

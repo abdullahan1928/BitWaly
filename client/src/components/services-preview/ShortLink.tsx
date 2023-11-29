@@ -11,6 +11,7 @@ const ShortLink = () => {
   const [longUrl, setLongUrl] = useState("");
   const [backHalf, setBackHalf] = useState("");
   const [shortLink, setShortLink] = useState("");
+  const [generatedLink, setGeneratedLink] = useState("");
 
   useEffect(() => {
     console.log(API_URL);
@@ -46,8 +47,10 @@ const ShortLink = () => {
       const data = await response.json();
       console.log(data);
 
+      setGeneratedLink(`${API_URL}/${data.shortUrl}`)
+
       // Update the state with the generated short link
-      setShortLink(`${window.location.href}${data.shortUrl}`);
+      setShortLink(`${API_URL}/url/urlretrievel/${data.shortUrl}`);
     } catch (error) {
       console.error('Error sending request to the backend:', error);
     }
@@ -102,7 +105,9 @@ const ShortLink = () => {
           <p className="">
             Generated Short Link:
           </p>
-          <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-blue">{shortLink}</a>
+          <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-blue">
+            {generatedLink}
+          </a>
         </p>
       )}
       <p className="text-2xl font-bold flex self-center">No credit card required.</p>
