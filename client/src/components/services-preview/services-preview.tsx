@@ -14,57 +14,56 @@ import ShortLink from "./ShortLink";
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
-  value: number;
+  // value: number;
 }
 
 function CustomTabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+  const { children, index, ...other } = props;
 
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
+      // hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       className="tab-content"
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography component={'span'}>{children}</Typography>
-        </Box>
-      )}
+      {/* {value === index && ( */}
+      <Box sx={{ p: 3 }}>
+        <Typography component={'span'}>{children}</Typography>
+      </Box>
+      {/* )} */}
     </div>
   );
 }
 
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
+// function a11yProps(index: number) {
+//   return {
+//     id: `simple-tab-${index}`,
+//     "aria-controls": `simple-tabpanel-${index}`,
+//   };
+// }
 
-const tabIndicatorProps = {
-  background: "transparent",
-  boxShadow: "none",
-  borderColor: "#e8e9eb",
-  borderTop: "3px transparent solid",
-  borderLeft: "3px transparent solid",
-  borderRight: "3px transparent solid",
-  borderRadius: "12px",
-  borderBottomLeftRadius: "0",
-  borderBottomRightRadius: "0",
-  zIndex: 2,
-};
+// const tabIndicatorProps = {
+//   background: "transparent",
+//   boxShadow: "none",
+//   borderColor: "#e8e9eb",
+//   borderTop: "3px transparent solid",
+//   borderLeft: "3px transparent solid",
+//   borderRight: "3px transparent solid",
+//   borderRadius: "12px",
+//   borderBottomLeftRadius: "0",
+//   borderBottomRightRadius: "0",
+//   zIndex: 2,
+// };
 
 const ServicesPreview = () => {
-  const [value, setValue] = React.useState(0);
+  // const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
+  // const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  //   setValue(newValue);
+  // };
 
   return (
     <Box
@@ -104,7 +103,7 @@ const ServicesPreview = () => {
           />
         </Tabs>
       </Box> */}
-      <CustomTabPanel value={value} index={0}>
+      <CustomTabPanel index={0}>
         <ShortLink />
       </CustomTabPanel>
       {/* <CustomTabPanel value={value} index={1}>
