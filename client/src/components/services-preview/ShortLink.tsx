@@ -1,19 +1,20 @@
-import TextField from "@mui/material/TextField"
-import Select from "@mui/material/Select"
-import MenuItem from "@mui/material/MenuItem"
-import { useEffect, useState } from "react"
-import PrimaryButton from "../primaryButton/primaryButton"
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import { useEffect, useState } from "react";
+import PrimaryButton from "../primaryButton/primaryButton";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { API_URL } from '../../config/config.ts'
+import { API_URL } from '../../config/config.ts';
 
 const ShortLink = () => {
   const [domain, setDomain] = useState("default");
   const [longUrl, setLongUrl] = useState("");
   const [backHalf, setBackHalf] = useState("");
+  const [shortLink, setShortLink] = useState("");
 
   useEffect(() => {
-    console.log(API_URL)
-  }, [])
+    console.log(API_URL);
+  }, []);
 
   const handleDomainChange = (newValue: string) => {
     setDomain(newValue);
@@ -29,8 +30,8 @@ const ShortLink = () => {
 
   const handleButtonClick = async () => {
     try {
-      console.log(longUrl)
-      const response = await fetch(`${API_URL}/api/urlshortner`, {
+      console.log(longUrl);
+      const response = await fetch(`${API_URL}/url/urlshortner`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,6 +45,9 @@ const ShortLink = () => {
 
       const data = await response.json();
       console.log(data);
+
+      // Update the state with the generated short link
+      setShortLink(`${window.location.href}${data.shortUrl}`);
     } catch (error) {
       console.error('Error sending request to the backend:', error);
     }
@@ -93,23 +97,17 @@ const ShortLink = () => {
       <div onClick={handleButtonClick}>
         <PrimaryButton text="Sign Up and get your link" />
       </div>
+      {shortLink && (
+        <p className="text-2xl font-bold my-4 flex self-center gap-2">
+          <p className="">
+            Generated Short Link:
+          </p>
+          <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-blue">{shortLink}</a>
+        </p>
+      )}
       <p className="text-2xl font-bold flex self-center">No credit card required.</p>
-      {/* <ul>
-        <li>
-          <CheckCircleOutlineIcon />
-          <p>Short links</p>
-        </li>
-        <li>
-          <CheckCircleOutlineIcon />
-          <p>QR Codes</p>
-        </li>
-        <li>
-          <CheckCircleOutlineIcon />
-          <p>Link-in-bio page</p>
-        </li>
-      </ul> */}
     </div>
-  )
-}
+  );
+};
 
-export default ShortLink
+export default ShortLink;
