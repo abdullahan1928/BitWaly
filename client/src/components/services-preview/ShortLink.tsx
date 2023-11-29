@@ -1,14 +1,19 @@
 import TextField from "@mui/material/TextField"
 import Select from "@mui/material/Select"
 import MenuItem from "@mui/material/MenuItem"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import PrimaryButton from "../primaryButton/primaryButton"
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { API_URL } from '../../config/config.ts'
 
 const ShortLink = () => {
   const [domain, setDomain] = useState("default");
   const [longUrl, setLongUrl] = useState("");
   const [backHalf, setBackHalf] = useState("");
+
+  useEffect(() => {
+    console.log(API_URL)
+  }, [])
 
   const handleDomainChange = (newValue: string) => {
     setDomain(newValue);
@@ -25,7 +30,7 @@ const ShortLink = () => {
   const handleButtonClick = async () => {
     try {
       console.log(longUrl)
-      const response = await fetch('http://localhost:3000/url/urlshortner', {
+      const response = await fetch(`${API_URL}/api/urlshortner`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,9 +42,8 @@ const ShortLink = () => {
         }),
       });
 
-      // Handle the response from the server, e.g., display a success message
       const data = await response.json();
-      console.log(data); // You can update this part based on your backend response handling
+      console.log(data);
     } catch (error) {
       console.error('Error sending request to the backend:', error);
     }
