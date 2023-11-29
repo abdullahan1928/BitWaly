@@ -1,15 +1,15 @@
 import "./services-preview.scss";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+// import Tabs from "@mui/material/Tabs";
+// import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import * as React from "react";
-import LinkIcon from "@mui/icons-material/Link";
-import QrCodeIcon from "@mui/icons-material/QrCode";
-import DatasetLinkedIcon from "@mui/icons-material/DatasetLinked";
+// import LinkIcon from "@mui/icons-material/Link";
+// import QrCodeIcon from "@mui/icons-material/QrCode";
+// import DatasetLinkedIcon from "@mui/icons-material/DatasetLinked";
 import ShortLink from "./ShortLink";
-import QRCode from "./QRCode";
-import LinkInBio from "./LinkInBio";
+// import QRCode from "./QRCode";
+// import LinkInBio from "./LinkInBio";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -31,7 +31,7 @@ function CustomTabPanel(props: TabPanelProps) {
     >
       {value === index && (
         <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
+          <Typography component={'span'}>{children}</Typography>
         </Box>
       )}
     </div>
@@ -75,7 +75,7 @@ const ServicesPreview = () => {
         alignItems: "center",
       }}
     >
-      <Box>
+      {/* <Box>
         <Tabs
           value={value}
           onChange={handleChange}
@@ -103,16 +103,16 @@ const ServicesPreview = () => {
             {...a11yProps(2)}
           />
         </Tabs>
-      </Box>
+      </Box> */}
       <CustomTabPanel value={value} index={0}>
         <ShortLink />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={1}>
+      {/* <CustomTabPanel value={value} index={1}>
         <QRCode />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <LinkInBio />
-              </CustomTabPanel>
+      </CustomTabPanel> */}
     </Box>
   );
 };

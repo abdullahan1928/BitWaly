@@ -10,16 +10,20 @@ const app = express();
 
 connectDB();
 
+const corsOptions = {
+    origin: [
+        process.env.CLIENT_PROD_URL,
+        process.env.CLIENT_DEV_URL,
+    ],
+    optionsSuccessStatus: 200
+};
 
-
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '50mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 app.use(bodyParser.text({ limit: '200mb' }));
 
-// app.use('/admin', require('./routes/admin.route'));
-
-app.use('/api/url', require('./routes/url.route'));
+app.use('/url', require('./routes/url.route'));
 
 const environment = process.env.NODE_ENV;
 

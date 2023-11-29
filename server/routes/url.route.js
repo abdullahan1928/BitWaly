@@ -5,5 +5,4 @@ const { shortenUrl, retrieveUrl } = require("../controllers/urlShortner.controll
 router.post("/urlshortner", shortenUrl);
 router.get("/urlretrievel/:shortUrl", retrieveUrl);
 
-
 module.exports = router;
