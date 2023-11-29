@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { urlShortnerController } = require("../controllers/urlShortner.controller");
+const { shortenUrl, retrieveUrl } = require("../controllers/urlShortner.controller");
 
-router.post("/urlshortner", urlShortnerController);
+router.post("/urlshortner", shortenUrl);
+router.get("/urlretrievel/:shortUrl", retrieveUrl);
 
 
 module.exports = router;
