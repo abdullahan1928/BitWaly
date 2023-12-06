@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import PrimaryButton from "../primaryButton/primaryButton";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { API_URL } from '../../config/config.ts';
+import CopyToClipboardButton from "../clipboard/clipboard.tsx";
 
 const ShortLink = () => {
   const [domain, setDomain] = useState("default");
@@ -98,17 +99,20 @@ const ShortLink = () => {
         <p>End your link with words that will make it unique</p>
       </div>
       <div onClick={handleButtonClick}>
-        <PrimaryButton text="Sign Up and get your link" />
+        <PrimaryButton text="Get your link" />
       </div>
       {shortLink && (
-        <p className="text-2xl font-bold my-4 flex self-center gap-2">
-          <p className="">
+        <div className="w-full text-2xl font-bold py-4 flex gap-2">
+          <p className="p-4">
             Generated Short Link:
           </p>
-          <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-blue">
-            {generatedLink}
-          </a>
-        </p>
+          <p className="bg-[#ecfdff] text-[#007c8c] text-xl rounded-md p-4 gap-4 flex justify-evenly">
+            <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-blue">
+              {generatedLink}
+            </a>
+            <CopyToClipboardButton text={shortLink} />
+          </p>
+        </div>
       )}
       <p className="text-2xl font-bold flex self-center">No credit card required.</p>
     </div>

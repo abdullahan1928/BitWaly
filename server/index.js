@@ -16,7 +16,7 @@ const corsOptions = {
         process.env.CLIENT_DEV_URL,
     ],
     optionsSuccessStatus: 200
-};  
+};
 
 app.use(cors(corsOptions));
 app.use(bodyParser.json({ limit: '50mb', extended: true }));
@@ -34,8 +34,6 @@ if (environment === 'development') {
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
     });
-
-
 
 } else {
     console.log('Server is running in production');

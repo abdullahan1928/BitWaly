@@ -9,6 +9,9 @@ export default {
             colors: {
                 'blue': '#2a5bd7',
             },
+            fontFamily: {
+                'proxima-nova': ["ProximaNova Regular", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+            }
         },
     },
     plugins: [],
