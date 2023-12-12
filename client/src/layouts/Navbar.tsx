@@ -1,11 +1,11 @@
-import PrimaryButton from '../primaryButton/primaryButton';
+import PrimaryButton from '../components/PrimaryButton';
 import { Outlet } from 'react-router-dom';
 
 const Navbar = () => {
     return (
         <>
-            <nav 
-            className='text-black p-4 flex justify-between items-center my-0 mx-auto max-w-6xl'
+            <nav
+                className='text-black p-4 flex justify-between items-center my-0 mx-auto max-w-6xl'
             >
                 <div className="">
                     <img src="logo.png" alt="logo" className='w-16' />

@@ -12,7 +12,7 @@ const generateRandomString = (length) => {
 const shortenUrl = async (req, res) => {
   const { originalUrl } = req.body;
 
-  console.log(req.body)
+  // console.log(req.body)
 
   if (!validator.isURL(originalUrl)) {
     return res.status(400).json({ error: 'Invalid URL' });

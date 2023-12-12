@@ -1,7 +1,6 @@
 import TextField from "@mui/material/TextField";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline"
 
-
 const QRCode = () => {
   return (
     <>

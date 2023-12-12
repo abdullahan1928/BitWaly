@@ -2,17 +2,17 @@ import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useEffect, useState } from "react";
-import PrimaryButton from "../primaryButton/primaryButton";
+import PrimaryButton from "../../../components/PrimaryButton.tsx";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { API_URL } from '../../config/config.ts';
-import CopyToClipboardButton from "../clipboard/clipboard.tsx";
+import { API_URL } from '../../../config/config.ts';
+import CopyToClipboardButton from "../../../components/Clipboard.tsx";
+import axios from 'axios'
 
 const ShortLink = () => {
   const [domain, setDomain] = useState("default");
   const [longUrl, setLongUrl] = useState("");
   const [backHalf, setBackHalf] = useState("");
   const [shortLink, setShortLink] = useState("");
-  const [generatedLink, setGeneratedLink] = useState("");
 
   useEffect(() => {
     console.log(API_URL);
@@ -33,22 +33,13 @@ const ShortLink = () => {
   const handleButtonClick = async () => {
     try {
       console.log(longUrl);
-      const response = await fetch(`${API_URL}/url/urlshortner`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          originalUrl: longUrl,
-          // domain: domain,
-          // backHalf: backHalf,
-        }),
+      const response = await axios.post(`${API_URL}/url/urlshortner`, {
+        originalUrl: longUrl,
+        // domain: domain,
+        // backHalf: backHalf,
       });
 
-      const data = await response.json();
-      console.log(data);
-
-      setGeneratedLink(`${API_URL}/${data.shortUrl}`)
+      const { data } = response;
 
       // Update the state with the generated short link
       setShortLink(`${API_URL}/url/urlretrievel/${data.shortUrl}`);
@@ -108,7 +99,7 @@ const ShortLink = () => {
           </p>
           <p className="bg-[#ecfdff] text-[#007c8c] text-xl rounded-md p-4 gap-4 flex justify-evenly">
             <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-blue">
-              {generatedLink}
+              {shortLink}
             </a>
             <CopyToClipboardButton text={shortLink} />
           </p>
