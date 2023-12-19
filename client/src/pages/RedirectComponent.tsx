@@ -1,8 +1,5 @@
-// RedirectComponent.tsx
-
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-// import { redirectToOriginalWebsite } from '@/utils/url.util';
 import ErrorRedirection from './ErrorRedirection';
 import UrlRetreival from '@/services/retrieveUrl';
 
