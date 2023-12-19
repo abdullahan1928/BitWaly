@@ -7,13 +7,13 @@ const Navbar = () => {
             <nav
                 className='text-black p-4 flex justify-between items-center my-0 mx-auto max-w-6xl'
             >
-                <div className="">
+                <a href="/">
                     <img src="logo.png" alt="logo" className='w-16' />
-                </div>
+                </a>
 
                 <div className="links flex justify-between items-center">
-                    <a className="link ml-20 text-lg no-underline text-[#36383b] hover:underline">Products</a>
-                    <a className="link ml-20 text-lg no-underline text-[#36383b] hover:underline">Pricing</a>
+                    <a href='products' className="link ml-20 text-lg no-underline text-[#36383b] hover:underline">Products</a>
+                    <a href='pricing' className="link ml-20 text-lg no-underline text-[#36383b] hover:underline">Pricing</a>
                     <a className="link ml-20 text-lg no-underline text-[#36383b] hover:underline">Resources</a>
                 </div>
 

@@ -1,7 +1,7 @@
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import * as React from "react";
-import ShortLink from "./components/ShortLink";
+import ShortLink from "@/features/Home/components/ShortLink";
 
 interface TabPanelProps {
   children?: React.ReactNode;

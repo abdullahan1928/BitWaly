@@ -1,22 +1,18 @@
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { useEffect, useState } from "react";
-import PrimaryButton from "../../../components/PrimaryButton.tsx";
+import { useState } from "react";
+import PrimaryButton from "@/components/PrimaryButton.tsx";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import { API_URL } from '../../../config/config.ts';
-import CopyToClipboardButton from "../../../components/Clipboard.tsx";
-import axios from 'axios'
+import { REDIRECT_URL } from '@/config/config.ts';
+import CopyToClipboardButton from "@/components/Clipboard.tsx";
+import UrlShortener from "@/services/shortenUrl.ts";
 
 const ShortLink = () => {
   const [domain, setDomain] = useState("default");
   const [longUrl, setLongUrl] = useState("");
   const [backHalf, setBackHalf] = useState("");
   const [shortLink, setShortLink] = useState("");
-
-  useEffect(() => {
-    console.log(API_URL);
-  }, []);
 
   const handleDomainChange = (newValue: string) => {
     setDomain(newValue);
@@ -32,17 +28,9 @@ const ShortLink = () => {
 
   const handleButtonClick = async () => {
     try {
-      console.log(longUrl);
-      const response = await axios.post(`${API_URL}/url/urlshortner`, {
-        originalUrl: longUrl,
-        // domain: domain,
-        // backHalf: backHalf,
+      UrlShortener(longUrl).then((shortUrl) => {
+        setShortLink(`${REDIRECT_URL}/${shortUrl}`);
       });
-
-      const { data } = response;
-
-      // Update the state with the generated short link
-      setShortLink(`${API_URL}/url/urlretrievel/${data.shortUrl}`);
     } catch (error) {
       console.error('Error sending request to the backend:', error);
     }
@@ -97,12 +85,12 @@ const ShortLink = () => {
           <p className="p-4">
             Generated Short Link:
           </p>
-          <p className="bg-[#ecfdff] text-[#007c8c] text-xl rounded-md p-4 gap-4 flex justify-evenly">
+          <div className="bg-[#ecfdff] text-[#007c8c] text-xl rounded-md p-4 gap-4 flex justify-evenly">
             <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-blue">
               {shortLink}
             </a>
             <CopyToClipboardButton text={shortLink} />
-          </p>
+          </div>
         </div>
       )}
       <p className="text-2xl font-bold flex self-center">No credit card required.</p>

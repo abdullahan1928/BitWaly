@@ -1,5 +1,5 @@
-import Hero from '../features/Home/Hero'
-import ServicesPreview from '../features/Home/ServicesPreview';
+import Hero from '@/features/Home/Hero'
+import ServicesPreview from '@/features/Home/ServicesPreview';
 
 const Home = () => {
 

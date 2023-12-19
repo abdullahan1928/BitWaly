@@ -1,20 +1,26 @@
-import { Route, Routes } from 'react-router-dom'
-import Navbar from './layouts/Navbar';
-import Home from './pages/Home';
+import { Route, Routes } from 'react-router-dom';
+import routes from '@/routes/routes';
+import RedirectComponent from './pages/RedirectComponent';
 
 const App = () => {
   return (
     <Routes>
-      <Route path="/" element={<Navbar />}>
-        <Route index element={<Home />} />
-        {/* <Route path="shop/*" element={<Shop />} />
-        <Route path="contact" element={<Contact />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route path="checkout" element={<Checkout />} /> */}
-      </Route>
+      {routes.map((route, index) => (
+        <Route key={index} path={route.path} element={route.element}>
+          {route.children &&
+            route.children.map((child, childIndex) => (
+              <Route
+                key={childIndex}
+                index={child.index}
+                path={child.path}
+                element={child.element}
+              />
+            ))}
+        </Route>
+      ))}
+      <Route path=":shortUrl" element={<RedirectComponent />} />
     </Routes>
-  )
-}
+  );
+};
 
-export default App
+export default App;
