@@ -28,13 +28,17 @@ const ShortLink = () => {
 
   const handleButtonClick = async () => {
     try {
-      UrlShortener(longUrl).then((shortUrl) => {
+      // Check if the URL starts with "http://" or "https://"
+      const formattedUrl = /^https?:\/\//i.test(longUrl) ? longUrl : `https://${longUrl}`;
+
+      UrlShortener(formattedUrl).then((shortUrl) => {
         setShortLink(`${REDIRECT_URL}/${shortUrl}`);
       });
     } catch (error) {
       console.error('Error sending request to the backend:', error);
     }
   };
+
 
   return (
     <div className="flex flex-col items-start gap-4 text-left text-lg font-bold">
