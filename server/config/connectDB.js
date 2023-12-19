@@ -4,10 +4,7 @@ const uri = `mongodb+srv://admin:admin@cluster0.xafgy5n.mongodb.net/?retryWrites
 const connectDB = async () => {
     try {
         mongoose
-            .connect(uri, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            })
+            .connect(uri)
             .then(() => {
                 console.log("MongoDB Connected successfully");
             });

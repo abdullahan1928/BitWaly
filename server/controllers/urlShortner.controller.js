@@ -1,65 +1,65 @@
-const Url = require('../models/Url.model');
+
 const crypto = require('crypto');
-const validator = require('validator');
+const Url = require('../models/Url.model');
+function generateBaseHash(originalUrl) {
+    const fullHash = crypto.createHash('md5').update(originalUrl).digest('hex');
+    let shortHash = '';
+    for (let i = 0; i < 6; i++) {
+        const randomIndex = Math.floor(Math.random() * fullHash.length);
+        shortHash += fullHash[randomIndex];
+    }
+    return shortHash;
+}
 
+function modifyHash(hash) {
+    const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const randomChar = chars[Math.floor(Math.random() * chars.length)];
+    const replaceIndex = Math.floor(Math.random() * hash.length);
+    return hash.substring(0, replaceIndex) + randomChar + hash.substring(replaceIndex + 1);
+}
 
-const generateRandomString = (length) => {
-  return crypto.randomBytes(Math.ceil(length / 2))
-    .toString('hex')
-    .slice(0, length);
-};
+async function generateUniqueShortUrl(originalUrl) {
+    const shortUrl = generateBaseHash(originalUrl);
+    const shardKey = shortUrl[0].toLowerCase();
+
+    let uniqueShortUrl = shortUrl;
+    while (await Url.exists({ shardKey, shortUrl: uniqueShortUrl })) {
+        uniqueShortUrl = modifyHash(uniqueShortUrl);
+    }
+
+    return { shortUrl: uniqueShortUrl, shardKey };
+}
 
 const shortenUrl = async (req, res) => {
-  const { originalUrl } = req.body;
-
-  // console.log(req.body)
-
-  if (!validator.isURL(originalUrl)) {
-    return res.status(400).json({ error: 'Invalid URL' });
-  }
-
-  try {
-    // Check if the original URL is already shortened
-    const existingUrl = await Url.findOne({ originalUrl });
-
-    if (existingUrl) {
-      return res.status(200).json(existingUrl);
+    const { originalUrl } = req.body;
+    try {
+        const { shortUrl, shardKey } = await generateUniqueShortUrl(originalUrl);
+        const newUrl = new Url({ originalUrl, shortUrl, shardKey });
+        await newUrl.save();
+        res.send({ shortUrl });
+    } catch (error) {
+        res.status(500).send("Error processing your request");
     }
-
-    let randomURL = generateRandomString(5);
-
-    // Ensure the generated short URL is unique
-    while (await Url.findOne({ shortUrl: randomURL })) {
-      randomURL = generateRandomString(5);
-    }
-
-    const newUrl = new Url({ originalUrl, shortUrl: randomURL });
-
-    await newUrl.save();
-
-    res.status(201).json(newUrl);
-  } catch (error) {
-    console.error('Error shortening URL:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
 };
 
 const retrieveUrl = async (req, res) => {
-  const { shortUrl } = req.params;
+    const { shortUrl } = req.params;
+    const shardKey = shortUrl[0].toLowerCase();
 
-  try {
-    const url = await Url.findOne({ shortUrl });
+    const url = await Url.findOne({ shardKey, shortUrl });
 
     if (url) {
-      // Redirect to the original URL
-      res.redirect(url.originalUrl);
+        url.accessCount += 1;
+        url.accessDetails.push({
+            ipAddress: req.ip,
+            referrer: req.get('Referrer'),
+            userAgent: req.get('User-Agent'),
+        });
+        await url.save();
+        res.send(url.originalUrl);
     } else {
-      res.status(404).json({ error: 'URL not found' });
+        res.status(404).send('URL not found');
     }
-  } catch (error) {
-    console.error('Error redirecting to original URL:', error.message);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
 };
 
 module.exports = { shortenUrl, retrieveUrl };
