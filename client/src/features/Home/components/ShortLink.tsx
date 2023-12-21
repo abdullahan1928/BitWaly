@@ -13,6 +13,7 @@ const ShortLink = () => {
   const [longUrl, setLongUrl] = useState("");
   const [backHalf, setBackHalf] = useState("");
   const [shortLink, setShortLink] = useState("");
+  const [timeTaken, setTimeTaken] = useState<number | null>(null);
 
   const handleDomainChange = (newValue: string) => {
     setDomain(newValue);
@@ -28,10 +29,15 @@ const ShortLink = () => {
 
   const handleButtonClick = async () => {
     try {
+      const startTime = performance.now();
+
       // Check if the URL starts with "http://" or "https://"
       const formattedUrl = /^https?:\/\//i.test(longUrl) ? longUrl : `https://${longUrl}`;
 
-      UrlShortener(formattedUrl).then((shortUrl) => {
+      await UrlShortener(formattedUrl).then((shortUrl) => {
+        const endTime = performance.now();
+        const timeTaken = (endTime - startTime) / 1000; // Convert to seconds
+        setTimeTaken(timeTaken);
         setShortLink(`${REDIRECT_URL}/${shortUrl}`);
       });
     } catch (error) {
@@ -84,6 +90,11 @@ const ShortLink = () => {
       <div onClick={handleButtonClick}>
         <PrimaryButton text="Get your link" />
       </div>
+      {!shortLink && (
+        <p className="text-xl font-bold text-green-600">
+          Generating link...
+        </p>
+      )}
       {shortLink && (
         <div className="w-full text-2xl font-bold py-4 flex gap-2">
           <p className="p-4">
@@ -96,6 +107,11 @@ const ShortLink = () => {
             <CopyToClipboardButton text={shortLink} />
           </div>
         </div>
+      )}
+      {timeTaken !== null && (
+        <p className="text-xl font-bold text-green-600">
+          Link generated in {timeTaken} seconds
+        </p>
       )}
       <p className="text-2xl font-bold flex self-center">No credit card required.</p>
     </div>
