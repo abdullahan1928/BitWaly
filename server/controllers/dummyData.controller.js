@@ -6,7 +6,7 @@ const Url = require('../models/Url.model');
 function generateBaseHash(originalUrl) {
   const fullHash = crypto.createHash('md5').update(originalUrl).digest('hex');
   let shortHash = '';
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 7; i++) {
     const randomIndex = Math.floor(Math.random() * fullHash.length);
     shortHash += fullHash[randomIndex];
   }
