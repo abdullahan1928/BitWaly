@@ -19,7 +19,7 @@ const Navbar = () => {
 
                 <div className="auth flex justify-between items-center gap-4">
                     <a className="link no-underline ml-12 text-[#36383b] text-lg">Login</a>
-                    <a className="link no-underline ml-12 text-lg text-[#2a5bd7]">Sign Up</a>
+                    <a className="link no-underline ml-12 text-lg text-primary">Sign Up</a>
                     <PrimaryButton text="Get a Quote" className='py-3 px-2 ml-5' />
                 </div>
             </nav>

@@ -14,6 +14,7 @@ const ShortLink = () => {
   const [backHalf, setBackHalf] = useState("");
   const [shortLink, setShortLink] = useState("");
   const [timeTaken, setTimeTaken] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDomainChange = (newValue: string) => {
     setDomain(newValue);
@@ -29,6 +30,7 @@ const ShortLink = () => {
 
   const handleButtonClick = async () => {
     try {
+      setIsLoading(true);
       const startTime = performance.now();
 
       // Check if the URL starts with "http://" or "https://"
@@ -39,6 +41,7 @@ const ShortLink = () => {
         const timeTaken = (endTime - startTime) / 1000; // Convert to seconds
         setTimeTaken(timeTaken);
         setShortLink(`${REDIRECT_URL}/${shortUrl}`);
+        setIsLoading(false);
       });
     } catch (error) {
       console.error('Error sending request to the backend:', error);
@@ -90,7 +93,7 @@ const ShortLink = () => {
       <div onClick={handleButtonClick}>
         <PrimaryButton text="Get your link" />
       </div>
-      {!shortLink && (
+      {isLoading && (
         <p className="text-xl font-bold text-green-600">
           Generating link...
         </p>
@@ -101,7 +104,7 @@ const ShortLink = () => {
             Generated Short Link:
           </p>
           <div className="bg-[#ecfdff] text-[#007c8c] text-xl rounded-md p-4 gap-4 flex justify-evenly">
-            <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-blue">
+            <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-primary">
               {shortLink}
             </a>
             <CopyToClipboardButton text={shortLink} />
