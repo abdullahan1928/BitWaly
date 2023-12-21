@@ -31,9 +31,9 @@ const ShortLink = () => {
   const handleButtonClick = async () => {
     try {
       setIsLoading(true);
+      setTimeTaken(null);
       const startTime = performance.now();
 
-      // Check if the URL starts with "http://" or "https://"
       const formattedUrl = /^https?:\/\//i.test(longUrl) ? longUrl : `https://${longUrl}`;
 
       await UrlShortener(formattedUrl).then((shortUrl) => {
@@ -51,7 +51,7 @@ const ShortLink = () => {
 
   return (
     <div className="flex flex-col items-start gap-4 text-left text-lg font-bold">
-      <h3 className="text-4xl text-gray-500">Shorten a long link</h3>
+      <h3 className="text-4xl text-primary">Shorten a long link</h3>
       <p>Paste a long URL</p>
       <TextField
         id="outlined-basic"
@@ -86,7 +86,7 @@ const ShortLink = () => {
           />
         </div>
       </div>
-      <div className="flex flex-row items-center w-full bg-[#ecfdff] text-[#007c8c] text-xl p-3 rounded-md pl-5 gap-2">
+      <div className="flex flex-row items-center w-full bg-secondary-200 text-secondary text-xl p-3 rounded-md pl-5 gap-2">
         <AutoAwesomeIcon />
         <p>End your link with words that will make it unique</p>
       </div>
@@ -98,13 +98,13 @@ const ShortLink = () => {
           Generating link...
         </p>
       )}
-      {shortLink && (
+      {shortLink && !isLoading && (
         <div className="w-full text-2xl font-bold py-4 flex gap-2">
-          <p className="p-4">
+          <p className="py-4 pr-4">
             Generated Short Link:
           </p>
-          <div className="bg-[#ecfdff] text-[#007c8c] text-xl rounded-md p-4 gap-4 flex justify-evenly">
-            <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-primary">
+          <div className="bg-secondary-200 text-secondary text-xl rounded-md p-4 gap-4 flex justify-evenly">
+            <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-secondary">
               {shortLink}
             </a>
             <CopyToClipboardButton text={shortLink} />
