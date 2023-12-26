@@ -37,7 +37,7 @@ async function generateUniqueShortUrl(originalUrl) {
 // API endpoint to generate and store 1000 dummy entries
 const DummyData = async (req, res) => {
   try {
-    const numEntries = 100000;
+    const numEntries = 1000;
     console.log(`Generating and storing ${numEntries} dummy entries...`);
 
     for (let i = 0; i < numEntries; i++) {
@@ -47,7 +47,7 @@ const DummyData = async (req, res) => {
       const newUrl = new Url({ originalUrl: randomSearchQuery, shortUrl, shardKey });
       await newUrl.save();
 
-      console.log(`Entry ${i + 1}/${numEntries} saved: ${newUrl.shortUrl}`);
+      console.log(`Entry ${i + 1}/${numEntries} saved: ${newUrl.shortUrl}, original URL: ${newUrl.originalUrl}`);
     }
 
     console.log('Finished generating and storing dummy entries.');
@@ -58,9 +58,36 @@ const DummyData = async (req, res) => {
   }
 }
 
+function generateSyllable() {
+  const consonants = 'bcdfghjklmnpqrstvwxyz';
+  const vowels = 'aeiou';
+  return consonants[Math.floor(Math.random() * consonants.length)] +
+         vowels[Math.floor(Math.random() * vowels.length)];
+}
+
+function generateWord(syllableCount) {
+  let word = '';
+  for (let i = 0; i < syllableCount; i++) {
+    word += generateSyllable();
+  }
+  return word;
+}
+
+function generateWordList(wordCount, minSyllables, maxSyllables) {
+  const words = [];
+  for (let i = 0; i < wordCount; i++) {
+    const syllableCount = Math.floor(Math.random() * (maxSyllables - minSyllables + 1)) + minSyllables;
+    words.push(generateWord(syllableCount));
+  }
+  return words;
+}
+
+
+
+
 // Function to generate a random search query
 function generateRandomSearchQuery() {
-  const searchQueries = ['cat', 'dog', 'technology', 'random', 'openai', 'mongodb', 'javascript', 'programming', 'coding', 'web development', 'software engineering', 'computer science', 'machine learning', 'artificial intelligence', 'deep learning', 'neural networks', 'data science', 'data structures', 'algorithms', 'leetcode', 'hackerrank', 'leetcode', 'github', 'gitlab', 'stackoverflow', 'google', 'youtube', 'facebook', 'twitter', 'instagram', 'linkedin', 'reddit', 'tiktok', 'pinterest', 'netflix', 'amazon', 'apple', 'microsoft', 'tesla', 'nvidia', 'amd', 'intel', 'qualcomm', 'ibm', 'oracle', 'adobe', 'spotify', 'airbnb', 'uber', 'lyft', 'doordash', 'grubhub', 'postmates', 'instacart', 'zoom', 'slack', 'discord', 'twitch', 'tinder', 'bumble', 'hinge', 'okcupid', 'match', 'badoo', 'hulu', 'disney+', 'hbo', 'starz', 'showtime', 'cbs', 'nbc', 'abc', 'fox', 'cnn', 'msnbc', 'fox news', 'bbc', 'npr', 'pbs', 'espn', 'nba', 'nfl', 'mlb', 'nhl', 'nascar', 'formula 1', 'soccer', 'football', 'basketball', 'baseball', 'hockey', 'tennis', 'golf', 'olympics', 'tokyo olympics', '2020 olympics', '2021 olympics', '2022 olympics', '2024 olympics', '2028 olympics', '2032 olympics', '2040 olympics', '2044 olympics', '2048 olympics', '2052 olympics', '2056 olympics', '2060 olympics', '2064 olympics', '2068 olympics', '2072 olympics', '2076 olympics', '2080 olympics', '2084 olympics', '2088 olympics', '2092 olympics', '2096 olympics', '2100 olympics'];
+  const searchQueries = generateWordList(10000, 3, 5); // Generate 10,000 words, each with 3 to 5 syllables
   const randomIndex = Math.floor(Math.random() * searchQueries.length);
   return `https://www.google.com/search?q=${searchQueries[randomIndex]}`;
 }
