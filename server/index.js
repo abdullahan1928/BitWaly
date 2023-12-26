@@ -29,7 +29,8 @@ const environment = process.env.NODE_ENV;
 
 if (environment === 'development') {
 
-    const PORT = process.env.PORT || 5000;
+    const defaultPort = 5000;
+    const PORT = process.argv[2] || process.env.PORT || defaultPort;
 
     app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
