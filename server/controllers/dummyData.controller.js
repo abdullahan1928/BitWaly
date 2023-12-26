@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const crypto = require('crypto');
 const Url = require('../models/Url.model');
 
@@ -37,7 +36,7 @@ async function generateUniqueShortUrl(originalUrl) {
 // API endpoint to generate and store 1000 dummy entries
 const DummyData = async (req, res) => {
   try {
-    const numEntries = 1000;
+    const numEntries = 300000;
     console.log(`Generating and storing ${numEntries} dummy entries...`);
 
     for (let i = 0; i < numEntries; i++) {
