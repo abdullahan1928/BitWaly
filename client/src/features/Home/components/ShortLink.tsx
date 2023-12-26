@@ -15,16 +15,22 @@ const ShortLink = () => {
   const [shortLink, setShortLink] = useState("");
   const [timeTaken, setTimeTaken] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [serverTime, setServerTime] = useState<number | null>(null);
+  const [collisions, setCollisions] = useState<number | null>(null);
 
   const handleDomainChange = (newValue: string) => {
     setDomain(newValue);
   };
 
-  const handleLongUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLongUrlChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setLongUrl(event.target.value);
   };
 
-  const handleBackHalfChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleBackHalfChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     setBackHalf(event.target.value);
   };
 
@@ -32,19 +38,28 @@ const ShortLink = () => {
     try {
       setIsLoading(true);
       setTimeTaken(null);
-      const startTime = performance.now();
+      setServerTime(null);
+      setCollisions(null);
 
-      const formattedUrl = /^https?:\/\//i.test(longUrl) ? longUrl : `https://${longUrl}`;
+      const startTime = Date.now();
 
-      await UrlShortener(formattedUrl).then((shortUrl) => {
-        const endTime = performance.now();
-        const timeTaken = (endTime - startTime) / 1000; // Convert to seconds
-        setTimeTaken(timeTaken);
-        setShortLink(`${REDIRECT_URL}/${shortUrl}`);
-        setIsLoading(false);
-      });
+      const formattedUrl = /^https?:\/\//i.test(longUrl)
+        ? longUrl
+        : `https://${longUrl}`;
+
+      await UrlShortener(formattedUrl).then(
+        ({ shortUrl, totalTime, collisions }) => {
+          const endTime = Date.now();
+          const timeTaken = (endTime - startTime) / 1000;
+          setTimeTaken(timeTaken);
+          setShortLink(`${REDIRECT_URL}/${shortUrl}`);
+          setServerTime(totalTime);
+          setCollisions(collisions);
+          setIsLoading(false);
+        }
+      );
     } catch (error) {
-      console.error('Error sending request to the backend:', error);
+      console.error("Error sending request to the backend:", error);
     }
   };
 
@@ -111,9 +126,19 @@ const ShortLink = () => {
           </div>
         </div>
       )}
+      {collisions !== null && (
+        <p className="text-xl font-bold text-green-600">
+          Number of collisions: {collisions}
+        </p>
+      )}
+      {serverTime !== null && (
+        <p className="text-xl font-bold text-green-600">
+          Server time: {serverTime} s
+        </p>
+      )}
       {timeTaken !== null && (
         <p className="text-xl font-bold text-green-600">
-          Link generated in {timeTaken} seconds
+          Client time: {timeTaken} s
         </p>
       )}
       <p className="text-2xl font-bold flex self-center">No credit card required.</p>

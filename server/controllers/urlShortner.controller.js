@@ -1,6 +1,6 @@
-
 const crypto = require('crypto');
 const Url = require('../models/Url.model');
+
 function generateBaseHash(originalUrl) {
   const fullHash = crypto.createHash('md5').update(originalUrl).digest('hex');
   let shortHash = '';
@@ -19,28 +19,39 @@ function modifyHash(hash) {
 }
 
 async function generateUniqueShortUrl(originalUrl) {
+  const startTime = new Date();
+
   const shortUrl = generateBaseHash(originalUrl);
   const shardKey = shortUrl[0].toLowerCase();
 
   let uniqueShortUrl = shortUrl;
+  let collisions = 0;
+
   while (await Url.exists({ shardKey, shortUrl: uniqueShortUrl })) {
     uniqueShortUrl = modifyHash(uniqueShortUrl);
+    collisions++;
   }
 
-  return { shortUrl: uniqueShortUrl, shardKey };
+  const endTime = new Date();
+  const totalTime = (endTime - startTime) / 1000;
+
+  return { shortUrl: uniqueShortUrl, shardKey, totalTime, collisions };
 }
 
 const shortenUrl = async (req, res) => {
   const { originalUrl } = req.body;
   try {
-    const { shortUrl, shardKey } = await generateUniqueShortUrl(originalUrl);
+    const { shortUrl, shardKey, totalTime, collisions } = await generateUniqueShortUrl(originalUrl);
     const newUrl = new Url({ originalUrl, shortUrl, shardKey });
     await newUrl.save();
-    res.status(201).send(newUrl);
+    res.status(201).send({ shortUrl, totalTime, collisions });
   } catch (error) {
     res.status(500).send("Error processing your request");
   }
 };
+
+module.exports = shortenUrl;
+
 
 const retrieveUrl = async (req, res) => {
   const { shortUrl } = req.params;
