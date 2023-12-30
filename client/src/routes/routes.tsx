@@ -3,6 +3,8 @@ import Home from '@/pages/Home';
 import Pricing from '@/pages/Pricing';
 import Products from '@/pages/Products';
 import Contact from '@/pages/Contact';
+import Login from '../pages/Login';
+import SignUp from '../pages/SignUp';
 
 // Other components imports...
 
@@ -14,7 +16,7 @@ interface IRoute {
 
 interface IRoutes {
     path?: string;
-    element: JSX.Element;
+    element?: JSX.Element;
     children?: IRoute[];
 }
 
@@ -31,6 +33,13 @@ const routes: IRoutes[] = [
             // Add other routes here...
         ],
     },
+    {
+        path: '*',
+        children: [
+            { path: 'login', element: <Login /> },
+            { path: 'signup', element: <SignUp /> },
+        ],
+    }
 ];
 
 export default routes;

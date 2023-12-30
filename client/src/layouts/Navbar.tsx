@@ -22,10 +22,10 @@ const Navbar = () => {
                 </div>
 
                 <div className="auth flex justify-between items-center gap-4">
-                    <a className="link no-underline ml-12 text-[#36383b] text-lg">
+                    <a href='login' className="link no-underline ml-12 text-[#36383b] text-lg">
                         Login
                     </a>
-                    <a className="link no-underline ml-12 text-lg text-primary">
+                    <a href='signup' className="link no-underline ml-12 text-lg text-primary">
                         Sign Up
                     </a>
                     <PrimaryButton text="Get a Quote" className='py-3 px-2 ml-5' />
