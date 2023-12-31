@@ -4,6 +4,7 @@ import { API_URL } from "@/config/config.ts";
 import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import { Link } from 'react-router-dom';
 // import { useNavigate } from "react-router-dom";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -136,9 +137,9 @@ const LoginForm: React.FC = () => {
         <div className="flex items-center justify-between mt-16 mb-8 text-lg">
           <span className="inline-block align-baseline font-bold text-primary-700 hover:text-primary-800">
             Don't have an account? &nbsp;
-            <a href="/signup" className="text-blue-500 hover:text-primary-800">
+            <Link to="/signup" className="text-blue-500 hover:text-primary-800">
               Sign Up
-            </a>
+            </Link>
           </span>
         </div>
 

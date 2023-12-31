@@ -1,4 +1,4 @@
-
+import { Link } from 'react-router-dom';
 const ErrorRedirection = () => {
     return (
         <div className='flex flex-col items-center'>
@@ -17,7 +17,7 @@ const ErrorRedirection = () => {
                 <span className='font-bold'>3.</span> The page might have been renamed.
                 <br />
                 <br />
-                Please check the URL and try again. Go to the <a href='/'>home page</a> or <a href='/contact'>contact us</a> if you need any help.
+                Please check the URL and try again. Go to the <Link to='/'>home page</Link> or <Link to='/contact'>contact us</Link> if you need any help.
             </p>
         </div >
     )

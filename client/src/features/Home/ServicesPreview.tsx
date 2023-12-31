@@ -1,46 +1,27 @@
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import * as React from "react";
 import ShortLink from "@/features/Home/components/ShortLink";
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  // value: number;
-}
 
-function CustomTabPanel(props: TabPanelProps) {
-  const { children, index, ...other } = props;
 
-  return (
-    <div
-      role="tabpanel"
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      className="bg-white mb-12 w-[1200px] border-3 border-[#e8e9eb] rounded-2xl"
-      {...other}
-    >
-      <Box sx={{ p: 3 }}>
-        <Typography component={'span'}>{children}</Typography>
-      </Box>
-    </div>
-  );
-}
 
 const ServicesPreview = () => {
 
   return (
     <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <CustomTabPanel index={0}>
+    sx={{
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      padding: { xs: 1, sm: 2, md: 3 },
+      maxWidth: { xs: "80%", sm: "90%", md: "90%", lg: "80vw" }, 
+      margin: "0 auto 3rem auto",
+      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)", 
+      backgroundColor: "white", 
+      borderRadius: "16px",
+    }}
+  >
         <ShortLink />
-      </CustomTabPanel>
     </Box>
   );
 };
