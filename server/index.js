@@ -24,6 +24,7 @@ app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 5
 app.use(bodyParser.text({ limit: '200mb' }));
 
 app.use('/url', require('./routes/url.route'));
+app.use('/auth', require('./routes/auth.route'));
 
 const environment = process.env.NODE_ENV;
 
