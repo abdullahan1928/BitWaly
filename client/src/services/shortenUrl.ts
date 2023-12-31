@@ -9,12 +9,23 @@ interface ShortenUrlResponse {
 
 const UrlShortener = async (originalUrl: string): Promise<ShortenUrlResponse> => {
     try {
-        const response = await axios.post(`${API_URL}/url/shorten`, {
-            originalUrl,
-        });
+        const authToken = localStorage.getItem('token'); // Retrieve token from localStorage
+
+        // Check if authToken exists
+        if (!authToken) {
+            throw new Error("No authentication token found");
+        }
+
+        const response = await axios.post(`${API_URL}/url/shorten`,
+            { originalUrl },
+            {
+                headers: {
+                    authToken: `${authToken}` // Include the authToken in the request header
+                }
+            }
+        );
 
         const responseData: ShortenUrlResponse = response.data;
-
         return responseData;
     } catch (error) {
         console.error('Error sending request to the backend:', error);

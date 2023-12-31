@@ -42,7 +42,7 @@ const shortenUrl = async (req, res) => {
   const { originalUrl } = req.body;
   try {
     const { shortUrl, shardKey, totalTime, collisions } = await generateUniqueShortUrl(originalUrl);
-    const newUrl = new Url({ originalUrl, shortUrl, shardKey });
+    const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user });
     await newUrl.save();
     res.status(201).send({ shortUrl, totalTime, collisions });
   } catch (error) {
