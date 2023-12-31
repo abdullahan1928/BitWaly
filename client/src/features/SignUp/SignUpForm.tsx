@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { API_URL } from "@/config/config.ts";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -22,7 +22,7 @@ const SignUpForm = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   type Severity = "error" | "warning" | "info" | "success";
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [snackbarSeverity, setSnackbarSeverity] = useState<Severity>("success");
 
@@ -48,7 +48,7 @@ const SignUpForm = () => {
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
         localStorage.setItem("token", res.data.authToken);
-        navigate('/');
+        // navigate('/');
       })
       .catch((err) => {
         let errorMessage = "";
