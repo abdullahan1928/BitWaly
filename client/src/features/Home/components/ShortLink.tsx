@@ -47,7 +47,7 @@ const ShortLink = () => {
         ? longUrl
         : `https://${longUrl}`;
 
-      await UrlShortener(formattedUrl).then(
+      await UrlShortener(formattedUrl, backHalf).then(
         ({ shortUrl, totalTime, collisions }) => {
           const endTime = Date.now();
           const timeTaken = (endTime - startTime) / 1000;

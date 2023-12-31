@@ -39,18 +39,38 @@ async function generateUniqueShortUrl(originalUrl) {
 }
 
 const shortenUrl = async (req, res) => {
-  const { originalUrl } = req.body;
+  const { originalUrl, customUrl } = req.body;
   try {
-    const { shortUrl, shardKey, totalTime, collisions } = await generateUniqueShortUrl(originalUrl);
-    const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user });
-    await newUrl.save();
-    res.status(201).send({ shortUrl, totalTime, collisions });
+    if (customUrl) {
+      const existingUrl = await Url.findOne({ shortUrl: customUrl });
+
+      if (existingUrl) {
+        return res.status(400).send("Custom URL already exists");
+      }
+
+      shortUrl = customUrl;
+      const shardKey = shortUrl[0].toLowerCase();
+      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user });
+      await newUrl.save();
+      res.status(201).send({ shortUrl });
+    }
+
+    
+    else {
+      const { shortUrl, shardKey, totalTime, collisions } = await generateUniqueShortUrl(originalUrl);
+      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user });
+      await newUrl.save();
+      res.status(201).send({ shortUrl, totalTime, collisions });
+    }
+
+    
+    
   } catch (error) {
     res.status(500).send("Error processing your request");
   }
 };
 
-module.exports = shortenUrl;
+
 
 
 const retrieveUrl = async (req, res) => {
