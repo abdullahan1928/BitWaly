@@ -1,5 +1,7 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import axios from 'axios';
 import React, { useState } from 'react';
+import { API_URL } from '@/config/config.ts';
 
 const SignUpForm = () => {
     const [email, setEmail] = useState('');
@@ -20,7 +22,14 @@ const SignUpForm = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Handle form submission logic here
+        axios.post(`${API_URL}/auth/signup`, {
+            email,
+            password,
+        }).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.log(err);
+        });
     };
 
     const styles: { [key: string]: string } = {
@@ -75,7 +84,7 @@ const SignUpForm = () => {
 
                 <div className="flex items-center justify-between mt-16 mb-8 text-lg">
                     <span className="inline-block align-baseline font-bold text-primary-700 hover:text-primary-800">
-                        Don't have an account? &nbsp;
+                        Already have an account? &nbsp;
                         <a href="/login" className="text-blue-500 hover:text-primary-800">
                             Login
                         </a>
@@ -87,7 +96,7 @@ const SignUpForm = () => {
                         className={styles.button}
                         type="submit"
                     >
-                        Sign In
+                        Sign up
                     </button>
                 </div>
             </form>

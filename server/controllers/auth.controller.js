@@ -28,12 +28,10 @@ exports.signupController = async (req, res) => {
             password: hashedPassword,
         });
 
-        const data = {
-            id: user.id
-        }
 
 
-        const authToken = jwt.sign(data, jwt_secret);
+
+        const authToken = jwt.sign(user.id, jwt_secret);
 
         res.send({ authToken });
 
@@ -43,4 +41,57 @@ exports.signupController = async (req, res) => {
         console.log(e);
         res.status(500).send("Some error has occured");
     }
+}
+
+exports.signinController = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array() });
+    }
+
+    //getting email and password from body entered by the user
+    const { email, password } = req.body;
+
+
+    try {
+        let user = await Users.findOne({ email });
+        if (!user) {
+            return res.status(422).json({ errors: [{ msg: 'Invalid Credentials' }] });
+        }
+
+        if (!await bcrypt.compare(password, user.password)) {
+            return res.status(422).json({ errors: [{ msg: 'Invalid Credentials' }] });
+        }
+
+
+
+        const authToken = jwt.sign(user.id, jwt_secret);
+
+        user.lastLogin = new Date();
+        await user.save();
+
+        res.send({ authToken });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error");
+
+    }
+}
+
+
+
+
+
+
+exports.getUserController = async (req, res) => {
+    try {
+        const userId = req.user;   
+        const user = await Users.findById(userId).select('-password', );
+        res.send(user);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Internal Server Error");
+    }
+
 }

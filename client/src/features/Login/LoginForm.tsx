@@ -1,5 +1,7 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import React, { useState } from 'react';
+import { API_URL } from '@/config/config.ts';
+import axios from 'axios';
 
 const LoginForm: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -16,7 +18,14 @@ const LoginForm: React.FC = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Handle login logic here
+        axios.post(`${API_URL}/auth/signin`, {
+            email,
+            password,
+        }).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.log(err);
+        });
     };
 
     const handleTogglePasswordVisibility = () => {
