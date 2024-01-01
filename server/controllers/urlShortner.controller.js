@@ -45,7 +45,7 @@ const shortenUrl = async (req, res) => {
       const existingUrl = await Url.findOne({ shortUrl: customUrl });
 
       if (existingUrl) {
-        return res.status(400).send("Custom URL already exists");
+        return res.status(409).send("Short URL already exists");
       }
 
       const shortUrl = customUrl;
@@ -54,7 +54,6 @@ const shortenUrl = async (req, res) => {
       await newUrl.save();
       res.status(201).send({ shortUrl });
     }
-
 
     else {
       const { shortUrl, shardKey, totalTime, collisions } = await generateUniqueShortUrl(originalUrl);
@@ -88,8 +87,6 @@ const retrieveUrl = async (req, res) => {
 };
 
 const retrieveUrlsForUser = async (req, res) => {
-  console.log(req.user);
-
   try {
     // Check if the user is logged in
     if (!req.user) {
@@ -111,5 +108,28 @@ const retrieveUrlsForUser = async (req, res) => {
   }
 };
 
+const deleteUrl = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).send("Unauthorized");
+    }
 
-module.exports = { shortenUrl, retrieveUrl, retrieveUrlsForUser };
+    const userId = req.user;
+    const { urlId } = req.params;
+
+    const deletedUrl = await Url.findByIdAndDelete({ user: userId, _id: urlId });
+
+
+    if (deletedUrl) {
+      return res.status(200).send("URL deleted successfully");
+    } else {
+      return res.status(404).send("URL not found");
+    }
+  } catch (error) {
+    return res.status(500).send("Error processing your request");
+  }
+};
+
+
+
+module.exports = { shortenUrl, retrieveUrl, retrieveUrlsForUser, deleteUrl };

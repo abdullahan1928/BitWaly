@@ -13,7 +13,6 @@ const fetchUser = (req, res, next) => {
 
     try {
         const data = jwt.verify(authHeader, jwt_secret);
-        // console.log(data)
         req.user = data;    //this will be available in the request object
         next();
     } catch (error) {

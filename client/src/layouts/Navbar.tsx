@@ -1,19 +1,19 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/context/auth.context'; // Adjust this based on your authentication context
+import { useAuth } from '@/context/auth.context';
 import PrimaryButton from '../components/PrimaryButton';
 import { Outlet } from 'react-router-dom';
 
 const Navbar = () => {
-  const { isAuthenticated, logout } = useAuth(); // Adjust this based on your authentication context
-
+  const { isAuthenticated, logout } = useAuth();
   return (
     <>
-      <nav className='text-black p-4 flex flex-wrap justify-between items-center my-0 mx-auto max-w-6xl'>
+      <nav className='text-black p-4 flex justify-between items-center my-0 mx-auto max-w-6xl max-md:flex-col max-md:justify-between'>
         <Link to="/" className='mb-4 md:mb-0'>
           <img src="logo1.png" alt="logo" className='w-32' />
         </Link>
 
-        <div className="links flex flex-wrap justify-between items-center mb-4 md:mb-0">
+        <div className="links flex justify-between items-center mb-4 md:mb-0
+        max-md:flex-col max-md:justify-between">
           <Link to='/products' className="link mx-4 md:mx-6 text-lg no-underline text-[#36383b]">
             Products
           </Link>
@@ -25,7 +25,7 @@ const Navbar = () => {
           </Link>
         </div>
 
-        <div className="auth flex justify-between items-center gap-2">
+        <div className="auth flex justify-between items-center gap-2 max-md:flex-col max-md:justify-between">
           {isAuthenticated ? (
             // Show Logout if user is authenticated
             <button onClick={logout} className="link no-underline ml-2 md:ml-4 text-[#36383b] text-lg">

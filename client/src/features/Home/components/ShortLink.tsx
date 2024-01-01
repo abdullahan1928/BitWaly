@@ -8,6 +8,7 @@ import { REDIRECT_URL } from '@/config/config.ts';
 import CopyToClipboardButton from "@/components/Clipboard.tsx";
 import UrlShortener from "@/services/shortenUrl.ts";
 import { useAuth } from "@/context/auth.context";
+import { Alert } from "@mui/material";
 
 const ShortLink = () => {
   const [domain, setDomain] = useState("default");
@@ -18,6 +19,7 @@ const ShortLink = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [serverTime, setServerTime] = useState<number | null>(null);
   const [collisions, setCollisions] = useState<number | null>(null);
+  const [duplicateError, setDuplicateError] = useState<string | null>(null);
 
   const { isAuthenticated } = useAuth();
 
@@ -43,6 +45,7 @@ const ShortLink = () => {
       setTimeTaken(null);
       setServerTime(null);
       setCollisions(null);
+      setDuplicateError(null);
 
       const startTime = Date.now();
 
@@ -50,8 +53,8 @@ const ShortLink = () => {
         ? longUrl
         : `https://${longUrl}`;
 
-      await UrlShortener(formattedUrl, backHalf).then(
-        ({ shortUrl, totalTime, collisions }) => {
+      await UrlShortener(formattedUrl, backHalf)
+        .then(({ shortUrl, totalTime, collisions }) => {
           const endTime = Date.now();
           const timeTaken = (endTime - startTime) / 1000;
           setTimeTaken(timeTaken);
@@ -59,10 +62,15 @@ const ShortLink = () => {
           setServerTime(totalTime);
           setCollisions(collisions);
           setIsLoading(false);
-        }
-      );
-    } catch (error) {
+        });
+    } catch (error: any) {
       console.error("Error sending request to the backend:", error);
+      setIsLoading(false);
+
+      if (error.response.status === 409) {
+        setDuplicateError(error.response.data);
+        console.log(duplicateError);
+      }
     }
   };
 
@@ -101,6 +109,15 @@ const ShortLink = () => {
             className="w-full"
             value={backHalf}
             onChange={handleBackHalfChange}
+            sx={
+              duplicateError ?
+                {
+                  "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "red",
+                  },
+                }
+                : {}
+            }
           />
         </div>
       </div>
@@ -122,7 +139,12 @@ const ShortLink = () => {
           Generating link...
         </p>
       )}
-      {shortLink && !isLoading && isAuthenticated && (
+      {duplicateError && (
+        <Alert severity="error" className="w-full" style={{ fontSize: '16px', padding: '16px' }}>
+          {duplicateError}
+        </Alert>
+      )}
+      {shortLink && !isLoading && isAuthenticated && !duplicateError && (
         <div className="w-full text-2xl font-bold py-4 flex gap-2">
           <p className="py-4 pr-4">
             Generated Short Link:
