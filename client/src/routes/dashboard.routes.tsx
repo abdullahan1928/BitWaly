@@ -9,7 +9,7 @@ interface IDashboardRoute {
     element: JSX.Element;
 }
 
-export const dashboardRoutes: any = [
+export const dashboardRoutes: IDashboardRoute[] = [
     { index: true, element: <Dashboard /> },
     { path: 'profile', element: <Profile /> },
     // { path: 'settings', element: <Settings /> },

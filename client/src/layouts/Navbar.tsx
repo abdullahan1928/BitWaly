@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/auth.context'; // Adjust this based on your authentication context
 import PrimaryButton from '../components/PrimaryButton';
