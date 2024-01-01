@@ -87,7 +87,7 @@ const ShortLink = () => {
         value={longUrl}
         onChange={handleLongUrlChange}
       />
-      <div className="flex flex-row gap-4 w-full text-lg font-bold">
+      <div className="flex flex-row flex-wrap gap-4 w-full text-lg font-bold">
         <div className="flex flex-col gap-4">
           <p>Domain</p>
           <Select
@@ -125,7 +125,7 @@ const ShortLink = () => {
         <AutoAwesomeIcon />
         <p>End your link with words that will make it unique</p>
       </div>
-      <div onClick={handleButtonClick}>
+      <div onClick={handleButtonClick} className="self-start max-md:self-center">
         {isAuthenticated ? (
           <PrimaryButton text="Get your link" disabled={!longUrl.trim()} />
         ) : (
@@ -145,7 +145,7 @@ const ShortLink = () => {
         </Alert>
       )}
       {shortLink && !isLoading && isAuthenticated && !duplicateError && (
-        <div className="w-full text-2xl font-bold py-4 flex gap-2">
+        <div className="w-full text-2xl font-bold py-4 flex gap-2 max-md:flex-col max-md:items-start">
           <p className="py-4 pr-4">
             Generated Short Link:
           </p>
