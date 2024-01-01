@@ -12,24 +12,18 @@ exports.signupController = async (req, res) => {
         return res.status(422).json({ errors: errors.array() });
     }
 
-
     try {
         if (await (Users.findOne({ email: req.body.email }))) {
             return res.status(422).json({ errors: [{ msg: 'User already exists' }] });
         }
 
-
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
 
         const user = await new Users({
             email: req.body.email,
             password: hashedPassword,
         });
-
-
-
 
         const authToken = jwt.sign(user.id, jwt_secret);
 
@@ -52,7 +46,6 @@ exports.signinController = async (req, res) => {
     //getting email and password from body entered by the user
     const { email, password } = req.body;
 
-
     try {
         let user = await Users.findOne({ email });
         if (!user) {
@@ -62,8 +55,6 @@ exports.signinController = async (req, res) => {
         if (!await bcrypt.compare(password, user.password)) {
             return res.status(422).json({ errors: [{ msg: 'Invalid Credentials' }] });
         }
-
-
 
         const authToken = jwt.sign(user.id, jwt_secret);
 
@@ -79,19 +70,13 @@ exports.signinController = async (req, res) => {
     }
 }
 
-
-
-
-
-
 exports.getUserController = async (req, res) => {
     try {
-        const userId = req.user;   
-        const user = await Users.findById(userId).select('-password', );
+        const userId = req.user;
+        const user = await Users.findById(userId).select('-password',);
         res.send(user);
     } catch (error) {
         console.log(error);
         res.status(500).send("Internal Server Error");
     }
-
 }

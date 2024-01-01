@@ -48,30 +48,24 @@ const shortenUrl = async (req, res) => {
         return res.status(400).send("Custom URL already exists");
       }
 
-      shortUrl = customUrl;
+      const shortUrl = customUrl;
       const shardKey = shortUrl[0].toLowerCase();
       const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user });
       await newUrl.save();
       res.status(201).send({ shortUrl });
     }
 
-    
+
     else {
       const { shortUrl, shardKey, totalTime, collisions } = await generateUniqueShortUrl(originalUrl);
       const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user });
       await newUrl.save();
       res.status(201).send({ shortUrl, totalTime, collisions });
     }
-
-    
-    
   } catch (error) {
     res.status(500).send("Error processing your request");
   }
 };
-
-
-
 
 const retrieveUrl = async (req, res) => {
   const { shortUrl } = req.params;
@@ -93,4 +87,29 @@ const retrieveUrl = async (req, res) => {
   }
 };
 
-module.exports = { shortenUrl, retrieveUrl };
+const retrieveUrlsForUser = async (req, res) => {
+  console.log(req.user);
+
+  try {
+    // Check if the user is logged in
+    if (!req.user) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    const userId = req.user;
+
+    // Retrieve all URLs for the logged-in user
+    const userUrls = await Url.find({ user: userId });
+
+    if (userUrls.length > 0) {
+      res.status(200).send(userUrls);
+    } else {
+      res.status(404).send('No URLs found for the user');
+    }
+  } catch (error) {
+    res.status(500).send("Error processing your request");
+  }
+};
+
+
+module.exports = { shortenUrl, retrieveUrl, retrieveUrlsForUser };

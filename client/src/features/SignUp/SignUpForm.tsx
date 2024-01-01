@@ -4,7 +4,8 @@ import React, { useState } from "react";
 import { API_URL } from "@/config/config.ts";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from "@/context/auth.context";
 // import { useNavigate } from 'react-router-dom';
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
@@ -23,7 +24,8 @@ const SignUpForm = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   type Severity = "error" | "warning" | "info" | "success";
 
-  // const navigate = useNavigate();
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [snackbarSeverity, setSnackbarSeverity] = useState<Severity>("success");
 
@@ -48,8 +50,9 @@ const SignUpForm = () => {
         setSnackbarMessage("Signup successful!");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
-        localStorage.setItem("token", res.data.authToken);
-        // navigate('/');
+        // localStorage.setItem("token", res.data.authToken);
+        login(res.data.authToken);
+        navigate('/');
       })
       .catch((err) => {
         let errorMessage = "";

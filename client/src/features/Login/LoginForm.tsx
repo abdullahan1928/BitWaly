@@ -5,7 +5,8 @@ import axios from "axios";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Link } from 'react-router-dom';
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/context/auth.context";
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -25,7 +26,8 @@ const LoginForm: React.FC = () => {
 
   const [snackbarSeverity, setSnackbarSeverity] = useState<Severity>("success");
 
-//   const navigate = useNavigate();
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -44,8 +46,9 @@ const LoginForm: React.FC = () => {
         setSnackbarMessage("Signin successful!");
         setSnackbarSeverity("success");
         setSnackbarOpen(true);
-        localStorage.setItem("token", res.data.authToken);
-        // navigate('/');
+        // localStorage.setItem("token", res.data.authToken);
+        login(res.data.authToken);
+        navigate('/');
       })
       .catch((err) => {
         let errorMessage = "";

@@ -7,6 +7,7 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { REDIRECT_URL } from '@/config/config.ts';
 import CopyToClipboardButton from "@/components/Clipboard.tsx";
 import UrlShortener from "@/services/shortenUrl.ts";
+import { useAuth } from "@/context/auth.context";
 
 const ShortLink = () => {
   const [domain, setDomain] = useState("default");
@@ -17,6 +18,8 @@ const ShortLink = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [serverTime, setServerTime] = useState<number | null>(null);
   const [collisions, setCollisions] = useState<number | null>(null);
+
+  const { isAuthenticated } = useAuth();
 
   const handleDomainChange = (newValue: string) => {
     setDomain(newValue);
@@ -106,14 +109,20 @@ const ShortLink = () => {
         <p>End your link with words that will make it unique</p>
       </div>
       <div onClick={handleButtonClick}>
-        <PrimaryButton text="Get your link" />
+        {isAuthenticated ? (
+          <PrimaryButton text="Get your link" disabled={!longUrl.trim()} />
+        ) : (
+          <a href="/signup">
+            <PrimaryButton text="Sign Up and Get your link" />
+          </a>
+        )}
       </div>
-      {isLoading && (
+      {isLoading && isAuthenticated && (
         <p className="text-xl font-bold text-green-600">
           Generating link...
         </p>
       )}
-      {shortLink && !isLoading && (
+      {shortLink && !isLoading && isAuthenticated && (
         <div className="w-full text-2xl font-bold py-4 flex gap-2">
           <p className="py-4 pr-4">
             Generated Short Link:
@@ -126,17 +135,17 @@ const ShortLink = () => {
           </div>
         </div>
       )}
-      {collisions !== null && (
+      {collisions !== null && isAuthenticated && (
         <p className="text-xl font-bold text-green-600">
           Number of collisions: {collisions}
         </p>
       )}
-      {serverTime !== null && (
+      {serverTime !== null && isAuthenticated && (
         <p className="text-xl font-bold text-green-600">
           Server time: {serverTime} s
         </p>
       )}
-      {timeTaken !== null && (
+      {timeTaken !== null && isAuthenticated && (
         <p className="text-xl font-bold text-green-600">
           Client time: {timeTaken} s
         </p>
