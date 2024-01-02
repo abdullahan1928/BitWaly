@@ -1,33 +1,18 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import React, { useState } from "react";
 import { API_URL } from "@/config/config.ts";
-import axios from "axios";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/context/auth.context";
+import CustomSnackbar from "@/components/CustomSnackbar";
+import useAuthForm from "@/hooks/useAuth";
 
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
-
-const LoginForm: React.FC = () => {
+const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-  type Severity = "error" | "warning" | "info" | "success";
-
-  const [snackbarSeverity, setSnackbarSeverity] = useState<Severity>("success");
-
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const { handleSubmit, snackbarOpen, setSnackbarOpen, snackbarMessage, snackbarSeverity } = useAuthForm({
+    apiEndpoint: `${API_URL}/auth/signin`,
+    successMessage: 'Login successful!',
+  });
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -35,44 +20,6 @@ const LoginForm: React.FC = () => {
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    await axios
-      .post(`${API_URL}/auth/signin`, { email, password })
-      .then((res) => {
-        setSnackbarMessage("Signin successful!");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true);
-        // localStorage.setItem("token", res.data.authToken);
-        login(res.data.authToken);
-        navigate('/');
-      })
-      .catch((err) => {
-        let errorMessage = "";
-        if (err.response) {
-          // Error response from the server
-          if (err.response.data || err.response.data.message) {
-            errorMessage = err.request.response;
-          } else {
-            // Default message if the specific message is not found
-            errorMessage = "An error occurred. Please try again.";
-          }
-        } else if (err.request) {
-          // The request was made but no response was received
-          errorMessage =
-            "No response from the server. Please check your connection.";
-        } else {
-          // Something else caused the error
-          errorMessage = err.message;
-        }
-
-        setSnackbarMessage(errorMessage);
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
-      });
   };
 
   const handleTogglePasswordVisibility = () => {
@@ -109,6 +56,7 @@ const LoginForm: React.FC = () => {
             className={styles.input}
             id="email"
             type="email"
+            name="email"
             placeholder="Enter your email"
             value={email}
             onChange={handleEmailChange}
@@ -123,6 +71,7 @@ const LoginForm: React.FC = () => {
             <input
               className={styles.input}
               id="password"
+              name="password"
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               value={password}
@@ -152,19 +101,15 @@ const LoginForm: React.FC = () => {
           </button>
         </div>
       </form>
-      <Snackbar
+
+      <CustomSnackbar
         open={snackbarOpen}
-        autoHideDuration={6000}
+        duration={6000}
         onClose={() => setSnackbarOpen(false)}
-      >
-        <Alert
-          onClose={() => setSnackbarOpen(false)}
-          severity={snackbarSeverity}
-          sx={{ width: "100%" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+        severity={snackbarSeverity}
+        message={snackbarMessage}
+      />
+
     </div>
   );
 };

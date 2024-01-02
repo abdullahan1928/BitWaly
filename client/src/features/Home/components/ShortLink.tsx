@@ -6,7 +6,7 @@ import PrimaryButton from "@/components/PrimaryButton.tsx";
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { REDIRECT_URL } from '@/config/config.ts';
 import CopyToClipboardButton from "@/components/Clipboard.tsx";
-import UrlShortener from "@/services/shortenUrl.ts";
+import UrlShortener from "@/services/shortenUrl.service";
 import { useAuth } from "@/context/auth.context";
 import { Alert } from "@mui/material";
 
@@ -40,38 +40,27 @@ const ShortLink = () => {
   };
 
   const handleButtonClick = async () => {
-    try {
-      setIsLoading(true);
-      setTimeTaken(null);
-      setServerTime(null);
-      setCollisions(null);
-      setDuplicateError(null);
+    const formattedUrl = /^https?:\/\//i.test(longUrl)
+      ? longUrl
+      : `https://${longUrl}`;
 
-      const startTime = Date.now();
+    const startTime = Date.now();
 
-      const formattedUrl = /^https?:\/\//i.test(longUrl)
-        ? longUrl
-        : `https://${longUrl}`;
-
-      await UrlShortener(formattedUrl, backHalf)
-        .then(({ shortUrl, totalTime, collisions }) => {
-          const endTime = Date.now();
-          const timeTaken = (endTime - startTime) / 1000;
-          setTimeTaken(timeTaken);
-          setShortLink(`${REDIRECT_URL}/${shortUrl}`);
-          setServerTime(totalTime);
-          setCollisions(collisions);
-          setIsLoading(false);
-        });
-    } catch (error: any) {
-      console.error("Error sending request to the backend:", error);
-      setIsLoading(false);
-
-      if (error.response.status === 409) {
-        setDuplicateError(error.response.data);
-        console.log(duplicateError);
-      }
-    }
+    await UrlShortener(formattedUrl, backHalf)
+      .then(({ shortUrl, totalTime, collisions }) => {
+        const endTime = Date.now();
+        const timeTaken = (endTime - startTime) / 1000;
+        setTimeTaken(timeTaken);
+        setShortLink(`${REDIRECT_URL}/${shortUrl}`);
+        setServerTime(totalTime);
+        setCollisions(collisions);
+        setIsLoading(false);
+      }).catch((error) => {
+        if (error.response.status === 409) {
+          setDuplicateError(error.response.data.message);
+        }
+        setIsLoading(false);
+      });
   };
 
 
@@ -87,8 +76,8 @@ const ShortLink = () => {
         value={longUrl}
         onChange={handleLongUrlChange}
       />
-      <div className="flex flex-row flex-wrap gap-4 w-full text-lg font-bold">
-        <div className="flex flex-col gap-4">
+      <div className="flex flex-row max-md:flex-wrap gap-4 w-full text-lg font-bold">
+        <div className="flex flex-col gap-4 max-md:w-full">
           <p>Domain</p>
           <Select
             labelId="demo-simple-select-label"
@@ -153,7 +142,7 @@ const ShortLink = () => {
             <a href={shortLink} target="_blank" rel="noopener noreferrer" className="text-secondary">
               {shortLink}
             </a>
-            <CopyToClipboardButton text={shortLink} />
+            <CopyToClipboardButton text={shortLink} message="Copied to clipboard" />
           </div>
         </div>
       )}

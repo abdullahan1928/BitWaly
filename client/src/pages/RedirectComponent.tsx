@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ErrorRedirection from './ErrorRedirection';
-import UrlRetreival from '@/services/retrieveUrl';
+import UrlRetreival from '@/services/retrieveUrl.service';
 
 const RedirectComponent = () => {
     const { shortUrl } = useParams<{ shortUrl: string }>();

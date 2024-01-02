@@ -13,8 +13,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { API_URL } from '@/config/config';
-import axios from 'axios';
+import { deleteUrl, getUserUrls } from './services/url.service';
 
 interface Url {
     _id: string;
@@ -32,17 +31,8 @@ const UrlTable = () => {
     useEffect(() => {
         const fetchUserUrls = async () => {
             try {
-                const response = await axios.get(`${API_URL}/url/userUrls`, {
-                    headers: {
-                        authToken: `${authToken}`
-                    }
-                });
-                if (response) {
-                    const data = await response.data;
-                    setUserUrls(data);
-                } else {
-                    console.error('Failed to fetch user URLs');
-                }
+                const urls = await getUserUrls(authToken);
+                setUserUrls(urls);
             } catch (error) {
                 console.error('Error fetching user URLs:', error);
             }
@@ -54,11 +44,7 @@ const UrlTable = () => {
     const handleDelete = async () => {
         if (urlToDelete) {
             try {
-                await axios.delete(`${API_URL}/url/delete/${urlToDelete}`, {
-                    headers: {
-                        authToken: `${authToken}`
-                    }
-                });
+                await deleteUrl(urlToDelete, authToken);
                 setUserUrls(prevUrls => prevUrls.filter(url => url._id !== urlToDelete));
                 console.log('URL deleted successfully');
             } catch (error) {

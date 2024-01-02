@@ -1,0 +1,15 @@
+import { Link } from 'react-router-dom';
+
+interface CustomLinkProps {
+    to: string;
+    children: React.ReactNode;
+    className?: string;
+}
+
+const CustomLink = ({ to, children, className }: CustomLinkProps) => (
+    <Link to={to} className={`mx-4 md:mx-6 text-lg text-[#36383b] ${className}`}>
+        {children}
+    </Link>
+);
+
+export default CustomLink;

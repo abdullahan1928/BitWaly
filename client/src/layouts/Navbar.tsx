@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/auth.context';
 import PrimaryButton from '../components/PrimaryButton';
 import { Outlet } from 'react-router-dom';
+import CustomLink from '@/components/CustomLink';
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
@@ -12,34 +13,31 @@ const Navbar = () => {
           <img src="logo1.png" alt="logo" className='w-32' />
         </Link>
 
-        <div className="links flex justify-between items-center mb-4 md:mb-0
-        max-md:flex-col max-md:justify-between">
-          <Link to='/products' className="link mx-4 md:mx-6 text-lg no-underline text-[#36383b]">
+        <div className="flex justify-between items-center mb-4 md:mb-0 max-md:flex-col max-md:justify-between">
+          <CustomLink to='/products'>
             Products
-          </Link>
-          <Link to='/pricing' className="link mx-4 md:mx-6 text-lg no-underline text-[#36383b]">
+          </CustomLink>
+          <CustomLink to='/pricing'>
             Pricing
-          </Link>
-          <Link to='/resources' className="link mx-4 md:mx-6 text-lg no-underline text-[#36383b]">
+          </CustomLink>
+          <CustomLink to='/resources'>
             Resources
-          </Link>
+          </CustomLink>
         </div>
 
         <div className="auth flex justify-between items-center gap-2 max-md:flex-col max-md:justify-between">
           {isAuthenticated ? (
-            // Show Logout if user is authenticated
-            <button onClick={logout} className="link no-underline ml-2 md:ml-4 text-[#36383b] text-lg">
+            <button onClick={logout} className="mx-4 md:mx-6 text-[#36383b] text-lg">
               Logout
             </button>
           ) : (
-            // Show Login and Sign Up if user is not authenticated
             <>
-              <Link to='/login' className="link no-underline ml-2 md:ml-4 text-[#36383b] text-lg">
+              <CustomLink to='/login'>
                 Login
-              </Link>
-              <Link to='/signup' className="link no-underline ml-2 md:ml-4 text-lg text-primary">
+              </CustomLink>
+              <CustomLink to='/signup' className="text-primary">
                 Sign Up
-              </Link>
+              </CustomLink>
             </>
           )}
           <PrimaryButton text="Get a Quote" className='py-2 px-4 ml-2 md:ml-4' />

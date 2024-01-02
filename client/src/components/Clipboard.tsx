@@ -4,6 +4,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 interface IProps {
     text: string
+    message?: string
 }
 
 const CopyToClipboardButton = (props: IProps) => {
@@ -20,7 +21,7 @@ const CopyToClipboardButton = (props: IProps) => {
                 open={open}
                 onClose={() => setOpen(false)}
                 autoHideDuration={2000}
-                message="Copied to clipboard"
+                message={props.message || 'Copied to clipboard'}
             />
         </>
     )
