@@ -34,7 +34,7 @@ const useAuthForm = ({ apiEndpoint, successMessage }: IUseAuthForm) => {
             setSnackbarSeverity("success");
             setSnackbarOpen(true);
             login(res.data.authToken);
-            navigate('/');
+            navigate('/dashboard');
         } catch (err: any) {
             let errorMessage = "";
             if (err.response) {

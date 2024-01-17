@@ -1,5 +1,4 @@
-// Import necessary components and pages...
-import Dashboard from '@/pages/Dashbaord';
+import Dashboard from '@/pages/Dashboard';
 import Profile from '@/pages/Profile';
 // import Settings from '@/pages/Settings';
 
