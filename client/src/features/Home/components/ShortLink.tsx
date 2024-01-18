@@ -7,8 +7,8 @@ import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import { REDIRECT_URL } from '@/config/config.ts';
 import CopyToClipboardButton from "@/components/Clipboard.tsx";
 import UrlShortener from "@/services/shortenUrl.service";
-import { useAuth } from "@/context/auth.context";
 import { Alert } from "@mui/material";
+import { useAuth } from "@/hooks/useAuth";
 
 const ShortLink = () => {
   const [domain, setDomain] = useState("default");

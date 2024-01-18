@@ -1,13 +1,9 @@
 import Navbar from '@/layouts/Navbar';
-import Home from '@/pages/Home';
-import Pricing from '@/pages/Pricing';
-import Products from '@/pages/Products';
-import Contact from '@/pages/Contact';
-import Login from '../pages/Login';
-import SignUp from '../pages/SignUp';
-// import { Dashboard } from '@/pages/Dashboard';
-import PrivateRoute from '@/pages/PrivateRoute';
-import { dashboardRoutes } from './dashboard.routes';
+import { DashboardRoutes } from './dashboard.routes';
+import { PublicRoutes } from './public.routes';
+import { AuthRoutes } from './auth.routes';
+import AuthGuard from '@/guards/AuthGuard';
+import PublicGuard from '@/guards/PublicGuard';
 
 interface IRoute {
     index?: boolean;
@@ -25,24 +21,23 @@ interface IRoutes {
 const routes: IRoutes[] = [
     {
         path: '/',
-        element: <Navbar />,
-        children: [
-            { index: true, element: <Home /> },
-            { path: 'products', element: <Products /> },
-            { path: 'pricing', element: <Pricing /> },
-            { path: 'contact', element: <Contact /> },
-        ],
+        element: (
+            <>
+                <Navbar />
+                <PublicGuard />
+            </>
+        ),
+        children: PublicRoutes,
     },
     {
         path: 'dashboard/*',
-        element: <PrivateRoute>{dashboardRoutes.map(route => route.element)}</PrivateRoute>,
+        element: <AuthGuard />,
+        children: DashboardRoutes,
     },
     {
         path: '*',
-        children: [
-            { path: 'login', element: <Login /> },
-            { path: 'signup', element: <SignUp /> },
-        ],
+        element: <PublicGuard />,
+        children: AuthRoutes
     }
 ];
 

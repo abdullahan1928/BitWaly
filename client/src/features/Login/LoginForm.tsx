@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { API_URL } from "@/config/config.ts";
 import { Link } from 'react-router-dom';
 import CustomSnackbar from "@/components/CustomSnackbar";
-import useAuthForm from "@/hooks/useAuth";
+import useAuthForm from "@/hooks/useAuthForm";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");

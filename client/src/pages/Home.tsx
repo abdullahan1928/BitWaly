@@ -1,7 +1,7 @@
-import { useAuth } from '@/context/auth.context';
 import Hero from '@/features/Home/Hero'
 import ServicesPreview from '@/features/Home/ServicesPreview';
 import UrlTable from '@/features/Home/UrlTable';
+import { useAuth } from '@/hooks/useAuth';
 
 const Home = () => {
   const { isAuthenticated } = useAuth();

@@ -1,33 +1,26 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, ReactNode } from 'react';
 
 interface AuthContextProps {
     isAuthenticated: boolean;
-    login: (token: string) => void; // Accept token as a parameter
+    login: (token: string) => void;
     logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-    useEffect(() => {
-        // Check if a token is stored in local storage
+    const [isAuthenticated, setIsAuthenticated] = useState(() => {
         const storedToken = localStorage.getItem('token');
-        if (storedToken) {
-            setIsAuthenticated(true);
-        }
-    }, []); // Run this effect only once on component mount
+        return !!storedToken; // Set to true if token exists, false otherwise
+    });
 
     const login = (token: string) => {
         setIsAuthenticated(true);
-        // Store the token in local storage
         localStorage.setItem('token', token);
     };
 
     const logout = () => {
         setIsAuthenticated(false);
-        // Remove the token from local storage
         localStorage.removeItem('token');
     };
 
@@ -36,12 +29,4 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
             {children}
         </AuthContext.Provider>
     );
-};
-
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
 };

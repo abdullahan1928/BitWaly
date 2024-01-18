@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/context/auth.context';
 import PrimaryButton from '../components/PrimaryButton';
-import { Outlet } from 'react-router-dom';
 import CustomLink from '@/components/CustomLink';
+import { useAuth } from '@/hooks/useAuth';
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
+
   return (
     <>
       <nav className='text-black p-4 flex justify-between items-center my-0 mx-auto max-w-6xl max-md:flex-col max-md:justify-between'>
@@ -43,7 +43,6 @@ const Navbar = () => {
           <PrimaryButton text="Get a Quote" className='py-2 px-4 ml-2 md:ml-4' />
         </div>
       </nav>
-      <Outlet />
     </>
   );
 };
