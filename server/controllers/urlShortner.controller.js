@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const Url = require('../models/Url.model');
+const Analytics = require('../models/Analytics.model');
+
 
 function generateBaseHash(originalUrl) {
   const fullHash = crypto.createHash('md5').update(originalUrl).digest('hex');
@@ -70,21 +72,37 @@ const retrieveUrl = async (req, res) => {
   const { shortUrl } = req.params;
   const shardKey = shortUrl[0].toLowerCase();
 
-  const url = await Url.findOne({ shardKey, shortUrl });
+  try {
+    const url = await Url.findOne({ shardKey, shortUrl });
 
-  if (url) {
-    url.accessCount += 1;
-    url.accessDetails.push({
-      ipAddress: req.ip,
-      referrer: req.get('Referrer'),
-      userAgent: req.get('User-Agent'),
-    });
-    await url.save();
-    res.status(200).send(url);
-  } else {
-    res.status(404).send('URL not found');
+    if (url) {
+
+      url.accessCount += 1;
+      await url.save();
+
+      const analyticsData = {
+        url: url._id,
+        accessedAt: new Date(),
+        date: new Date().setHours(0, 0, 0, 0), 
+        ipAddress: req.ip,
+        referrer: req.get('Referrer'),
+        userAgent: req.get('User-Agent'),
+      };
+
+      await Analytics.create(analyticsData);
+
+      res.status(200).send(url);
+    } else {
+      res.status(404).send('URL not found');
+    }
+  } catch (error) {
+    console.error('Error in retrieveUrl:', error);
+    res.status(500).send('Server error');
   }
 };
+
+
+
 
 const retrieveUrlsForUser = async (req, res) => {
   try {
@@ -107,6 +125,9 @@ const retrieveUrlsForUser = async (req, res) => {
     res.status(500).send("Error processing your request");
   }
 };
+
+
+
 
 const deleteUrl = async (req, res) => {
   try {
