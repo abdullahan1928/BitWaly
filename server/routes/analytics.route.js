@@ -9,7 +9,4 @@ router.get('/device/:shortUrl', fetchUser, deviceAnalyticsController);
 router.get('/browser/:shortUrl', fetchUser, browserAnalyticsController);
 router.get('/os/:shortUrl', fetchUser, osAnalyticsController);
 
-
-
-
 module.exports = router;
