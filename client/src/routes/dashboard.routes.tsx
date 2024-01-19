@@ -1,5 +1,8 @@
-import Dashboard from '@/pages/Dashboard';
-import Profile from '@/pages/Profile';
+import Dashboard from '@/pages/private/Dashboard';
+import Links from '@/pages/private/Links';
+import NewUrl from '@/pages/private/NewUrl';
+import Settings from '@/pages/private/Settings';
+import { Analytics } from '@mui/icons-material';
 
 interface IDashboardRoute {
     index?: boolean;
@@ -9,5 +12,8 @@ interface IDashboardRoute {
 
 export const DashboardRoutes: IDashboardRoute[] = [
     { index: true, element: <Dashboard /> },
-    { path: 'profile', element: <Profile /> },
+    { path: 'link/new', element: <NewUrl /> },
+    { path: 'links', element: <Links /> },
+    { path: 'analytics', element: <Analytics /> },
+    { path: 'settings', element: <Settings /> },
 ];

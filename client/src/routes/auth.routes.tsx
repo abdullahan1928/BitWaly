@@ -1,5 +1,5 @@
-import Login from '@/pages/Login';
-import SignUp from '@/pages/SignUp';
+import Login from '@/pages/public/Login';
+import SignUp from '@/pages/public/SignUp';
 
 interface IAuthRoute {
     index?: boolean;

@@ -1,7 +1,7 @@
-import Home from '@/pages/Home';
-import Pricing from '@/pages/Pricing';
-import Products from '@/pages/Products';
-import Contact from '@/pages/Contact';
+import Home from '@/pages/public/Home';
+import Pricing from '@/pages/public/Pricing';
+import Products from '@/pages/public/Products';
+import Contact from '@/pages/public/Contact';
 
 interface IPublicRoute {
     index?: boolean;
