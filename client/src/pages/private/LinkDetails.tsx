@@ -68,7 +68,10 @@ const LinkDetails = () => {
                 showDetails={false}
             />
 
-            <LinkSummary />
+            <LinkSummary
+                id={id ?? ''}
+                authToken={authToken ?? ''}
+            />
 
             <LinkBarChart />
 

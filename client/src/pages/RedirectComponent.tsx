@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ErrorRedirection from './ErrorRedirection';
-import UrlRetreival from '@/services/retrieveUrl.service';
+import UrlRetrieval from '@/services/retrieveUrl.service';
 
 const RedirectComponent = () => {
     const { shortUrl } = useParams<{ shortUrl: string }>();
     const [isError, setIsError] = useState(false);
+    const hasRedirected = useRef(false);
 
     useEffect(() => {
-        if (shortUrl) {
-            UrlRetreival(shortUrl)
+        if (shortUrl && !hasRedirected.current) {
+            UrlRetrieval(shortUrl)
                 .then((response) => {
                     window.location.href = response;
-                }).catch(() => {
+                    hasRedirected.current = true;
+                })
+                .catch(() => {
                     setIsError(true);
                 });
         }
@@ -20,13 +23,7 @@ const RedirectComponent = () => {
 
     return (
         <div>
-            {isError ? (
-                <ErrorRedirection />
-            ) : (
-                <p>
-
-                </p>
-            )}
+            {isError && <ErrorRedirection />}
         </div>
     );
 };

@@ -87,8 +87,9 @@ const retrieveUrl = async (req, res) => {
     const url = await Url.findOne({ shardKey, shortUrl });
 
     if (url) {
-
+      console.log(url.accessCount);
       url.accessCount += 1;
+      console.log(url.accessCount);
       await url.save();
 
       const analyticsData = {

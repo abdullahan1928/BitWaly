@@ -4,7 +4,7 @@ const { clicksController, deviceAnalyticsController, browserAnalyticsController,
 const fetchUser = require("../middleware/fetchUser");
 
 
-router.get('/clicks/:shortUrl', fetchUser, clicksController);
+router.get('/clicks/:id', fetchUser, clicksController);
 router.get('/device/:shortUrl', fetchUser, deviceAnalyticsController);
 router.get('/browser/:shortUrl', fetchUser, browserAnalyticsController);
 router.get('/os/:shortUrl', fetchUser, osAnalyticsController);

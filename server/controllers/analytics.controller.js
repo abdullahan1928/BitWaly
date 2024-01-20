@@ -3,11 +3,12 @@ const Analytics = require('../models/Analytics.model');
 const UAParser = require('ua-parser-js');
 
 exports.clicksController = async (req, res) => {
-    const { shortUrl } = req.params;
+    const { id } = req.params;
+    const userId = req.user;
 
     try {
-        // Find the URL document to get the URL ID
-        const urlDocument = await Url.findOne({ shortUrl });
+        const urlDocument = await Url.findById({ user: userId, _id: id });
+
         if (!urlDocument) {
             return res.status(404).send('URL not found');
         }
