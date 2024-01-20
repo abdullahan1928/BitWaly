@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import routes from '@/routes/routes';
-import RedirectComponent from './pages/RedirectComponent';
+import RedirectComponent from '@/pages/RedirectComponent';
 
 const App = () => {
   return (

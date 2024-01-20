@@ -1,16 +1,12 @@
-import Hero from '@/features/Home/Hero'
-import ServicesPreview from '@/features/Home/ServicesPreview';
-import UrlTable from '@/features/Home/UrlTable';
-import { useAuth } from '@/hooks/useAuth';
+import Hero from '@/features/public/Home/Hero'
+import ServicesPreview from '@/features/public/Home/ServicesPreview';
 
 const Home = () => {
-  const { isAuthenticated } = useAuth();
 
   return (
     <div>
       <Hero />
       <ServicesPreview />
-      {isAuthenticated && <UrlTable />}
     </div>
   );
 };

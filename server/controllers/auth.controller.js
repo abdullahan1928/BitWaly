@@ -43,10 +43,7 @@ exports.signinController = async (req, res) => {
         return res.status(422).json({ errors: errors.array() });
     }
 
-    //getting email and password from body entered by the user
     const { email, password } = req.body;
-
-    console.log(req.body);
 
     try {
         let user = await Users.findOne({ email });

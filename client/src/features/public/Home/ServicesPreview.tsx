@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import ShortLink from "@/features/Home/components/ShortLink";
+import ShortLink from "@/features/public/Home/components/ShortLink";
 import { Typography } from "@mui/material";
 
 const ServicesPreview = () => {

@@ -8,7 +8,6 @@ const RedirectComponent = () => {
     const [isError, setIsError] = useState(false);
 
     useEffect(() => {
-        // Example usage of the redirection function
         if (shortUrl) {
             UrlRetreival(shortUrl)
                 .then((response) => {

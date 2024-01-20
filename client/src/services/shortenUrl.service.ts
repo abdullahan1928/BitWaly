@@ -7,7 +7,7 @@ interface ShortenUrlResponse {
     collisions: number;
 }
 
-const UrlShortener = async (originalUrl: string, customUrl: string): Promise<ShortenUrlResponse> => {
+const UrlShortener = async (originalUrl: string, customUrl: string, title: string): Promise<ShortenUrlResponse> => {
     try {
         const authToken = localStorage.getItem('token'); // Retrieve token from localStorage
 
@@ -17,7 +17,7 @@ const UrlShortener = async (originalUrl: string, customUrl: string): Promise<Sho
         }
 
         const response = await axios.post(`${API_URL}/url/shorten`,
-            { originalUrl, customUrl},
+            { originalUrl, customUrl, title },
             {
                 headers: {
                     authToken: `${authToken}` // Include the authToken in the request header

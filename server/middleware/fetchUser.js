@@ -17,7 +17,7 @@ const fetchUser = (req, res, next) => {
         next();
     } catch (error) {
         res.status(401).json({ msg: 'Some error occured' });
-    }    
+    }
 }
 
 

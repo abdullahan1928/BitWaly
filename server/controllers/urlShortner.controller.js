@@ -1,7 +1,8 @@
 const crypto = require('crypto');
 const Url = require('../models/Url.model');
 const Analytics = require('../models/Analytics.model');
-
+const fetch = require('node-fetch');
+const cheerio = require('cheerio');
 
 function generateBaseHash(originalUrl) {
   const fullHash = crypto.createHash('md5').update(originalUrl).digest('hex');
@@ -41,8 +42,18 @@ async function generateUniqueShortUrl(originalUrl) {
 }
 
 const shortenUrl = async (req, res) => {
-  const { originalUrl, customUrl } = req.body;
+  const { originalUrl, customUrl, title } = req.body;
+
   try {
+
+    const html = await (await fetch(originalUrl)).text();
+
+    const $ = cheerio.load(html);
+
+    const linkTitle = title || $('head title').text() || originalUrl.split('/')[2] + '- untitled';
+
+    const image = $('head link[rel="icon"]').attr('href') || $('head link[rel="shortcut icon"]').attr('href');
+
     if (customUrl) {
       const existingUrl = await Url.findOne({ shortUrl: customUrl });
 
@@ -52,14 +63,14 @@ const shortenUrl = async (req, res) => {
 
       const shortUrl = customUrl;
       const shardKey = shortUrl[0].toLowerCase();
-      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user });
+      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user, meta: { title: linkTitle, image } });
       await newUrl.save();
       res.status(201).send({ shortUrl });
     }
 
     else {
       const { shortUrl, shardKey, totalTime, collisions } = await generateUniqueShortUrl(originalUrl);
-      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user });
+      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user, meta: { title: linkTitle, image } });
       await newUrl.save();
       res.status(201).send({ shortUrl, totalTime, collisions });
     }
@@ -83,7 +94,7 @@ const retrieveUrl = async (req, res) => {
       const analyticsData = {
         url: url._id,
         accessedAt: new Date(),
-        date: new Date().setHours(0, 0, 0, 0), 
+        date: new Date().setHours(0, 0, 0, 0),
         ipAddress: req.ip,
         referrer: req.get('Referrer'),
         userAgent: req.get('User-Agent'),
@@ -101,9 +112,6 @@ const retrieveUrl = async (req, res) => {
   }
 };
 
-
-
-
 const retrieveUrlsForUser = async (req, res) => {
   try {
     // Check if the user is logged in
@@ -113,7 +121,6 @@ const retrieveUrlsForUser = async (req, res) => {
 
     const userId = req.user;
 
-    // Retrieve all URLs for the logged-in user
     const userUrls = await Url.find({ user: userId });
 
     if (userUrls.length > 0) {
@@ -125,9 +132,6 @@ const retrieveUrlsForUser = async (req, res) => {
     res.status(500).send("Error processing your request");
   }
 };
-
-
-
 
 const deleteUrl = async (req, res) => {
   try {
@@ -151,6 +155,26 @@ const deleteUrl = async (req, res) => {
   }
 };
 
+const getUrlById = async (req, res) => {
 
+  try {
+    if (!req.user) {
+      return res.status(401).send("Unauthorized");
+    }
 
-module.exports = { shortenUrl, retrieveUrl, retrieveUrlsForUser, deleteUrl };
+    const userId = req.user;
+    const { id } = req.params;
+
+    const url = await Url.findById({ user: userId, _id: id });
+
+    if (url) {
+      return res.status(200).send(url);
+    } else {
+      return res.status(404).send("URL not found");
+    }
+  } catch (error) {
+    return res.status(500).send("Error processing your request");
+  }
+};
+
+module.exports = { shortenUrl, retrieveUrl, retrieveUrlsForUser, deleteUrl, getUrlById };

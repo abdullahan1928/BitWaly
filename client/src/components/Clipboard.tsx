@@ -5,6 +5,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 interface IProps {
     text: string
     message?: string
+    className?: string
 }
 
 const CopyToClipboardButton = (props: IProps) => {
@@ -16,7 +17,9 @@ const CopyToClipboardButton = (props: IProps) => {
 
     return (
         <>
-            <ContentCopyIcon className='hover:cursor-pointer' onClick={handleClick} />
+            <ContentCopyIcon
+                className={`text-gray-500 hover:text-gray-700 cursor-pointer hover:scale-110 ${props.className}`}
+                onClick={handleClick} />
             <Snackbar
                 open={open}
                 onClose={() => setOpen(false)}

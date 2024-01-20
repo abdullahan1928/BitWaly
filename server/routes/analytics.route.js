@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { clicksController, deviceAnalyticsController, browserAnalyticsController, botAnalyticsController, osAnalyticsController} = require("../controllers/analytics.controller");
+const { clicksController, deviceAnalyticsController, browserAnalyticsController, botAnalyticsController, osAnalyticsController } = require("../controllers/analytics.controller");
 const fetchUser = require("../middleware/fetchUser");
 
 

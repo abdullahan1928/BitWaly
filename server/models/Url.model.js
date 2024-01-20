@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-
-
 const urlSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   originalUrl: { type: String, required: true },
@@ -9,6 +7,10 @@ const urlSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   accessCount: { type: Number, default: 0 },
   shardKey: { type: String, required: true },
+  meta: {
+    title: String,
+    image: String,
+  },
 });
 
 urlSchema.index({ shardKey: 1, shortUrl: 1 }, { unique: true });

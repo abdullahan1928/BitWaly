@@ -1,5 +1,4 @@
-import * as React from 'react';
-import CssBaseline from '@mui/material/CssBaseline';
+// import CssBaseline from '@mui/material/CssBaseline';
 import { Box, CSSObject, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, Toolbar, Typography, styled, useTheme } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
@@ -14,6 +13,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import LinkIcon from '@mui/icons-material/Link';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import AddIcon from '@mui/icons-material/Add';
+import { useState } from 'react';
 
 const drawerWidth = 240;
 
@@ -139,9 +139,9 @@ const SidebarItem = ({ open, icon, text, to, onClick }: SidebarItemProps) => {
     );
 };
 
-export default function MiniDrawer() {
+const Sidebar = () => {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     const { logout } = useAuth();
 
@@ -155,9 +155,9 @@ export default function MiniDrawer() {
 
     return (
         <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <AppBar position="fixed" open={open}>
-                <Toolbar>
+            {/* <CssBaseline /> */}
+            <AppBar position="fixed" open={open}> 
+                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
@@ -177,15 +177,12 @@ export default function MiniDrawer() {
             </AppBar>
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
+                    <img src="logo2.png" alt="logo" className='w-16' />
                     {
-                        open ?
-                            <>
-                                <img src="logo2.png" alt="logo" className='w-16' />
-                                <IconButton onClick={handleDrawerClose}>
-                                    {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                                </IconButton>
-                            </>
-                            : <img src="logo2.png" alt="logo" className='w-16' />
+                        open &&
+                        <IconButton onClick={handleDrawerClose}>
+                            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                        </IconButton>
                     }
                 </DrawerHeader>
 
@@ -198,7 +195,7 @@ export default function MiniDrawer() {
                                 Create New Link
                             </button>
                             :
-                            <Link to={'/dashboard/link/new'} className='flex items-center justify-center mt-4 mx-4 bg-primary-500 hover:bg-primary-700 py-2 px-5 rounded-md'>
+                            <Link to={'/dashboard/link/new'} className='flex items-center justify-center mt-4 mx-2 bg-primary-500 hover:bg-primary-700 py-2 px-5 rounded-md'>
                                 <AddIcon />
                             </Link>
                     }
@@ -208,7 +205,7 @@ export default function MiniDrawer() {
 
                 <List>
                     <SidebarItem open={open} icon={<HomeIcon />} text="Home" to="/dashboard" />
-                    <SidebarItem open={open} icon={<LinkIcon />} text="Links" to="/dashboard/links" />
+                    <SidebarItem open={open} icon={<LinkIcon className='transform rotate-45' />} text="Links" to="/dashboard/links" />
                     <SidebarItem open={open} icon={<LeaderboardIcon />} text="Analytics" to="/dashboard/analytics" />
                 </List>
                 <Divider />
@@ -224,3 +221,5 @@ export default function MiniDrawer() {
         </Box>
     );
 }
+
+export default Sidebar
