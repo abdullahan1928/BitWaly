@@ -1,11 +1,13 @@
-import { API_URL } from "@/config/config"
 import LinkCard from "@/features/private/Links/components/LinkCard"
-import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link, useParams } from "react-router-dom"
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import LinkSummary from "@/features/private/LinkDetails/LinkSummary"
 import LinkBarChart from "@/features/private/LinkDetails/LinkBarChart"
+import { UrlRetrievalById } from "@/services/retrieveUrl.service"
+import LinkLocations from "@/features/private/LinkDetails/LinkLocations";
+import LinkReferres from "@/features/private/LinkDetails/LinkReferres";
+import LinkDevices from "@/features/private/LinkDetails/LinkDevices";
 
 interface IUrl {
     _id: string;
@@ -18,7 +20,6 @@ interface IUrl {
     };
 }
 
-
 const LinkDetails = () => {
     const [urlData, setUrlData] = useState<IUrl | null>(null);
 
@@ -30,21 +31,13 @@ const LinkDetails = () => {
     }, [])
 
     const fetchLink = async () => {
-        try {
-            const response = await axios.get(`${API_URL}/url/retreive/id/${id}`, {
-                headers: {
-                    authToken: `${authToken}`
-                }
-            });
-            if (response) {
-                const data = await response.data;
-                setUrlData(data)
-            } else {
-                console.error('Failed to fetch user URLs');
-            }
-        } catch (error) {
-            console.log(error)
-        }
+        UrlRetrievalById(authToken ?? '', id ?? '')
+            .then((res) => {
+                setUrlData(res)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
     }
 
     return (
@@ -75,6 +68,15 @@ const LinkDetails = () => {
 
             <LinkBarChart />
 
+            <LinkLocations />
+
+            <div className="flex flex-row flex-wrap gap-10 mb-4">
+                <LinkReferres />
+
+                {id && (
+                    <LinkDevices id={id} />
+                )}
+            </div>
         </div >
     )
 }

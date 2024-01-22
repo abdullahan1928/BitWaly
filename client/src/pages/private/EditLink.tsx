@@ -1,28 +1,46 @@
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PrimaryButton from "@/components/PrimaryButton.tsx";
-import UrlShortener from "@/services/shortenUrl.service";
 import { Alert } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { UpdateUrl } from "@/services/updateUrl.service";
+import { UrlRetrievalById } from "@/services/retrieveUrl.service";
 
 
-const NewLink = () => {
+const NewUrl = () => {
     const [domain, setDomain] = useState("default");
-    const [longUrl, setLongUrl] = useState("");
     const [backHalf, setBackHalf] = useState("");
     const [title, setTitle] = useState("");
     const [duplicateError, setDuplicateError] = useState<string | null>(null);
 
     const navigate = useNavigate();
 
-    const handleButtonClick = async () => {
-        const formattedUrl = /^https?:\/\//i.test(longUrl)
-            ? longUrl
-            : `https://${longUrl}`;
+    const token = localStorage.getItem("token");
+    const { id } = useParams<{ id: string }>();
 
-        await UrlShortener(formattedUrl, backHalf, title)
+    useEffect(() => {
+        getData();
+    }, []);
+
+    const getData = async () => {
+        UrlRetrievalById(token ?? '', id ?? '')
+            .then((res) => {
+                setBackHalf(res.shortUrl);
+                setTitle(res.meta.title);
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
+    const handleButtonClick = async () => {
+        const data = { title, shortUrl: backHalf };
+
+        if (token === null || id === undefined) { return }
+
+        await UpdateUrl(token, id, data)
             .then(() => {
                 navigate('/dashboard/links');
             }).catch((error) => {
@@ -34,19 +52,7 @@ const NewLink = () => {
 
     return (
         <div className="flex flex-col gap-6 text-xl container mx-auto px-4 py-8 max-w-4xl">
-            <h3 className="text-4xl">Create New Link</h3>
-
-            <div className="flex flex-col gap-2 w-full">
-                <p>Destination</p>
-                <TextField
-                    id="outlined-basic"
-                    placeholder="https://long-link.com/shorten-it"
-                    variant="outlined"
-                    className="w-full"
-                    value={longUrl}
-                    onChange={(e) => setLongUrl(e.target.value)}
-                />
-            </div>
+            <h3 className="text-4xl">Update Link</h3>
 
             <div className="flex flex-col gap-2 w-full">
                 <p className="flex flex-row justify-between items-end">
@@ -109,7 +115,7 @@ const NewLink = () => {
             </div>
 
             <div onClick={handleButtonClick} className="self-start max-md:self-center">
-                <PrimaryButton text="Create Link" disabled={!longUrl.trim()} />
+                <PrimaryButton text="Update Link" />
             </div>
 
             {duplicateError && (
@@ -121,4 +127,4 @@ const NewLink = () => {
     )
 }
 
-export default NewLink
+export default NewUrl

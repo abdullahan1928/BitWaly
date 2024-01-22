@@ -11,6 +11,7 @@ const urlSchema = new mongoose.Schema({
     title: String,
     image: String,
   },
+  isCustom: { type: Boolean, default: false },
 });
 
 urlSchema.index({ shardKey: 1, shortUrl: 1 }, { unique: true });

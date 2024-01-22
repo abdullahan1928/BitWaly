@@ -40,10 +40,11 @@ exports.clicksController = async (req, res) => {
 
 
 exports.browserAnalyticsController = async (req, res) => {
-    const { shortUrl } = req.params;
+    const { id } = req.params;
+    const userId = req.user;
 
     try {
-        const urlDocument = await Url.findOne({ shortUrl });
+        const urlDocument = await Url.findOne({ user: userId, _id: id });
         if (!urlDocument) {
             return res.status(404).send('URL not found');
         }
@@ -72,10 +73,11 @@ exports.browserAnalyticsController = async (req, res) => {
 };
 
 exports.osAnalyticsController = async (req, res) => {
-    const { shortUrl } = req.params;
+    const { id } = req.params;
+    const userId = req.user;
 
     try {
-        const urlDocument = await Url.findOne({ shortUrl });
+        const urlDocument = await Url.findOne({ user: userId, _id: id });
         if (!urlDocument) {
             return res.status(404).send('URL not found');
         }
@@ -105,22 +107,25 @@ exports.osAnalyticsController = async (req, res) => {
 
 
 exports.deviceAnalyticsController = async (req, res) => {
-    const { shortUrl } = req.params;
+    const { id } = req.params;
+    const userId = req.user;
 
     try {
-        const urlDocument = await Url.findOne({ shortUrl });
+        const urlDocument = await Url.findOne({ user: userId, _id: id });
         if (!urlDocument) {
             return res.status(404).send('URL not found');
         }
 
         const analyticsData = await Analytics.find({ url: urlDocument._id });
+
         const deviceData = {};
 
         analyticsData.forEach(data => {
+
             if (data.userAgent) {
                 const userAgent = new UAParser(data.userAgent);
                 const deviceType = userAgent.getDevice().type;
-
+                
                 if (!deviceData[deviceType]) {
                     deviceData[deviceType] = 0;
                 }

@@ -17,9 +17,8 @@ const LinkBarChart = () => {
     });
 
     useEffect(() => {
-        // Initialize chart data on mount
         updateChartData(startDate, endDate);
-    }, []); // Empty dependency array ensures it runs only once on mount
+    }, []); 
 
     const handleDateChange = (selectedDate: Date, dateType: 'start' | 'end') => {
         if (dateType === 'start') {

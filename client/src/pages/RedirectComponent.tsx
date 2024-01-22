@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ErrorRedirection from './ErrorRedirection';
-import UrlRetrieval from '@/services/retrieveUrl.service';
+import { UrlRetrieval } from '@/services/retrieveUrl.service';
 
 const RedirectComponent = () => {
     const { shortUrl } = useParams<{ shortUrl: string }>();
@@ -11,7 +11,7 @@ const RedirectComponent = () => {
     useEffect(() => {
         if (shortUrl && !hasRedirected.current) {
             UrlRetrieval(shortUrl)
-                .then((response) => {
+                .then((response: string) => {
                     window.location.href = response;
                     hasRedirected.current = true;
                 })

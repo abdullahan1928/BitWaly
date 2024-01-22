@@ -1,4 +1,4 @@
-import { Snackbar } from '@mui/material'
+import { Snackbar, Tooltip } from '@mui/material'
 import { useState } from 'react'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
@@ -17,9 +17,12 @@ const CopyToClipboardButton = (props: IProps) => {
 
     return (
         <>
-            <ContentCopyIcon
-                className={`text-gray-500 hover:text-gray-700 cursor-pointer hover:scale-110 ${props.className}`}
-                onClick={handleClick} />
+            <Tooltip title="Copy">
+                <ContentCopyIcon
+                    className={`text-gray-500 hover:text-gray-700 cursor-pointer hover:scale-110 ${props.className}`}
+                    onClick={handleClick}
+                />
+            </Tooltip>
             <Snackbar
                 open={open}
                 onClose={() => setOpen(false)}

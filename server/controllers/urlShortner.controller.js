@@ -63,14 +63,12 @@ const shortenUrl = async (req, res) => {
 
       const shortUrl = customUrl;
       const shardKey = shortUrl[0].toLowerCase();
-      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user, meta: { title: linkTitle, image } });
+      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user, meta: { title: linkTitle, image }, isCustom: true });
       await newUrl.save();
       res.status(201).send({ shortUrl });
-    }
-
-    else {
+    } else {
       const { shortUrl, shardKey, totalTime, collisions } = await generateUniqueShortUrl(originalUrl);
-      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user, meta: { title: linkTitle, image } });
+      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user, meta: { title: linkTitle, image }, isCustom: false });
       await newUrl.save();
       res.status(201).send({ shortUrl, totalTime, collisions });
     }
@@ -87,9 +85,7 @@ const retrieveUrl = async (req, res) => {
     const url = await Url.findOne({ shardKey, shortUrl });
 
     if (url) {
-      console.log(url.accessCount);
       url.accessCount += 1;
-      console.log(url.accessCount);
       await url.save();
 
       const analyticsData = {
@@ -108,7 +104,6 @@ const retrieveUrl = async (req, res) => {
       res.status(404).send('URL not found');
     }
   } catch (error) {
-    console.error('Error in retrieveUrl:', error);
     res.status(500).send('Server error');
   }
 };
@@ -141,7 +136,7 @@ const deleteUrl = async (req, res) => {
     }
 
     const userId = req.user;
-    const { urlId } = req.params;
+    const { id } = req.params;
 
     const deletedUrl = await Url.findByIdAndDelete({ user: userId, _id: urlId });
 
@@ -178,4 +173,48 @@ const getUrlById = async (req, res) => {
   }
 };
 
-module.exports = { shortenUrl, retrieveUrl, retrieveUrlsForUser, deleteUrl, getUrlById };
+const updateUrl = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    const userId = req.user;
+    const { id } = req.params;
+    const { title, shortUrl } = req.body;
+
+    const existingUrls = await Url.find({ shortUrl });
+    const url = await Url.findOne({ user: userId, _id: id });
+
+    if (existingUrls.length > 0 && shortUrl !== url.shortUrl) {
+      return res.status(409).send("Short URL already exists");
+    }
+
+    if (url) {
+      if (shortUrl !== url.shortUrl) {
+        url.isCustom = true;
+      }
+
+      url.shortUrl = shortUrl;
+      url.shardKey = shortUrl[0].toLowerCase();
+      url.meta.title = title;
+
+      await url.save();
+      return res.status(200).send(url);
+    } else {
+      return res.status(404).send("URL not found");
+    }
+
+  } catch (error) {
+    return res.status(500).send("Error processing your request");
+  }
+};
+
+module.exports = {
+  shortenUrl,
+  retrieveUrl,
+  retrieveUrlsForUser,
+  deleteUrl,
+  getUrlById,
+  updateUrl
+};

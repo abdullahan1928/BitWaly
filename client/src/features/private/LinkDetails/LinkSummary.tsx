@@ -1,5 +1,4 @@
-import { API_URL } from "@/config/config";
-import axios from "axios";
+import { FetchClicks } from "@/services/fetchClicks.service";
 import { useEffect, useState } from "react";
 
 interface LinkSummaryProps {
@@ -11,25 +10,12 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
     const [clicks, setClicks] = useState<number>(0);
 
     useEffect(() => {
-        fetchClicks()
+        getClicks();
     }, [])
 
-    const fetchClicks = async () => {
-        try {
-            const response = await axios.get(`${API_URL}/analytics/clicks/${id}`, {
-                headers: {
-                    authToken: `${authToken}`
-                }
-            });
-            if (response) {
-                const data = await response.data[0].clicks;
-                setClicks(data)
-            } else {
-                console.error('Failed to fetch user URLs');
-            }
-        } catch (error) {
-            console.log(error)
-        }
+    const getClicks = async () => {
+        const res = await FetchClicks(authToken, id);
+        setClicks(res);
     }
 
     return (
