@@ -1,9 +1,7 @@
-// import CssBaseline from '@mui/material/CssBaseline';
-import { Box, CSSObject, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, Toolbar, Typography, styled, useTheme } from '@mui/material';
+import { Box, CSSObject, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Theme, Toolbar, Typography, styled } from '@mui/material';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -13,7 +11,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import LinkIcon from '@mui/icons-material/Link';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { API_URL } from '@/config/config';
 
 const drawerWidth = 240;
 
@@ -44,20 +44,20 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'space-between',
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
+    position: 'relative',
 }));
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
 }
 
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open }) => ({
+const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open', })<AppBarProps>(({ theme, open }) => ({
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
     }),
+    position: 'absolute',
     ...(open && {
         marginLeft: drawerWidth,
         width: `calc(100% - ${drawerWidth}px)`,
@@ -72,6 +72,9 @@ const AppBar = styled(MuiAppBar, {
             width: `calc(100% - ${theme.spacing(8)} + 1px)`,
         },
     }),
+    boxShadow: 'none',
+    backgroundColor: 'white',
+    border: '1px solid #dbe0eb',
 }));
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -112,6 +115,7 @@ const SidebarItem = ({ open, icon, text, to, onClick }: SidebarItemProps) => {
                         justifyContent: open ? 'initial' : 'center',
                         px: 2.5,
                         margin: 1,
+                        borderRadius: 2,
                         ...(isActive && {
                             color: 'primary.main',
                             backgroundColor: (theme) => theme.palette.action.selected,
@@ -140,65 +144,101 @@ const SidebarItem = ({ open, icon, text, to, onClick }: SidebarItemProps) => {
 };
 
 const Sidebar = () => {
-    const theme = useTheme();
     const [open, setOpen] = useState(false);
+    const [userId, setUserId] = useState('');
 
     const { logout } = useAuth();
 
-    const handleDrawerOpen = () => {
-        setOpen(true);
-    };
+    const toggleDrawer = () => {
+        setOpen(!open);
+    }
 
-    const handleDrawerClose = () => {
-        setOpen(false);
-    };
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            logout();
+        }
+
+        axios.post(`${API_URL}/auth/getUser`,
+            token,
+            {
+                headers: {
+                    authToken: `${token}`
+                }
+            }).then(res => {
+                setUserId(res.data._id);
+                console.log(res.data);
+            }).
+            catch(err => {
+                console.log(err);
+            });
+
+        setOpen(true);
+    }, []);
 
     return (
         <Box sx={{ display: 'flex' }}>
-            {/* <CssBaseline /> */}
-            <AppBar position="fixed" open={open}> 
+            <AppBar position="fixed" open={open}>
                 <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
-                        onClick={handleDrawerOpen}
+                        onClick={toggleDrawer}
                         edge="start"
                         sx={{
-                            marginRight: 5,
-                            ...(open && { display: 'none' }),
+                            position: 'absolute',
+                            left: '-0.2%',
+                            top: `calc(100% - 1rem)`,
+                            backgroundColor: 'white',
+                            color: 'slateblue',
+                            shadow: '0 0 10px rgba(0,0,0,0.5)',
+                            border: '.1rem solid #dbe0eb',
+                            width: '2rem',
+                            height: '2rem',
+                            ":hover": {
+                                backgroundColor: 'white',
+                            },
                         }}
                     >
-                        <MenuIcon />
+                        {(open && <ChevronLeftIcon />) || (!open && <ChevronRightIcon />)}
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
+                    <Typography color="secondary" variant="h6" noWrap component="div">
                         Welcome to the Dashboard
                     </Typography>
+                    <div className='flex items-center'>
+                        <div className='flex items-center justify-center w-10 h-10 bg-gray-800 rounded-full mr-2'>
+                            {userId[0]}
+                        </div>
+
+                        <Typography color="secondary" variant="subtitle1" noWrap component="div">
+                            {userId}
+                        </Typography>
+                    </div>
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
-                <DrawerHeader>
-                    <img src="logo2.png" alt="logo" className='w-16' />
-                    {
-                        open &&
-                        <IconButton onClick={handleDrawerClose}>
-                            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                        </IconButton>
-                    }
-                </DrawerHeader>
+                <img
+                    src={`${open ? '/logo1.png' : '/logo2.png'}`}
+                    alt="logo"
+                    className='w-[80%] flex self-center my-2'
+                />
 
                 <List>
-                    {
-                        open ?
-                            <button
-                                className="bg-primary-500 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-lg mt-4 mx-4 w-[85%]"
-                            >
-                                Create New Link
-                            </button>
-                            :
-                            <Link to={'/dashboard/link/new'} className='flex items-center justify-center mt-4 mx-2 bg-primary-500 hover:bg-primary-700 py-2 px-5 rounded-md'>
-                                <AddIcon />
-                            </Link>
-                    }
+                    <Link to={'/dashboard/link/new'}>
+                        {
+                            open ?
+                                <button
+                                    className="bg-secondary-500 hover:bg-secondary-700 text-white font-bold py-2 px-4 rounded-lg mt-4 mx-4 w-[85%]"
+                                >
+                                    Create New Link
+                                </button>
+                                :
+                                <p className='flex items-center justify-center mt-4 mx-2 bg-primary-500 hover:bg-primary-700 py-2 px-5 rounded-md'>
+                                    <AddIcon />
+                                </p>
+                        }
+                    </Link>
                 </List>
 
                 <Divider className='w-[85%] flex self-center' />
@@ -208,7 +248,9 @@ const Sidebar = () => {
                     <SidebarItem open={open} icon={<LinkIcon className='transform rotate-45' />} text="Links" to="/dashboard/links" />
                     <SidebarItem open={open} icon={<LeaderboardIcon />} text="Analytics" to="/dashboard/analytics" />
                 </List>
-                <Divider />
+
+                <Divider className='w-[85%] flex self-center' />
+
                 <List>
                     <SidebarItem open={open} icon={<SettingsIcon />} text="Settings" to="/dashboard/settings" />
                     <SidebarItem open={open} icon={<LogoutIcon />} text="Log Out" onClick={logout} />

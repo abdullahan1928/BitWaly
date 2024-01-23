@@ -4,8 +4,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const jwt_secret = 'thisismysecretforjsonwebtoken';
 
-
-
 exports.signupController = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

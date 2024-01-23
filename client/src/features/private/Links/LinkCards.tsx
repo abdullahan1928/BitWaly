@@ -21,7 +21,9 @@ const LinkCards = () => {
         const fetchUserUrls = async () => {
             try {
                 const urls = await getUserUrls(authToken);
-                setUserUrls(urls);
+                const sortedUrls = urls.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                setUserUrls(sortedUrls);
+                // setUserUrls(urls);
             } catch (error) {
                 console.error('Error fetching user URLs:', error);
             }

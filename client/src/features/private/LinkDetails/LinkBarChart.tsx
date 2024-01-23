@@ -18,18 +18,16 @@ const LinkBarChart = () => {
 
     useEffect(() => {
         updateChartData(startDate, endDate);
-    }, []); 
+    }, []);
 
     const handleDateChange = (selectedDate: Date, dateType: 'start' | 'end') => {
         if (dateType === 'start') {
             setStartDate(selectedDate);
-            // setEndDate(addWeeks(selectedDate, 1)); // Set end date to one week ahead
+            updateChartData(selectedDate, endDate);
         } else {
             setEndDate(selectedDate);
+            updateChartData(startDate, selectedDate);
         }
-
-        // Update chart data based on selected date range
-        updateChartData(selectedDate, endDate);
     };
 
     const updateChartData = (start: Date, end: Date) => {
@@ -39,6 +37,10 @@ const LinkBarChart = () => {
         while (currentDate <= end) {
             datesInRange.push(format(currentDate, 'dd/MM/yyyy'));
             currentDate = addWeeks(currentDate, 1);
+        }
+
+        if (format(currentDate, 'dd/MM/yyyy') !== format(end, 'dd/MM/yyyy')) {
+            datesInRange.push(format(end, 'dd/MM/yyyy'));
         }
 
         setChartData({

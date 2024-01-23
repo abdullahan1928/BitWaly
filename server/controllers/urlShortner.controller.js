@@ -138,7 +138,7 @@ const deleteUrl = async (req, res) => {
     const userId = req.user;
     const { id } = req.params;
 
-    const deletedUrl = await Url.findByIdAndDelete({ user: userId, _id: urlId });
+    const deletedUrl = await Url.findByIdAndDelete({ user: userId, _id: id });
 
 
     if (deletedUrl) {

@@ -29,7 +29,7 @@ const getUserUrls = async (authToken: string | null): Promise<Url[]> => {
     }
 };
 
-const deleteUrl = async (urlId: string, authToken: string | null): Promise<void> => {
+const deleteUrl = async (authToken: string | null, urlId: string): Promise<void> => {
     try {
         await axios.delete(`${API_URL}/url/delete/${urlId}`, {
             headers: {

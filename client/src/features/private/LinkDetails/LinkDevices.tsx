@@ -2,11 +2,12 @@ import { API_URL } from '@/config/config';
 import axios from 'axios';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const LinkDevices = ({ id }: { id: string }) => {
+    const [chartData, setChartData] = useState<{ name: string; y: number }[]>([])
 
-    const data = 81.41
+    // const data = 81.41
 
     useEffect(() => {
         const authToken = localStorage.getItem('token')
@@ -15,7 +16,15 @@ const LinkDevices = ({ id }: { id: string }) => {
                 authToken: `${authToken}`
             }
         }).then((res) => {
-            console.log(res.data)
+            const data = res.data as { [key: string]: number }
+            const chartData = Object.keys(data).map((key) => {
+                return {
+                    name: key,
+                    y: data[key]
+                }
+            })
+            setChartData(chartData)
+
         }).catch((err) => {
             console.log(err)
         })
@@ -33,24 +42,37 @@ const LinkDevices = ({ id }: { id: string }) => {
                 options={{
                     title: {
                         text: 'Devices',
-                        verticalAlign: 'middle'
                     },
                     plotOptions: {
                         pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
                             dataLabels: {
                                 enabled: false
                             },
-                            borderWidth: 0
+                            showInLegend: true
                         }
                     },
-                    series: [
-                        {
-                            name: 'Referrers',
-                            type: 'pie',
-                            innerSize: '80%',
-                            data: [data, 100 + 51 - data, 51, 51, 51, 51],
+                    legend: {
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        layout: 'vertical',
+                        itemMarginBottom: 10,
+                        itemStyle: {
+                            fontSize: '14px',
+                            fontWeight: 'normal',
+                            color: '#666666'
                         },
-                    ],
+                        symbolRadius: 0,
+                        symbolHeight: 14,
+                        symbolWidth: 14,
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: 'Browser share',
+                        innerSize: '80%',
+                        data: chartData,
+                    }]
                 }}
             />
 

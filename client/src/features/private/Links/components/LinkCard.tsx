@@ -73,7 +73,7 @@ const LinkCard = (props: LinkCardProps) => {
     const handleDelete = async () => {
         if (urlToDelete) {
             try {
-                await deleteUrl(urlToDelete, props.authToken);
+                await deleteUrl(props.authToken, urlToDelete);
                 console.log('URL deleted successfully');
                 props.onDeleteUrl(urlToDelete);
             } catch (error) {
