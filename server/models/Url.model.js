@@ -17,7 +17,6 @@ const urlSchema = new mongoose.Schema({
     ipAddress: String,
     referrer: String,
     userAgent: String,
-    clickCounts: { type: Number, default: 0 },
     devices: [{ type: String }],
     location: String,
     utmReferrers: [{ type: String }],

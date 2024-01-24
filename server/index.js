@@ -10,6 +10,8 @@ const app = express();
 
 connectDB();
 
+app.set('trust proxy', true);
+
 const corsOptions = {
     origin: [
         process.env.CLIENT_PROD_URL,
