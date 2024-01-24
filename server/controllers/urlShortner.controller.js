@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const Url = require('../models/Url.model');
+const axios = require('axios');
 // const Analytics = require('../models/Analytics.model');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
@@ -81,6 +82,9 @@ const retrieveUrl = async (req, res) => {
   const { shortUrl } = req.params;
   const shardKey = shortUrl[0].toLowerCase();
 
+  //API requures credits. Use it wisely. :)
+  // let location = await axios.get(`https://geo.ipify.org/api/v2/country?apiKey=at_UhGwE7QBJlKaIiAKsI012UwPPyUeO&ipAddress=${req.body.userIP}`);
+
   try {
     const url = await Url.findOne({ shardKey, shortUrl });
 
@@ -91,9 +95,10 @@ const retrieveUrl = async (req, res) => {
       // Create analytics data
       const analyticsData = {
         accessedAt: new Date(),
-        ipAddress: req.ip,
+        ipAddress: req.body.userIP,
         referrer: req.get('Referrer'),
         userAgent: req.get('User-Agent'),
+        // location: location.data
       };
 
       // Push analytics data into the analytics array

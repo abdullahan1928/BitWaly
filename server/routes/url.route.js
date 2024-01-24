@@ -4,7 +4,7 @@ const { shortenUrl, retrieveUrl, retrieveUrlsForUser, deleteUrl, getUrlById, upd
 const { DummyData } = require("../controllers/dummyData.controller");
 const fetchUser = require("../middleware/fetchUser");
 
-router.get("/retreive/:shortUrl", retrieveUrl);
+router.post("/retreive/:shortUrl", retrieveUrl);
 router.get("/retreive/id/:id", fetchUser, getUrlById);
 router.get("/userUrls", fetchUser, retrieveUrlsForUser);
 router.post("/shorten", fetchUser, shortenUrl);

@@ -18,7 +18,7 @@ const urlSchema = new mongoose.Schema({
     referrer: String,
     userAgent: String,
     devices: [{ type: String }],
-    location: String,
+    location: {},
     utmReferrers: [{ type: String }],
   }],
 });

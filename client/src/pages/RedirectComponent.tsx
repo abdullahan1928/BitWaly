@@ -8,18 +8,18 @@ const RedirectComponent = () => {
     const [isError, setIsError] = useState(false);
     const hasRedirected = useRef(false);
 
-    // useEffect(() => {
-    //     if (shortUrl && !hasRedirected.current) {
-    //         UrlRetrieval(shortUrl)
-    //             .then((response: string) => {
-    //                 window.location.href = response;
-    //                 hasRedirected.current = true;
-    //             })
-    //             .catch(() => {
-    //                 setIsError(true);
-    //             });
-    //     }
-    // }, [shortUrl]);
+    useEffect(() => {
+        if (shortUrl && !hasRedirected.current) {
+            UrlRetrieval(shortUrl)
+                .then((response: string) => {
+                    window.location.href = response;
+                    hasRedirected.current = true;
+                })
+                .catch(() => {
+                    setIsError(true);
+                });
+        }
+    }, [shortUrl]);
 
     return (
         <div>

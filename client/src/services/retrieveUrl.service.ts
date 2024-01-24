@@ -3,7 +3,11 @@ import { API_URL } from '@/config/config.ts';
 
 const UrlRetrieval = async (originalUrl: string): Promise<string> => {
     try {
-        const response = await axios.get(`${API_URL}/url/retreive/${originalUrl}`);
+        const ipResponse = await axios.get('https://api.ipify.org?format=json');
+        const userIP = ipResponse.data.ip;
+        const response = await axios.post(`${API_URL}/url/retreive/${originalUrl}`, {
+            userIP: userIP
+          });
         return response.data.originalUrl;
     } catch (error) {
 
