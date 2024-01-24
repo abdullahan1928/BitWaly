@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const Url = require('../models/Url.model');
-const Analytics = require('../models/Analytics.model');
+// const Analytics = require('../models/Analytics.model');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
@@ -85,25 +85,30 @@ const retrieveUrl = async (req, res) => {
     const url = await Url.findOne({ shardKey, shortUrl });
 
     if (url) {
+      // Update access count
       url.accessCount += 1;
-      await url.save();
 
+      // Create analytics data
       const analyticsData = {
-        url: url._id,
         accessedAt: new Date(),
-        date: new Date().setHours(0, 0, 0, 0),
         ipAddress: req.ip,
         referrer: req.get('Referrer'),
         userAgent: req.get('User-Agent'),
       };
 
-      await Analytics.create(analyticsData);
+      // Push analytics data into the analytics array
+      url.analytics.push(analyticsData);
 
+      // Save the updated url document
+      await url.save();
+
+      // Respond with the original URL
       res.status(200).send(url);
     } else {
       res.status(404).send('URL not found');
     }
   } catch (error) {
+    console.error(error);
     res.status(500).send('Server error');
   }
 };
