@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const Url = require('../models/Url.model');
 const axios = require('axios');
-// const Analytics = require('../models/Analytics.model');
+const Analytics = require('../models/Analytics.model');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
 
@@ -93,19 +93,21 @@ const retrieveUrl = async (req, res) => {
       url.accessCount += 1;
 
       // Create analytics data
-      const analyticsData = {
+      const analyticsData = new Analytics({
+        url: url._id,
         accessedAt: new Date(),
         ipAddress: req.body.userIP,
         referrer: req.get('Referrer'),
         userAgent: req.get('User-Agent'),
         // location: location.data
-      };
+      });
 
       // Push analytics data into the analytics array
-      url.analytics.push(analyticsData);
+      await analyticsData.save();
 
       // Save the updated url document
       await url.save();
+      console.log(url)
 
       // Respond with the original URL
       res.status(200).send(url);

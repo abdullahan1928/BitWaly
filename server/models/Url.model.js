@@ -12,15 +12,6 @@ const urlSchema = new mongoose.Schema({
     image: String,
   },
   isCustom: { type: Boolean, default: false },
-  analytics: [{
-    accessedAt: { type: Date, default: Date.now },
-    ipAddress: String,
-    referrer: String,
-    userAgent: String,
-    devices: [{ type: String }],
-    location: {},
-    utmReferrers: [{ type: String }],
-  }],
 });
 
 urlSchema.index({ shardKey: 1, shortUrl: 1 }, { unique: true });
@@ -28,3 +19,6 @@ urlSchema.index({ shardKey: 1, shortUrl: 1 }, { unique: true });
 const Url = mongoose.model('Url', urlSchema);
 
 module.exports = Url;
+
+
+
