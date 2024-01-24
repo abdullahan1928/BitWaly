@@ -3,13 +3,16 @@ const dotenv = require("dotenv");
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const connectDB = require('./config/connectDB');
+const useragent = require('express-useragent');
 
 dotenv.config();
 
 const app = express();
 
+
 connectDB();
 
+app.use(useragent.express());
 app.set('trust proxy', true);
 
 const corsOptions = {
