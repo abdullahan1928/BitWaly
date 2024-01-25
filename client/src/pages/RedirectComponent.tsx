@@ -3,10 +3,12 @@ import { useParams } from 'react-router-dom';
 import ErrorRedirection from './ErrorRedirection';
 import { UrlRetrieval } from '@/services/retrieveUrl.service';
 
+
 const RedirectComponent = () => {
     const { shortUrl } = useParams<{ shortUrl: string }>();
     const [isError, setIsError] = useState(false);
     const hasRedirected = useRef(false);
+
 
     useEffect(() => {
         if (shortUrl && !hasRedirected.current) {

@@ -97,6 +97,9 @@ const retrieveUrl = async (req, res) => {
         url: url._id,
         accessedAt: new Date(),
         ipAddress: req.body.userIP,
+        browser: req.body.browserName,
+        operatingSystem: req.body.osName,
+        device: req.body.deviceType,
         referrer: req.get('Referrer'),
         userAgent: req.get('User-Agent'),
         // location: location.data
