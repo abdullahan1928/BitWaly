@@ -68,3 +68,119 @@ exports.clicksController = async (req, res) => {
   }
 };
 
+
+exports.browserAnalyticsController = async (req, res) => {
+  const { shortUrl } = req.params;
+
+  try {
+    const urlDocument = await Url.findOne({ shortUrl });
+
+    if (!urlDocument) {
+      return res.status(404).send('URL not found');
+    }
+
+    const analyticsData = await Analytics.find({ url: urlDocument._id });
+
+    const browsers = analyticsData.map(data => data.browser);
+
+    res.json(browsers);
+  } catch (error) {
+    console.error('Error in fetching browser analytics:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+
+exports.osAnalyticsController = async (req, res) => {
+  const { shortUrl } = req.params;
+
+  try {
+    const urlDocument = await Url.findOne({ shortUrl });
+
+    if (!urlDocument) {
+      return res.status(404).send('URL not found');
+    }
+
+    const analyticsData = await Analytics.find({ url: urlDocument._id });
+
+    const operatingSystems = analyticsData.map(data => data.operatingSystem);
+
+    res.json(operatingSystems);
+  } catch (error) {
+    console.error('Error in fetching OS analytics:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+exports.deviceAnalyticsController = async (req, res) => {
+  const { shortUrl } = req.params;
+
+  try {
+    const urlDocument = await Url.findOne({ shortUrl });
+
+    if (!urlDocument) {
+      return res.status(404).send('URL not found');
+    }
+
+    const analyticsData = await Analytics.find({ url: urlDocument._id });
+
+    const devices = analyticsData.map(data => data.device);
+
+    res.json(devices);
+  } catch (error) {
+    console.error('Error in fetching mobile device vendor analytics:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+
+exports.mobileAnalyticsController = async (req, res) => {
+  const { shortUrl } = req.params;
+
+  try {
+    const urlDocument = await Url.findOne({ shortUrl });
+
+    if (!urlDocument) {
+      return res.status(404).send('URL not found');
+    }
+
+    const analyticsData = await Analytics.find({ url: urlDocument._id });
+
+    const vendors = analyticsData.map(data => data.vendor);
+
+    res.json(vendors);
+  } catch (error) {
+    console.error('Error in fetching mobile device vendor analytics:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+
+exports.locationAnalyticsController = async (req, res) => {
+  const { shortUrl } = req.params;
+
+  try {
+    const urlDocument = await Url.findOne({ shortUrl });
+
+    if (!urlDocument) {
+      return res.status(404).send('URL not found');
+    }
+
+    const analyticsData = await Analytics.find({ url: urlDocument._id });
+
+    const locations = analyticsData.map(data => ({
+      ipAddress: data.ipAddress,
+      country: data.location.location.country,
+      region: data.location.location.region,
+      city: data.location.location.city
+    }));
+
+    res.json(locations);
+  } catch (error) {
+    console.error('Error in fetching location analytics:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+
+
