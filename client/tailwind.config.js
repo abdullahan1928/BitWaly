@@ -6,12 +6,9 @@ export default {
     ],
     theme: {
         extend: {
-            textColor: {
-                'primary': '#6631F7',
-                'secondary': '#FF275B',
-            },
             colors: {
                 'primary': {
+                    'DEFAULT': '#6631F7',
                     '50': '#F9F7FF',
                     '100': '#F4F0FF',
                     '200': '#EAE0FF',
@@ -24,6 +21,7 @@ export default {
                     '900': '#3E1BA3',
                 },
                 'secondary': {
+                    'DEFAULT': '#FF275B',
                     '50': '#FFF7F7',
                     '100': '#FFEEF0',
                     '200': '#FFD7DE',
@@ -36,10 +34,10 @@ export default {
                     '900': '#7C1035',
                 },
             },
-        },
-        fontFamily: {
-            'proxima-nova': ["ProximaNova Regular", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+            fontFamily: {
+                'proxima-nova': ["ProximaNova Regular", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+            }
         }
     },
     plugins: [],
-}
+};

@@ -1,7 +1,12 @@
+import Profile from "@/features/private/Settings/Profile"
 
 const Settings = () => {
+
+
     return (
-        <div>Settings</div>
+        <div className="flex flex-col gap-12">
+            <Profile />
+        </div>
     )
 }
 

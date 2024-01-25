@@ -4,6 +4,9 @@ const axios = require('axios');
 const Analytics = require('../models/Analytics.model');
 const fetch = require('node-fetch');
 const cheerio = require('cheerio');
+const { getCountry } = require('iso-3166-1-alpha-2')
+
+const LOCATION_API_KEY = process.env.LOCATION_API_KEY;
 
 function generateBaseHash(originalUrl) {
   const fullHash = crypto.createHash('md5').update(originalUrl).digest('hex');
@@ -83,7 +86,9 @@ const retrieveUrl = async (req, res) => {
   const shardKey = shortUrl[0].toLowerCase();
 
   //API requures credits. Use it wisely. :)
-  let location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=at_UhGwE7QBJlKaIiAKsI012UwPPyUeO&ipAddress=${req.body.userIP}`);
+  let location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=${LOCATION_API_KEY}&ipAddress=${req.body.userIP}`);
+
+  location.data.location.country = getCountry(location.data.location.country);
 
   try {
     const url = await Url.findOne({ shardKey, shortUrl });
@@ -111,7 +116,6 @@ const retrieveUrl = async (req, res) => {
 
       // Save the updated url document
       await url.save();
-      console.log(url)
 
       // Respond with the original URL
       res.status(200).send(url);

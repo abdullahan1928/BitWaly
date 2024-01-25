@@ -45,7 +45,7 @@ const LinkCards = () => {
         <>
             {
                 userUrls.length ? (
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-8">
                         {userUrls.map(url => (
                             <LinkCard
                                 key={url._id}

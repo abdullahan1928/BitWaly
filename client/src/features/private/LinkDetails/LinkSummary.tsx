@@ -19,7 +19,7 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
     }
 
     return (
-        <div className="flex gap-10 my-8 justify-evenly">
+        <div className="flex gap-10 justify-evenly">
             <div className="flex justify-between items-center rounded-lg w-full px-8 py-4 m-0 bg-white">
                 <p className="text-xl text-[#526281]">
                     Engagements

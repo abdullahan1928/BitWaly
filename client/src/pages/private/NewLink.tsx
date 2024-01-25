@@ -6,6 +6,7 @@ import PrimaryButton from "@/components/PrimaryButton.tsx";
 import UrlShortener from "@/services/shortenUrl.service";
 import { Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ChipsInput from "@/components/ChipsInput";
 
 
 const NewLink = () => {
@@ -34,7 +35,7 @@ const NewLink = () => {
 
     return (
         <div className="flex flex-col gap-6 text-xl container mx-auto px-4 py-8 max-w-4xl">
-            <h3 className="text-4xl">Create New Link</h3>
+            <h3 className="text-4xl font-medium">Create New Link</h3>
 
             <div className="flex flex-col gap-2 w-full">
                 <p>Destination</p>
@@ -65,7 +66,11 @@ const NewLink = () => {
                 />
             </div>
 
-            <hr className="w-full" />
+            <hr className="w-full border-gray-300" />
+
+            <h3 className="text-2xl font-medium">
+                Customize Link
+            </h3>
 
             <div className="flex flex-row max-md:flex-wrap gap-4 w-full">
                 <div className="flex flex-col gap-2 max-md:w-full">
@@ -83,7 +88,7 @@ const NewLink = () => {
 
                 <div className="flex flex-col gap-2 w-full">
                     <p className="flex flex-row justify-between items-end">
-                        Enter a back-half
+                        Custom back-half
                         <span className="text-gray-500 text-base">
                             (optional)
                         </span>
@@ -106,6 +111,18 @@ const NewLink = () => {
                         }
                     />
                 </div>
+            </div>
+
+            <hr className="w-full border-gray-300" />
+
+            <div className="flex flex-col gap-2 w-full">
+                <p className="flex flex-row justify-between items-end">
+                    Tags
+                    <span className="text-gray-500 text-base">
+                        (optional)
+                    </span>
+                </p>
+                <ChipsInput />
             </div>
 
             <div onClick={handleButtonClick} className="self-start max-md:self-center">

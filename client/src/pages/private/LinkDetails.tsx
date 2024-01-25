@@ -41,9 +41,9 @@ const LinkDetails = () => {
     }
 
     return (
-        <div className="container mx-auto p-4 max-w-6xl">
+        <div className="container mx-auto p-4 max-w-6xl flex flex-col gap-8">
 
-            <Link to="/dashboard/links" className="text-primary hover:underline mb-8 flex items-center">
+            <Link to="/dashboard/links" className="text-primary hover:underline flex items-center">
                 <ChevronLeftIcon className='inline-block text-base' />
                 <p className='inline-block ml-2 text-base'>
                     Back to Links

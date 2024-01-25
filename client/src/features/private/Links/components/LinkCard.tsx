@@ -7,7 +7,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CopyToClipboardButton from '@/components/Clipboard';
 import EditIcon from '@mui/icons-material/Edit';
 import LinkIcon from '@mui/icons-material/Link';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import { FetchClicks } from '@/services/fetchClicks.service';
 import { Tooltip } from '@mui/material';
@@ -33,6 +33,7 @@ const LinkCard = (props: LinkCardProps) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
     const [clicks, setClicks] = useState<number>(0);
+    const navigate = useNavigate();
 
     const shortLink = `${REDIRECT_URL}/${props.shortUrl}`;
     const shortLinkWithoutProtocol = shortLink.replace('https://', '').replace('http://', '');
@@ -76,6 +77,7 @@ const LinkCard = (props: LinkCardProps) => {
                 await deleteUrl(props.authToken, urlToDelete);
                 console.log('URL deleted successfully');
                 props.onDeleteUrl(urlToDelete);
+                navigate('/dashboard/links');
             } catch (error) {
                 console.error('Error deleting URL:', error);
             }
@@ -84,7 +86,7 @@ const LinkCard = (props: LinkCardProps) => {
     };
 
     return (
-        <div className="bg-white shadow-md rounded-md p-8 mb-4 flex flex-col gap-2">
+        <div className="bg-white shadow-md rounded-md p-8 flex flex-col gap-2">
             <div className="flex justify-between items-center mb-2">
                 <h3 className="text-lg font-bold text-gray-800 cursor-pointer hover:underline">
                     <Link to={`/dashboard/link/${props._id}`}>
@@ -97,7 +99,7 @@ const LinkCard = (props: LinkCardProps) => {
 
                     <Link to={`/dashboard/link/edit/${props._id}`} className="flex gap-1 border border-gray-400 rounded-md p-2 hover:bg-gray-200 items-center">
                         <Tooltip title="Edit">
-                            <EditIcon className="cursor-pointer text-blue-500 hover:text-blue-600"
+                            <EditIcon className="cursor-pointer text-primary-500 hover:text-primary-600"
                             />
                         </Tooltip>
                     </Link>

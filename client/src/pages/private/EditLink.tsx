@@ -7,6 +7,7 @@ import { Alert } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { UpdateUrl } from "@/services/updateUrl.service";
 import { UrlRetrievalById } from "@/services/retrieveUrl.service";
+import ChipsInput from "@/components/ChipsInput";
 
 
 const NewUrl = () => {
@@ -112,6 +113,17 @@ const NewUrl = () => {
                         }
                     />
                 </div>
+            </div>
+
+            <div className="flex flex-col gap-2 w-full">
+                <p className="flex flex-row justify-between items-end">
+                    Tags
+                    <span className="text-gray-500 text-base">
+                        (optional)
+                    </span>
+                </p>
+
+                <ChipsInput />
             </div>
 
             <div onClick={handleButtonClick} className="self-start max-md:self-center">

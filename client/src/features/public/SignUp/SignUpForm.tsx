@@ -87,9 +87,9 @@ const SignUpForm = () => {
         </div>
 
         <div className="flex items-center justify-between mt-16 mb-8 text-lg">
-          <span className="inline-block align-baseline font-bold text-primary-700 hover:text-primary-800">
+          <span className="inline-block align-baseline font-bold">
             Already have an account? &nbsp;
-            <Link to="/login" className="text-blue-500 hover:text-primary-800">
+            <Link to="/login" className="text-blue-500 hover:text-blue-800">
               Login
             </Link>
           </span>
