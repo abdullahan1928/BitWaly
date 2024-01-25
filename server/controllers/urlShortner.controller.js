@@ -83,7 +83,7 @@ const retrieveUrl = async (req, res) => {
   const shardKey = shortUrl[0].toLowerCase();
 
   //API requures credits. Use it wisely. :)
-  // let location = await axios.get(`https://geo.ipify.org/api/v2/country?apiKey=at_UhGwE7QBJlKaIiAKsI012UwPPyUeO&ipAddress=${req.body.userIP}`);
+  let location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=at_UhGwE7QBJlKaIiAKsI012UwPPyUeO&ipAddress=${req.body.userIP}`);
 
   try {
     const url = await Url.findOne({ shardKey, shortUrl });
@@ -100,9 +100,10 @@ const retrieveUrl = async (req, res) => {
         browser: req.body.browserName,
         operatingSystem: req.body.osName,
         device: req.body.deviceType,
+        vendor: req.body.mobileVendor,
         referrer: req.get('Referrer'),
         userAgent: req.get('User-Agent'),
-        // location: location.data
+        location: location.data
       });
 
       // Push analytics data into the analytics array

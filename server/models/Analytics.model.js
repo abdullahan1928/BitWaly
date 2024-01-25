@@ -9,6 +9,7 @@ const analyticsSchema = new mongoose.Schema({
   device: String,
   browser: String,
   operatingSystem: String,
+  vendor: String,
   location: {},
 });
 
