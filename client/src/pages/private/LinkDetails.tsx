@@ -41,11 +41,11 @@ const LinkDetails = () => {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="container mx-auto p-4 max-w-6xl">
 
             <Link to="/dashboard/links" className="text-primary hover:underline mb-8 flex items-center">
-                <ChevronLeftIcon className='inline-block' />
-                <p className='inline-block ml-2 text-lg'>
+                <ChevronLeftIcon className='inline-block text-base' />
+                <p className='inline-block ml-2 text-base'>
                     Back to Links
                 </p>
             </Link>
@@ -68,7 +68,10 @@ const LinkDetails = () => {
 
             <LinkBarChart />
 
-            <LinkLocations />
+            <LinkLocations 
+                id={id ?? ''}
+                authToken={authToken ?? ''}
+            />
 
             <div className="flex flex-row flex-wrap gap-10 mb-4">
                 <LinkReferres />

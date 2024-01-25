@@ -17,7 +17,7 @@ exports.allAnalyticsController = async (req, res) => {
 
     // Format the response
     const formattedData = analyticsData.map(data => ({
-      date: data.accessedAt, 
+      date: data.accessedAt,
       ipAddress: data.ipAddress,
       referrer: data.referrer,
       userAgent: data.userAgent,
@@ -36,10 +36,11 @@ exports.allAnalyticsController = async (req, res) => {
 
 
 exports.clicksController = async (req, res) => {
-  const { shortUrl } = req.params;
+  const { id } = req.params;
+  const userId = req.user;
 
   try {
-    const urlDocument = await Url.findOne({ shortUrl });
+    const urlDocument = await Url.findById({ user: userId, _id: id });
 
     if (!urlDocument) {
       return res.status(404).send('URL not found');
@@ -70,10 +71,11 @@ exports.clicksController = async (req, res) => {
 
 
 exports.browserAnalyticsController = async (req, res) => {
-  const { shortUrl } = req.params;
+  const { id } = req.params;
+  const userId = req.user;
 
   try {
-    const urlDocument = await Url.findOne({ shortUrl });
+    const urlDocument = await Url.findById({ user: userId, _id: id });
 
     if (!urlDocument) {
       return res.status(404).send('URL not found');
@@ -92,10 +94,11 @@ exports.browserAnalyticsController = async (req, res) => {
 
 
 exports.osAnalyticsController = async (req, res) => {
-  const { shortUrl } = req.params;
+  const { id } = req.params;
+  const userId = req.user;
 
   try {
-    const urlDocument = await Url.findOne({ shortUrl });
+    const urlDocument = await Url.findById({ user: userId, _id: id });
 
     if (!urlDocument) {
       return res.status(404).send('URL not found');
@@ -113,11 +116,11 @@ exports.osAnalyticsController = async (req, res) => {
 };
 
 exports.deviceAnalyticsController = async (req, res) => {
-  const { shortUrl } = req.params;
+  const { id } = req.params;
+  const userId = req.user;
 
   try {
-    const urlDocument = await Url.findOne({ shortUrl });
-
+    const urlDocument = await Url.findById({ user: userId, _id: id });
     if (!urlDocument) {
       return res.status(404).send('URL not found');
     }
@@ -135,10 +138,11 @@ exports.deviceAnalyticsController = async (req, res) => {
 
 
 exports.mobileAnalyticsController = async (req, res) => {
-  const { shortUrl } = req.params;
+  const { id } = req.params;
+  const userId = req.user;
 
   try {
-    const urlDocument = await Url.findOne({ shortUrl });
+    const urlDocument = await Url.findById({ user: userId, _id: id });
 
     if (!urlDocument) {
       return res.status(404).send('URL not found');
@@ -157,10 +161,11 @@ exports.mobileAnalyticsController = async (req, res) => {
 
 
 exports.locationAnalyticsController = async (req, res) => {
-  const { shortUrl } = req.params;
+  const { id } = req.params;
+  const userId = req.user;
 
   try {
-    const urlDocument = await Url.findOne({ shortUrl });
+    const urlDocument = await Url.findById({ user: userId, _id: id });
 
     if (!urlDocument) {
       return res.status(404).send('URL not found');
@@ -168,19 +173,35 @@ exports.locationAnalyticsController = async (req, res) => {
 
     const analyticsData = await Analytics.find({ url: urlDocument._id });
 
-    const locations = analyticsData.map(data => ({
-      ipAddress: data.ipAddress,
-      country: data.location.location.country,
-      region: data.location.location.region,
-      city: data.location.location.city
-    }));
+    const locations = analyticsData.reduce((acc, data) => {
+      const country = data.location.location.country;
+      const city = data.location.location.city;
 
-    res.json(locations);
+      acc.countryCounts[country] = (acc.countryCounts[country] || 0) + 1;
+
+      acc.cityCounts[city] = (acc.cityCounts[city] || 0) + 1;
+
+      return acc;
+    }, { countryCounts: {}, cityCounts: {} });
+
+    const formattedData = {
+      countries: Object.keys(locations.countryCounts).map(country => ({
+        country,
+        count: locations.countryCounts[country],
+      })),
+      cities: Object.keys(locations.cityCounts).map(city => ({
+        city,
+        count: locations.cityCounts[city],
+      })),
+    };
+
+    res.json(formattedData);
   } catch (error) {
     console.error('Error in fetching location analytics:', error);
     res.status(500).send('Server error');
   }
 };
+
 
 
 

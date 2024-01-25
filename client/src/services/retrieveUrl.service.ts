@@ -7,9 +7,9 @@ const UrlRetrieval = async (originalUrl: string): Promise<string> => {
         const ipResponse = await axios.get('https://api.ipify.org?format=json');
         const userIP = ipResponse.data.ip;
         const response = await axios.post(`${API_URL}/url/retreive/${originalUrl}`, {
-            userIP: userIP, 
+            userIP: userIP,
             browserName, osName, mobileVendor, deviceType
-          });
+        });
         return response.data.originalUrl;
     } catch (error) {
 

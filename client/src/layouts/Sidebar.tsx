@@ -168,7 +168,6 @@ const Sidebar = () => {
                 }
             }).then(res => {
                 setUserId(res.data._id);
-                console.log(res.data);
             }).
             catch(err => {
                 console.log(err);

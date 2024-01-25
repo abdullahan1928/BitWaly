@@ -4,13 +4,13 @@ const { allAnalyticsController, clicksController, browserAnalyticsController, os
 const fetchUser = require("../middleware/fetchUser");
 
 
-router.get('/clicks/:shortUrl', fetchUser, clicksController);
-router.get('/browser/:shortUrl', fetchUser, browserAnalyticsController);
-router.get('/os/:shortUrl', fetchUser, osAnalyticsController);
-router.get('/device/:shortUrl', fetchUser, deviceAnalyticsController);
-router.get('/mobile/:shortUrl', fetchUser, mobileAnalyticsController);
-router.get('/location/:shortUrl', fetchUser, locationAnalyticsController);
+router.get('/clicks/:id', fetchUser, clicksController);
+router.get('/browser/:id', fetchUser, browserAnalyticsController);
+router.get('/os/:id', fetchUser, osAnalyticsController);
+router.get('/device/:id', fetchUser, deviceAnalyticsController);
+router.get('/mobile/:id', fetchUser, mobileAnalyticsController);
+router.get('/location/:id', fetchUser, locationAnalyticsController);
 
-router.get('/all/:shortUrl', fetchUser, allAnalyticsController);
+router.get('/all/:id', fetchUser, allAnalyticsController);
 
 module.exports = router;

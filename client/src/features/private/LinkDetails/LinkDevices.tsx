@@ -10,25 +10,38 @@ const LinkDevices = ({ id }: { id: string }) => {
     // const data = 81.41
 
     useEffect(() => {
-        const authToken = localStorage.getItem('token')
-        axios.get(`${API_URL}/analytics/browser/${id}`, {
+        const authToken = localStorage.getItem('token');
+        axios.get(`${API_URL}/analytics/device/${id}`, {
             headers: {
                 authToken: `${authToken}`
             }
         }).then((res) => {
-            const data = res.data as { [key: string]: number }
-            const chartData = Object.keys(data).map((key) => {
+            const data: { [key: string]: string } = res.data; // Specify the type of 'data'
+            const countMap: { [key: string]: number } = {}; // Specify the type of 'countMap'
+
+            Object.values(data).forEach((value) => {
+                countMap[value] = (countMap[value] || 0) + 1;
+            });
+
+            const chartDataArray = Object.keys(countMap).map((key) => {
+                if (key === 'browser') {
+                    return {
+                        name: 'Desktop',
+                        y: countMap[key]
+                    };
+                }
                 return {
                     name: key,
-                    y: data[key]
-                }
-            })
-            setChartData(chartData)
+                    y: countMap[key]
+                };
+            });
 
+            setChartData(chartDataArray);
         }).catch((err) => {
-            console.log(err)
-        })
-    }, [])
+            console.log(err);
+        });
+    }, []);
+
 
     return (
         <div className="bg-white rounded-md shadow-md p-4 w-[48%]">
@@ -72,6 +85,27 @@ const LinkDevices = ({ id }: { id: string }) => {
                         name: 'Browser share',
                         innerSize: '80%',
                         data: chartData,
+                        // data: [{
+                        //     name: 'Chrome',
+                        //     y: data,
+                        // },
+                        // {
+                        //     name: 'Firefox',
+                        //     y: 10,
+                        // },
+                        // {
+                        //     name: 'Edge',
+                        //     y: 5,
+                        // },
+                        // {
+                        //     name: 'Safari',
+                        //     y: 5,
+                        // },
+                        // {
+                        //     name: 'Other',
+                        //     y: 5,
+                        // }
+                        // ]
                     }]
                 }}
             />
