@@ -31,6 +31,7 @@ app.use(bodyParser.text({ limit: '200mb' }));
 app.use('/url', require('./routes/url.route'));
 app.use('/auth', require('./routes/auth.route'));
 app.use('/analytics', require('./routes/analytics.route'));
+app.use('/tag', require('./routes/tag.route'));
 
 const environment = process.env.NODE_ENV;
 

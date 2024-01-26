@@ -15,6 +15,7 @@ const NewUrl = () => {
     const [backHalf, setBackHalf] = useState("");
     const [title, setTitle] = useState("");
     const [duplicateError, setDuplicateError] = useState<string | null>(null);
+    const [tags, setTags] = useState<string[]>([]);
 
     const navigate = useNavigate();
 
@@ -25,11 +26,16 @@ const NewUrl = () => {
         getData();
     }, []);
 
+    const handleTagChange = (newTags: string[]) => {
+        setTags(newTags);
+    };
+
     const getData = async () => {
         UrlRetrievalById(token ?? '', id ?? '')
             .then((res) => {
-                setBackHalf(res.shortUrl);
-                setTitle(res.meta.title);
+                setBackHalf(res.url.shortUrl);
+                setTitle(res.url.meta.title);
+                setTags(res.tags);
             })
             .catch((err) => {
                 console.log(err)
@@ -37,7 +43,7 @@ const NewUrl = () => {
     }
 
     const handleButtonClick = async () => {
-        const data = { title, shortUrl: backHalf };
+        const data = { title, shortUrl: backHalf, tags };
 
         if (token === null || id === undefined) { return }
 
@@ -52,13 +58,13 @@ const NewUrl = () => {
     };
 
     return (
-        <div className="flex flex-col gap-6 text-xl container mx-auto px-4 py-8 max-w-4xl">
+        <div className="container flex flex-col max-w-4xl gap-6 px-4 py-8 mx-auto text-xl">
             <h3 className="text-4xl">Update Link</h3>
 
-            <div className="flex flex-col gap-2 w-full">
-                <p className="flex flex-row justify-between items-end">
+            <div className="flex flex-col w-full gap-2">
+                <p className="flex flex-row items-end justify-between">
                     Title
-                    <span className="text-gray-500 text-base">
+                    <span className="text-base text-gray-500">
                         (optional)
                     </span>
                 </p>
@@ -74,7 +80,7 @@ const NewUrl = () => {
 
             <hr className="w-full" />
 
-            <div className="flex flex-row max-md:flex-wrap gap-4 w-full">
+            <div className="flex flex-row w-full gap-4 max-md:flex-wrap">
                 <div className="flex flex-col gap-2 max-md:w-full">
                     <p>Domain</p>
                     <Select
@@ -88,10 +94,10 @@ const NewUrl = () => {
                     </Select>
                 </div>
 
-                <div className="flex flex-col gap-2 w-full">
-                    <p className="flex flex-row justify-between items-end">
+                <div className="flex flex-col w-full gap-2">
+                    <p className="flex flex-row items-end justify-between">
                         Enter a back-half
-                        <span className="text-gray-500 text-base">
+                        <span className="text-base text-gray-500">
                             (optional)
                         </span>
                     </p>
@@ -115,15 +121,15 @@ const NewUrl = () => {
                 </div>
             </div>
 
-            <div className="flex flex-col gap-2 w-full">
-                <p className="flex flex-row justify-between items-end">
+            <div className="flex flex-col w-full gap-2">
+                <p className="flex flex-row items-end justify-between">
                     Tags
-                    <span className="text-gray-500 text-base">
+                    <span className="text-base text-gray-500">
                         (optional)
                     </span>
                 </p>
 
-                <ChipsInput />
+                <ChipsInput tags={tags} onTagChange={handleTagChange} />
             </div>
 
             <div onClick={handleButtonClick} className="self-start max-md:self-center">

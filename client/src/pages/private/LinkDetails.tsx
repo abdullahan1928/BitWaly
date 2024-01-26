@@ -33,7 +33,7 @@ const LinkDetails = () => {
     const fetchLink = async () => {
         UrlRetrievalById(authToken ?? '', id ?? '')
             .then((res) => {
-                setUrlData(res)
+                setUrlData(res.url)
             })
             .catch((err) => {
                 console.log(err)
@@ -41,9 +41,9 @@ const LinkDetails = () => {
     }
 
     return (
-        <div className="container mx-auto p-4 max-w-6xl flex flex-col gap-8">
+        <div className="container flex flex-col max-w-6xl gap-8 p-4 mx-auto">
 
-            <Link to="/dashboard/links" className="text-primary hover:underline flex items-center">
+            <Link to="/dashboard/links" className="flex items-center text-primary hover:underline">
                 <ChevronLeftIcon className='inline-block text-base' />
                 <p className='inline-block ml-2 text-base'>
                     Back to Links
@@ -66,9 +66,13 @@ const LinkDetails = () => {
                 authToken={authToken ?? ''}
             />
 
-            <LinkBarChart />
+            {urlData?.createdAt && (
+                <LinkBarChart
+                    createdAt={urlData.createdAt}
+                />
+            )}
 
-            <LinkLocations 
+            <LinkLocations
                 id={id ?? ''}
                 authToken={authToken ?? ''}
             />

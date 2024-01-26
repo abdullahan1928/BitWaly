@@ -10,17 +10,26 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
     const [clicks, setClicks] = useState<number>(0);
 
     useEffect(() => {
-        getClicks();
+        getData();
     }, [])
 
-    const getClicks = async () => {
+    const getTotalClicks = (res: any) => {
+        let totalClicks = 0;
+        res.forEach((click: any) => {
+            totalClicks += click.clicks;
+        })
+        return totalClicks;
+    }
+
+    const getData = async () => {
         const res = await FetchClicks(authToken, id);
-        setClicks(res);
+        const clicks = getTotalClicks(res);
+        setClicks(clicks);
     }
 
     return (
         <div className="flex gap-10 justify-evenly">
-            <div className="flex justify-between items-center rounded-lg w-full px-8 py-4 m-0 bg-white">
+            <div className="flex items-center justify-between w-full px-8 py-4 m-0 bg-white rounded-lg">
                 <p className="text-xl text-[#526281]">
                     Engagements
                 </p>
@@ -28,7 +37,7 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
                     {clicks}
                 </span>
             </div>
-            <div className="flex justify-between items-center rounded-lg w-full px-8 py-4 m-0 bg-white">
+            <div className="flex items-center justify-between w-full px-8 py-4 m-0 bg-white rounded-lg">
                 <p className="text-xl text-[#526281]">
                     Last 7 days
                 </p>
@@ -36,7 +45,7 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
                     3
                 </span>
             </div>
-            <div className="flex justify-between items-center rounded-lg w-full px-8 py-4 m-0 bg-white">
+            <div className="flex items-center justify-between w-full px-8 py-4 m-0 bg-white rounded-lg">
                 <p className="text-xl text-[#526281]">
 
                     Weekly change

@@ -1,5 +1,5 @@
 import DeleteDialog from '@/components/DeleteDialog';
-import { REDIRECT_URL } from '@/config/config';
+import { API_URL, REDIRECT_URL } from '@/config/config';
 import { deleteUrl } from '@/features/public/Home/services/url.service';
 import TrashIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from 'react';
@@ -11,6 +11,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import { FetchClicks } from '@/services/fetchClicks.service';
 import { Tooltip } from '@mui/material';
+import axios from 'axios';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 
 interface IUrl {
     _id: string;
@@ -33,6 +35,8 @@ const LinkCard = (props: LinkCardProps) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
     const [clicks, setClicks] = useState<number>(0);
+    const [tags, setTags] = useState<string[]>([]);
+
     const navigate = useNavigate();
 
     const shortLink = `${REDIRECT_URL}/${props.shortUrl}`;
@@ -52,13 +56,32 @@ const LinkCard = (props: LinkCardProps) => {
 
     useEffect(() => {
         getClicks();
+        getTags();
     }, [])
 
     const getClicks = async () => {
         if (!props.authToken) return;
 
         const res = await FetchClicks(props.authToken, props._id);
-        setClicks(res);
+
+        let totalClicks = 0;
+        res.forEach((click: any) => {
+            totalClicks += click.clicks;
+        })
+        
+        setClicks(totalClicks);
+    }
+
+    const getTags = async () => {
+        axios.get(`${API_URL}/tag/${props._id}`, {
+            headers: {
+                authToken: `${props.authToken}`
+            }
+        }).then((res: any) => {
+            setTags(res.data);
+        }).catch((err: any) => {
+            console.error(err);
+        })
     }
 
     const openDeleteDialog = (urlId: string) => {
@@ -86,18 +109,18 @@ const LinkCard = (props: LinkCardProps) => {
     };
 
     return (
-        <div className="bg-white shadow-md rounded-md p-8 flex flex-col gap-2">
-            <div className="flex justify-between items-center mb-2">
+        <div className="flex flex-col gap-2 p-8 bg-white rounded-md shadow-md">
+            <div className="flex items-center justify-between mb-2">
                 <h3 className="text-lg font-bold text-gray-800 cursor-pointer hover:underline">
                     <Link to={`/dashboard/link/${props._id}`}>
                         {props.meta?.title}
                     </Link>
                 </h3>
 
-                <div className="flex gap-2 items-center">
+                <div className="flex items-center gap-2">
                     <CopyToClipboardButton text={shortLink} />
 
-                    <Link to={`/dashboard/link/edit/${props._id}`} className="flex gap-1 border border-gray-400 rounded-md p-2 hover:bg-gray-200 items-center">
+                    <Link to={`/dashboard/link/edit/${props._id}`} className="flex items-center gap-1 p-2 border border-gray-400 rounded-md hover:bg-gray-200">
                         <Tooltip title="Edit">
                             <EditIcon className="cursor-pointer text-primary-500 hover:text-primary-600"
                             />
@@ -105,7 +128,7 @@ const LinkCard = (props: LinkCardProps) => {
                     </Link>
 
                     <Tooltip title="Delete">
-                        <TrashIcon className="cursor-pointer text-red-500 hover:text-red-600"
+                        <TrashIcon className="text-red-500 cursor-pointer hover:text-red-600"
                             onClick={() => openDeleteDialog(props._id)}
                         />
                     </Tooltip>
@@ -119,7 +142,7 @@ const LinkCard = (props: LinkCardProps) => {
                 href={shortLink}
                 target="_blank"
                 rel="noreferrer"
-                className="text-base text-blue-500 hover:text-blue-600 hover:underline font-semibold"
+                className="text-base font-semibold text-blue-500 hover:text-blue-600 hover:underline"
             >
                 {shortLinkWithoutProtocol}
             </a>
@@ -128,13 +151,13 @@ const LinkCard = (props: LinkCardProps) => {
                 href={props.originalUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="text-base mb-2 overflow-hidden overflow-ellipsis whitespace-nowrap cursor-pointer hover:underline"
+                className="mb-2 overflow-hidden text-base cursor-pointer overflow-ellipsis whitespace-nowrap hover:underline"
             >
                 {props.originalUrl}
             </a>
 
 
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
                 <div className="flex gap-6">
                     {(props.showDetails ?? true) && (
                         <div className="flex items-end gap-2">
@@ -151,10 +174,32 @@ const LinkCard = (props: LinkCardProps) => {
                             {formattedDate}
                         </p>
                     </div>
+
+                    <div className="flex items-center gap-2">
+                        <LocalOfferIcon sx={{
+                            color: 'gray',
+                            width: '1.25rem',
+                        }} />
+                        <p>
+                            {tags.length > 0 ?
+                                tags.map((tag: string, index: number) => {
+                                    return (
+                                        <span key={index} className="px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 cursor-pointer hover:bg-gray-300">
+                                            {tag}
+                                        </span>
+                                    )
+                                }
+                                ) : (
+                                    <span>
+                                        No tags
+                                    </span>
+                                )}
+                        </p>
+                    </div>
                 </div>
 
                 {(props.showDetails ?? true) && (
-                    <Link to={`/dashboard/link/${props._id}`} className='flex gap-1 border border-gray-400 rounded-md p-2 hover:bg-gray-200 items-center'>
+                    <Link to={`/dashboard/link/${props._id}`} className='flex items-center gap-1 p-2 border border-gray-400 rounded-md hover:bg-gray-200'>
                         <LinkIcon className="transform rotate-45" />
                         <p>
                             Details

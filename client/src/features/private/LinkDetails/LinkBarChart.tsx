@@ -4,10 +4,11 @@ import HighchartsReact from 'highcharts-react-official';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format, addWeeks } from 'date-fns';
+import EastIcon from '@mui/icons-material/East';
 
-const LinkBarChart = () => {
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(addWeeks(new Date(), 1));
+const LinkBarChart = ({ createdAt }: { createdAt: string }) => {
+    const [startDate, setStartDate] = useState(new Date(createdAt));
+    const [endDate, setEndDate] = useState(new Date());
     const [chartData, setChartData] = useState<{
         categories: string[];
         data: number[];
@@ -16,8 +17,11 @@ const LinkBarChart = () => {
         data: [],
     });
 
+    const minStartDate = new Date(createdAt);
+    const maxEndDate = new Date();
+
     useEffect(() => {
-        updateChartData(startDate, endDate);
+        updateChartData(minStartDate, maxEndDate);
     }, []);
 
     const handleDateChange = (selectedDate: Date, dateType: 'start' | 'end') => {
@@ -51,26 +55,29 @@ const LinkBarChart = () => {
 
     return (
         <div className='flex flex-col gap-4'>
-            <div className="flex justify-start gap-2 items-center">
+            <div className="flex items-center justify-start gap-2">
                 <DatePicker
                     selected={startDate}
                     onChange={(date: Date) => handleDateChange(date, 'start')}
                     selectsStart
                     startDate={startDate}
                     endDate={endDate}
+                    minDate={minStartDate}
+                    maxDate={maxEndDate}
                     dateFormat="dd/MM/yyyy"
-                    className='border border-gray-300 rounded-md px-2 py-1'
+                    className='p-2 border border-gray-300 rounded-md'
                 />
-                <span> to </span>
+                <EastIcon className='w-6 h-6 text-gray-400' />
                 <DatePicker
                     selected={endDate}
                     onChange={(date: Date) => handleDateChange(date, 'end')}
                     selectsEnd
                     startDate={startDate}
                     endDate={endDate}
-                    minDate={startDate}
+                    minDate={minStartDate}
+                    maxDate={maxEndDate}
                     dateFormat="dd/MM/yyyy"
-                    className='border border-gray-300 rounded-md px-2 py-1'
+                    className='p-2 border border-gray-300 rounded-md'
                 />
             </div>
             <HighchartsReact
@@ -107,9 +114,9 @@ const LinkBarChart = () => {
                         }
                     },
                     series: [{
-                        name: 'Engagements',
+                        name: 'Link Clicks',
                         data: chartData.data,
-                        color: '#526281'
+                        color: '#E33E7F'
                     }]
                 }}
             />

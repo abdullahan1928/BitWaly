@@ -12,6 +12,7 @@ const urlSchema = new mongoose.Schema({
     image: String,
   },
   isCustom: { type: Boolean, default: false },
+  tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
 });
 
 urlSchema.index({ shardKey: 1, shortUrl: 1 }, { unique: true });
@@ -19,6 +20,3 @@ urlSchema.index({ shardKey: 1, shortUrl: 1 }, { unique: true });
 const Url = mongoose.model('Url', urlSchema);
 
 module.exports = Url;
-
-
-

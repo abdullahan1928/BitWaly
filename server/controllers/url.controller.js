@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const Url = require('../models/Url.model');
+const Tag = require('../models/Tag.model');
 const axios = require('axios');
 const Analytics = require('../models/Analytics.model');
 const fetch = require('node-fetch');
@@ -46,10 +47,9 @@ async function generateUniqueShortUrl(originalUrl) {
 }
 
 const shortenUrl = async (req, res) => {
-  const { originalUrl, customUrl, title } = req.body;
+  const { originalUrl, customUrl, title, tags } = req.body;
 
   try {
-
     const html = await (await fetch(originalUrl)).text();
 
     const $ = cheerio.load(html);
@@ -57,6 +57,8 @@ const shortenUrl = async (req, res) => {
     const linkTitle = title || $('head title').text() || originalUrl.split('/')[2] + '- untitled';
 
     const image = $('head link[rel="icon"]').attr('href') || $('head link[rel="shortcut icon"]').attr('href');
+
+    let tagIds = [];
 
     if (customUrl) {
       const existingUrl = await Url.findOne({ shortUrl: customUrl });
@@ -67,13 +69,55 @@ const shortenUrl = async (req, res) => {
 
       const shortUrl = customUrl;
       const shardKey = shortUrl[0].toLowerCase();
-      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user, meta: { title: linkTitle, image }, isCustom: true });
+
+      const newUrl = new Url({
+        originalUrl,
+        shortUrl,
+        shardKey,
+        user: req.user,
+        meta: { title: linkTitle, image },
+        isCustom: true,
+      });
       await newUrl.save();
+
+      if (tags && tags.length > 0) {
+        for (const tag of tags) {
+          const newTag = new Tag({
+            user: req.user,
+            name: tag,
+            urls: [newUrl._id]
+          });
+          await newTag.save();
+          tagIds.push(newTag._id);
+        }
+      }
+
       res.status(201).send({ shortUrl });
     } else {
       const { shortUrl, shardKey, totalTime, collisions } = await generateUniqueShortUrl(originalUrl);
-      const newUrl = new Url({ originalUrl, shortUrl, shardKey, user: req.user, meta: { title: linkTitle, image }, isCustom: false });
+
+      const newUrl = new Url({
+        originalUrl,
+        shortUrl,
+        shardKey,
+        user: req.user,
+        meta: { title: linkTitle, image },
+        isCustom: false,
+      });
       await newUrl.save();
+
+      if (tags && tags.length > 0) {
+        for (const tag of tags) {
+          const newTag = new Tag({
+            user: req.user,
+            name: tag,
+            urls: [newUrl._id]
+          });
+          await newTag.save();
+          tagIds.push(newTag._id);
+        }
+      }
+
       res.status(201).send({ shortUrl, totalTime, collisions });
     }
   } catch (error) {
@@ -94,10 +138,8 @@ const retrieveUrl = async (req, res) => {
     const url = await Url.findOne({ shardKey, shortUrl });
 
     if (url) {
-      // Update access count
       url.accessCount += 1;
 
-      // Create analytics data
       const analyticsData = new Analytics({
         url: url._id,
         accessedAt: new Date(),
@@ -111,13 +153,10 @@ const retrieveUrl = async (req, res) => {
         location: location.data
       });
 
-      // Push analytics data into the analytics array
       await analyticsData.save();
 
-      // Save the updated url document
       await url.save();
 
-      // Respond with the original URL
       res.status(200).send(url);
     } else {
       res.status(404).send('URL not found');
@@ -130,7 +169,6 @@ const retrieveUrl = async (req, res) => {
 
 const retrieveUrlsForUser = async (req, res) => {
   try {
-    // Check if the user is logged in
     if (!req.user) {
       return res.status(401).send("Unauthorized");
     }
@@ -183,8 +221,20 @@ const getUrlById = async (req, res) => {
 
     const url = await Url.findById({ user: userId, _id: id });
 
+    const tags = await Tag.find({
+      user: userId,
+      urls: { $elemMatch: { $eq: id } }
+    });
+
+    const tagNames = tags.map(tag => tag.name);
+
+    const data = {
+      url,
+      tags: tagNames
+    }
+
     if (url) {
-      return res.status(200).send(url);
+      return res.status(200).send(data);
     } else {
       return res.status(404).send("URL not found");
     }
@@ -201,7 +251,7 @@ const updateUrl = async (req, res) => {
 
     const userId = req.user;
     const { id } = req.params;
-    const { title, shortUrl } = req.body;
+    const { title, shortUrl, tags } = req.body;
 
     const existingUrls = await Url.find({ shortUrl });
     const url = await Url.findOne({ user: userId, _id: id });
@@ -220,6 +270,41 @@ const updateUrl = async (req, res) => {
       url.meta.title = title;
 
       await url.save();
+
+      const existingTags = await Tag.find({ user: userId });
+
+      for (const existingTag of existingTags) {
+        if (!tags || !tags.includes(existingTag.name)) {
+          existingTag.urls = existingTag.urls.filter((urlId) => urlId === id);
+
+          if (existingTag.urls.length === 0) {
+            await Tag.findByIdAndDelete(existingTag._id);
+          } else {
+            await existingTag.save();
+          }
+        }
+      }
+
+      if (tags && tags.length > 0) {
+        for (const tag of tags) {
+          const existingTag = existingTags.find((t) => t.name === tag);
+
+          if (existingTag) {
+            if (!existingTag.urls.includes(id)) {
+              existingTag.urls.push(id);
+              await existingTag.save();
+            }
+          } else {
+            const newTag = new Tag({
+              user: userId,
+              name: tag,
+              urls: [id]
+            });
+            await newTag.save();
+          }
+        }
+      }
+
       return res.status(200).send(url);
     } else {
       return res.status(404).send("URL not found");
@@ -229,6 +314,7 @@ const updateUrl = async (req, res) => {
     return res.status(500).send("Error processing your request");
   }
 };
+
 
 module.exports = {
   shortenUrl,

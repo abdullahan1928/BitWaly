@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { shortenUrl, retrieveUrl, retrieveUrlsForUser, deleteUrl, getUrlById, updateUrl } = require("../controllers/urlShortner.controller");
+const { shortenUrl, retrieveUrl, retrieveUrlsForUser, deleteUrl, getUrlById, updateUrl } = require("../controllers/url.controller");
 const { DummyData } = require("../controllers/dummyData.controller");
 const fetchUser = require("../middleware/fetchUser");
 

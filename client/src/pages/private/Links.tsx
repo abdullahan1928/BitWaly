@@ -1,14 +1,23 @@
+import { useState } from 'react';
+import LinksFilter from '@/features/private/Links/LinksFilter';
 import LinkCards from '@/features/private/Links/LinkCards';
 
 const Links = () => {
+    const [filters, setFilters] = useState({ dateFilter: 'all', tagFilter: null, linkTypeFilter: null });
+
+    const handleFilterChange = (newFilters: any) => {
+        setFilters({ ...filters, ...newFilters });
+    };
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">
+        <div className="container max-w-6xl px-4 py-8 mx-auto">
+            <h2 className="mb-4 text-4xl font-bold text-gray-800">
                 Links
             </h2>
 
-            <p className="text-gray-600 mb-4">
+            <LinksFilter onFilterChange={handleFilterChange} />
+
+            <p className="mb-4 text-gray-600">
                 Your links will appear here.
             </p>
 
@@ -16,7 +25,7 @@ const Links = () => {
 
             <LinkCards />
         </div>
-    )
-}
+    );
+};
 
-export default Links
+export default Links;

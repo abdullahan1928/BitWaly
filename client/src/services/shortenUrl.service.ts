@@ -7,9 +7,14 @@ interface ShortenUrlResponse {
     collisions: number;
 }
 
-const UrlShortener = async (originalUrl: string, customUrl: string, title: string): Promise<ShortenUrlResponse> => {
+interface ShortenUrlRequest {
+    originalUrl: string;
+    customUrl: string;
+    title: string;
+    tags: string[];
+}
 
-    const data = { originalUrl, customUrl, title };
+const UrlShortener = async (data: ShortenUrlRequest): Promise<ShortenUrlResponse> => {
 
     try {
         const authToken = localStorage.getItem('token');
