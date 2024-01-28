@@ -7,9 +7,10 @@ import DoneIcon from '@mui/icons-material/Done';
 interface ChipsInputProps {
     tags: string[];
     onTagChange: (newTags: string[]) => void;
+    className?: string;
 }
 
-const ChipsInput = ({ tags, onTagChange }: ChipsInputProps) => {
+const ChipsInput = ({ tags, onTagChange, className }: ChipsInputProps) => {
     const [allTags, setAllTags] = useState<string[]>([])
 
     const handleTagChange = (_: any, newValue: string[]) => {
@@ -40,7 +41,6 @@ const ChipsInput = ({ tags, onTagChange }: ChipsInputProps) => {
                 }
             })
             .then((res) => {
-                console.log(res.data)
                 setAllTags(res.data)
             }).catch((err) => {
                 console.error(err)
@@ -72,6 +72,7 @@ const ChipsInput = ({ tags, onTagChange }: ChipsInputProps) => {
                             : null}
                     </li>
                 )}
+                className={className}
             />
         </div>
     );

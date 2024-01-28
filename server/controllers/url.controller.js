@@ -92,6 +92,10 @@ const shortenUrl = async (req, res) => {
         }
       }
 
+      for (const tagId of tagIds) {
+        newUrl.tags.push(tagId);
+      }
+
       res.status(201).send({ shortUrl });
     } else {
       const { shortUrl, shardKey, totalTime, collisions } = await generateUniqueShortUrl(originalUrl);
@@ -116,6 +120,10 @@ const shortenUrl = async (req, res) => {
           await newTag.save();
           tagIds.push(newTag._id);
         }
+      }
+
+      for (const tagId of tagIds) {
+        newUrl.tags.push(tagId);
       }
 
       res.status(201).send({ shortUrl, totalTime, collisions });
@@ -184,28 +192,6 @@ const retrieveUrlsForUser = async (req, res) => {
     }
   } catch (error) {
     res.status(500).send("Error processing your request");
-  }
-};
-
-const deleteUrl = async (req, res) => {
-  try {
-    if (!req.user) {
-      return res.status(401).send("Unauthorized");
-    }
-
-    const userId = req.user;
-    const { id } = req.params;
-
-    const deletedUrl = await Url.findByIdAndDelete({ user: userId, _id: id });
-
-
-    if (deletedUrl) {
-      return res.status(200).send("URL deleted successfully");
-    } else {
-      return res.status(404).send("URL not found");
-    }
-  } catch (error) {
-    return res.status(500).send("Error processing your request");
   }
 };
 
@@ -286,21 +272,31 @@ const updateUrl = async (req, res) => {
       }
 
       if (tags && tags.length > 0) {
+        console.log('In if');
         for (const tag of tags) {
+          console.log('In for');
           const existingTag = existingTags.find((t) => t.name === tag);
 
           if (existingTag) {
+            console.log('In inner if');
             if (!existingTag.urls.includes(id)) {
+              console.log('In inner if if');
               existingTag.urls.push(id);
               await existingTag.save();
             }
           } else {
+            console.log('In inner else');
             const newTag = new Tag({
               user: userId,
               name: tag,
               urls: [id]
             });
             await newTag.save();
+          }
+
+          if (!url.tags.includes(existingTag._id)) {
+            url.tags.push(existingTag._id);
+            await url.save();
           }
         }
       }
@@ -310,6 +306,42 @@ const updateUrl = async (req, res) => {
       return res.status(404).send("URL not found");
     }
 
+  } catch (error) {
+    return res.status(500).send("Error processing your request");
+  }
+};
+
+const deleteUrl = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    const userId = req.user;
+    const { id } = req.params;
+
+    const deletedUrl = await Url.findByIdAndDelete({ user: userId, _id: id });
+
+    const tags = await Tag.find({
+      user: userId,
+      urls: { $elemMatch: { $eq: id } }
+    });
+
+    for (const tag of tags) {
+      tag.urls = tag.urls.filter((urlId) => urlId === id);
+
+      if (tag.urls.length === 0) {
+        await Tag.findByIdAndDelete(tag._id);
+      } else {
+        await tag.save();
+      }
+    }
+
+    if (deletedUrl) {
+      return res.status(200).send("URL deleted successfully");
+    } else {
+      return res.status(404).send("URL not found");
+    }
   } catch (error) {
     return res.status(500).send("Error processing your request");
   }

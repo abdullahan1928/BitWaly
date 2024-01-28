@@ -1,32 +1,75 @@
+import ChipsInput from "@/components/ChipsInput";
+import PrimaryButton from "@/components/PrimaryButton";
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import { useFilter } from '@/context/filter.context';
+import { useState } from "react";
 
-const LinksFilter = (onFilterChange: any) => {
-    const handleDateFilter = (filterType: string) => {
-        onFilterChange({ dateFilter: filterType });
-    };
+const LinksFilter = () => {
+    const [linkType, setLinkType] = useState('all');
+    const [tags, setTags] = useState<string[]>([]);
+    const { setLinkTypeFilter, setTagFilter } = useFilter();
 
-    const handleTagFilter = (tag: string) => {
-        onFilterChange({ tagFilter: tag });
-    };
+    const handleLinkChange = (event: SelectChangeEvent<string>) => {
+        setLinkType(event.target.value)
+    }
 
-    const handleLinkTypeFilter = (linkType: string) => {
-        onFilterChange({ linkTypeFilter: linkType });
-    };
+    const handleTagChange = (newTags: string[]) => {
+        setTags(newTags);
+    }
+
+    const applyFilters = () => {
+        setLinkTypeFilter(linkType);
+        setTagFilter(tags);
+    }
+
+    const clearFilters = () => {
+        setLinkTypeFilter('all');
+        setTagFilter([]);
+        setLinkType('all');
+        setTags([]);
+    }
 
     return (
         <div className="flex gap-4 mb-4">
-            <button onClick={() => handleDateFilter('all')} className="px-4 py-2 bg-gray-300">All Dates</button>
-            <button onClick={() => handleDateFilter('today')} className="px-4 py-2 bg-gray-300">Today</button>
-            {/* Add more date filter options as needed */}
+            <FormControl sx={{ m: 0, minWidth: 300 }}>
+                <InputLabel>
+                    Link Type
+                </InputLabel>
+                <Select
+                    value={linkType}
+                    label="Link Type"
+                    onChange={handleLinkChange}
+                >
+                    <MenuItem value='all'>
+                        All
+                    </MenuItem>
+                    <MenuItem value='custom'>
+                        Link With Custom back-halves
+                    </MenuItem>
+                    <MenuItem value='not-custom'>
+                        Link Without Custom back-halves
+                    </MenuItem>
+                </Select>
+            </FormControl>
 
-            {/* Tag filter buttons */}
-            <button onClick={() => handleTagFilter('tag1')} className="px-4 py-2 bg-gray-300">Tag 1</button>
-            <button onClick={() => handleTagFilter('tag2')} className="px-4 py-2 bg-gray-300">Tag 2</button>
-            {/* Add more tag filter options as needed */}
+            <ChipsInput
+                tags={tags}
+                onTagChange={handleTagChange}
+                className="w-96"
+            />
 
-            {/* Link type filter buttons */}
-            <button onClick={() => handleLinkTypeFilter('type1')} className="px-4 py-2 bg-gray-300">Type 1</button>
-            <button onClick={() => handleLinkTypeFilter('type2')} className="px-4 py-2 bg-gray-300">Type 2</button>
-            {/* Add more link type filter options as needed */}
+            <button
+                className="px-4 py-2 bg-gray-300"
+                onClick={clearFilters}
+            >
+                Clear Filters
+            </button>
+
+            <PrimaryButton
+                text="Apply Filters"
+                className="p-4 m-0 text-base"
+                onClick={applyFilters}
+            />
         </div>
     );
 };
