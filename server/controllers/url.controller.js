@@ -26,10 +26,6 @@ function modifyHash(hash) {
   return hash.substring(0, replaceIndex) + randomChar + hash.substring(replaceIndex + 1);
 }
 
-function addTagsToUrl(url, tags) {
-
-}
-
 async function generateUniqueShortUrl(originalUrl) {
   const startTime = new Date();
 
@@ -50,6 +46,86 @@ async function generateUniqueShortUrl(originalUrl) {
   return { shortUrl: uniqueShortUrl, shardKey, totalTime, collisions };
 }
 
+async function checkAndUpdateTags(userId, urlId, tags) {
+  const existingUrl = await Url.findOne({ user: userId, _id: urlId });
+
+  if (existingUrl) {
+    await updateTagsForUrl(userId, urlId, tags);
+  } else {
+    return res.status(404).send("URL not found");
+  }
+};
+
+async function updateTagsForUrl(userId, urlId, tags) {
+  const existingTags = await Tag.find({ user: userId });
+  const url = await Url.findOne({ user: userId, _id: urlId });
+
+  // Remove tags that are no longer associated with the URL
+  for (const existingTag of existingTags) {
+
+    if (!tags.includes(existingTag.name)) {
+
+      console.log('existingTag.urls', existingTag.urls)
+      existingTag.urls = existingTag.urls.filter((urlId) =>
+        urlId.toString() !== url._id.toString()
+      );
+
+      if (existingTag.urls.length === 0) {
+        await Tag.findByIdAndDelete(existingTag._id);
+      } else {
+        await existingTag.save();
+      }
+    }
+  }
+
+  // Remove tag ids from the URL that are no longer associated with it
+  url.tags = url.tags.filter((tagId) => {
+    const tag = existingTags.find((t) => t._id.toString() === tagId.toString());
+
+    if (tag) {
+      return tags.includes(tag.name);
+    } else {
+      return false;
+    }
+  });
+
+  // Add new tags and update existing ones
+  if (tags.length > 0) {
+    console.log('tags', tags)
+
+    for (const tag of tags) {
+      console.log('existingTags', existingTags)
+
+      const existingTag = existingTags.find((t) => t.name === tag);
+
+      console.log('existingTag', existingTag)
+
+      if (existingTag) {
+        if (!existingTag.urls.includes(urlId)) {
+          existingTag.urls.push(urlId);
+          await existingTag.save();
+
+          if (!url.tags.includes(existingTag._id)) {
+            url.tags.push(existingTag._id);
+          }
+        }
+      } else {
+        const newTag = new Tag({
+          user: userId,
+          name: tag,
+          urls: [urlId],
+        });
+        await newTag.save();
+
+        url.tags.push(newTag._id);
+      }
+
+    }
+  }
+
+  await url.save();
+};
+
 const shortenUrl = async (req, res) => {
   const { originalUrl, customUrl, title, tags } = req.body;
 
@@ -60,7 +136,13 @@ const shortenUrl = async (req, res) => {
 
     const linkTitle = title || $('head title').text() || originalUrl.split('/')[2] + '- untitled';
 
-    const image = $('head link[rel="icon"]').attr('href') || $('head link[rel="shortcut icon"]').attr('href');
+    let image = $('head link[rel="icon"]').attr('href') || $('head link[rel="shortcut icon"]').attr('href');
+
+    if (!image.startsWith('http') && !image.startsWith('https')) {
+      const domain = originalUrl.match(/^https?:\/\/[^/]+/)[0];
+      image = domain + '/' + image;
+    }
+
 
     let tagIds = [];
 
@@ -233,65 +315,6 @@ const getUrlById = async (req, res) => {
   }
 };
 
-// Update existing tags, add new tags, and remove tags that are no longer associated with the URL
-const updateTagsForUrl = async (userId, urlId, tags) => {
-  const existingTags = await Tag.find({ user: userId });
-  const url = await Url.findOne({ user: userId, _id: urlId });
-
-  console.log(existingTags)
-
-  console.log(tags)
-
-  // Remove tags that are no longer associated with the URL
-  for (const existingTag of existingTags) {
-    if (!tags || !tags.includes(existingTag.name)) {
-      existingTag.urls = existingTag.urls.filter((urlId) => urlId.toString() !== urlId);
-
-      if (existingTag.urls.length === 0) {
-        await Tag.findByIdAndDelete(existingTag._id);
-      } else {
-        await existingTag.save();
-      }
-    }
-  }
-
-  // Add new tags and update existing ones
-  if (tags && tags.length > 0) {
-    for (const tag of tags) {
-      const existingTag = existingTags.find((t) => t.name === tag);
-
-      if (existingTag) {
-        if (!existingTag.urls.includes(urlId)) {
-          existingTag.urls.push(urlId);
-          await existingTag.save();
-        }
-      } else {
-        const newTag = new Tag({
-          user: userId,
-          name: tag,
-          urls: [urlId],
-        });
-        await newTag.save();
-      }
-
-      if (!url.tags.map((t) => t.toString()).includes(existingTag._id.toString())) {
-        url.tags.push(existingTag._id);
-      }
-    }
-  }
-
-  await url.save();
-};
-
-// Check for existing tags and update the URL accordingly
-const checkAndUpdateTags = async (userId, urlId, tags) => {
-  const existingUrl = await Url.findOne({ user: userId, _id: urlId });
-
-  if (existingUrl) {
-    await updateTagsForUrl(userId, urlId, tags);
-  }
-};
-
 const updateUrl = async (req, res) => {
   try {
     if (!req.user) {
@@ -320,7 +343,8 @@ const updateUrl = async (req, res) => {
 
       await url.save();
 
-      // Update tags for the URL
+      console.log('tags', tags)
+
       await checkAndUpdateTags(userId, id, tags);
 
       return res.status(200).send(url);

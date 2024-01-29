@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import LinkCard from "./components/LinkCard";
 import { getUserUrls } from "@/features/public/Home/services/url.service";
-import { useFilter } from "@/context/FilterLinks";
-import axios from "axios";
-import { API_URL } from "@/config/config";
+import { useFilter } from "@/context/FilterLinksContext";
 
 interface Url {
     _id: string;
@@ -21,7 +19,6 @@ const LinkCards = () => {
     const [filteredUserUrls, setFilteredUserUrls] = useState<Url[]>([]);
     const authToken = localStorage.getItem('token');
     const { linkTypeFilter, tagFilter } = useFilter();
-    const [tags, setTags] = useState<any>([]);
 
     useEffect(() => {
         const fetchUserUrls = async () => {
@@ -45,11 +42,8 @@ const LinkCards = () => {
                 return false;
             }
 
-            if (tagFilter && tagFilter.length > 0) {
-                console.log(url.tags, tagFilter);
-                if (!url.tags || !url.tags.some((tag: string) => tagFilter.includes(tag))) {
-                    return false;
-                }
+            if (tagFilter.length > 0 && !tagFilter.every(tag => url.tags.includes(tag))) {
+                return false;
             }
 
             return true;
@@ -57,23 +51,6 @@ const LinkCards = () => {
 
         setFilteredUserUrls(filteredUrls);
     }, [userUrls, linkTypeFilter, tagFilter]);
-
-    const getTags = async () => {
-        axios.get(`${API_URL}/tag`, {
-            headers: {
-                authToken: `${authToken}`
-            }
-        }).then((res: any) => {
-            setTags(res);
-            console.log(tags);
-        }).catch((err: any) => {
-            console.error(err);
-        })
-    }
-
-    useEffect(() => {
-        getTags();
-    }, []);
 
     const formatCreatedAt = (createdAt: string) => {
         const date = new Date(createdAt);

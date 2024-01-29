@@ -1,7 +1,7 @@
 import ChipsInput from "@/components/ChipsInput";
 import PrimaryButton from "@/components/PrimaryButton";
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
-import { useFilter } from '@/context/FilterLinks';
+import { useFilter } from '@/context/FilterLinksContext';
 import { useState } from "react";
 
 const LinksFilter = () => {

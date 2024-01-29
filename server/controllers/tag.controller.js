@@ -10,10 +10,10 @@ const getAllTags = async (req, res) => {
 
         const tags = await Tag.find({ user: userId });
 
-        const tagNames = tags.map((tag) => { return tag.name });
+        // const tagNames = tags.map((tag) => { return tag.name });
 
         if (tags.length > 0) {
-            return res.status(200).send(tagNames);
+            return res.status(200).send(tags);
         } else {
             return res.status(404).send("No tags found for the user");
         }

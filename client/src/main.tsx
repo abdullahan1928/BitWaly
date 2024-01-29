@@ -4,10 +4,10 @@ import App from './App.tsx'
 import './index.css'
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from './context/AuthContext.tsx';
-import { FilterProvider } from './context/FilterLinks.tsx';
+import { FilterProvider } from './context/FilterLinksContext.tsx';
 import { ThemeProvider } from '@mui/material';
 import theme from './mui.config.ts';
-import { DateFilterProvider } from './context/FilterLinkDetails.context.tsx';
+import { DateFilterProvider } from './context/FilterLinkDetailsContext.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
