@@ -37,11 +37,11 @@ const getTagByUrlId = async (req, res) => {
         });
 
         if (tags.length > 0) {
-            const tagNames = tags.map((tag) => {
-                return tag.name;
-            });
+            // const tagNames = tags.map((tag) => {
+            //     return tag.name;
+            // });
 
-            return res.status(200).send(tagNames);
+            return res.status(200).send(tags);
         } else {
             return res.status(404).send("Tag not found");
         }

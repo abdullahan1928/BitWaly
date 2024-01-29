@@ -1,5 +1,4 @@
-import ChipsInput from "@/components/ChipsInput";
-import PrimaryButton from "@/components/PrimaryButton";
+import ChipsInputFilter from "@/components/ChipsInputFilter";
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from "@mui/material";
 import { useFilter } from '@/context/FilterLinksContext';
 import { useState } from "react";
@@ -11,15 +10,11 @@ const LinksFilter = () => {
 
     const handleLinkChange = (event: SelectChangeEvent<string>) => {
         setLinkType(event.target.value)
+        setLinkTypeFilter(event.target.value);
     }
 
     const handleTagChange = (newTags: string[]) => {
         setTags(newTags);
-    }
-
-    const applyFilters = () => {
-        setLinkTypeFilter(linkType);
-        setTagFilter(tags);
     }
 
     const clearFilters = () => {
@@ -52,7 +47,7 @@ const LinksFilter = () => {
                 </Select>
             </FormControl>
 
-            <ChipsInput
+            <ChipsInputFilter
                 tags={tags}
                 onTagChange={handleTagChange}
                 className="w-96"
@@ -64,12 +59,6 @@ const LinksFilter = () => {
             >
                 Clear Filters
             </button>
-
-            <PrimaryButton
-                text="Apply Filters"
-                className="p-4 m-0 text-base"
-                onClick={applyFilters}
-            />
         </div>
     );
 };

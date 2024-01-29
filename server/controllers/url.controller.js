@@ -65,7 +65,6 @@ async function updateTagsForUrl(userId, urlId, tags) {
 
     if (!tags.includes(existingTag.name)) {
 
-      console.log('existingTag.urls', existingTag.urls)
       existingTag.urls = existingTag.urls.filter((urlId) =>
         urlId.toString() !== url._id.toString()
       );
@@ -91,14 +90,10 @@ async function updateTagsForUrl(userId, urlId, tags) {
 
   // Add new tags and update existing ones
   if (tags.length > 0) {
-    console.log('tags', tags)
 
     for (const tag of tags) {
-      console.log('existingTags', existingTags)
 
       const existingTag = existingTags.find((t) => t.name === tag);
-
-      console.log('existingTag', existingTag)
 
       if (existingTag) {
         if (!existingTag.urls.includes(urlId)) {
@@ -143,7 +138,6 @@ const shortenUrl = async (req, res) => {
       image = domain + '/' + image;
     }
 
-
     let tagIds = [];
 
     if (customUrl) {
@@ -174,12 +168,13 @@ const shortenUrl = async (req, res) => {
             urls: [newUrl._id]
           });
           await newTag.save();
-          tagIds.push(newTag._id);
         }
-      }
 
-      for (const tagId of tagIds) {
-        newUrl.tags.push(tagId);
+        for (const tagId of tagIds) {
+          newUrl.tags.push(tagId);
+        }
+
+        await newUrl.save();
       }
 
       res.status(201).send({ shortUrl });
@@ -206,11 +201,14 @@ const shortenUrl = async (req, res) => {
           await newTag.save();
           tagIds.push(newTag._id);
         }
+
+        for (const tagId of tagIds) {
+          newUrl.tags.push(tagId);
+        }
+
+        await newUrl.save();
       }
 
-      for (const tagId of tagIds) {
-        newUrl.tags.push(tagId);
-      }
 
       res.status(201).send({ shortUrl, totalTime, collisions });
     }
@@ -342,8 +340,6 @@ const updateUrl = async (req, res) => {
       url.meta.title = title;
 
       await url.save();
-
-      console.log('tags', tags)
 
       await checkAndUpdateTags(userId, id, tags);
 

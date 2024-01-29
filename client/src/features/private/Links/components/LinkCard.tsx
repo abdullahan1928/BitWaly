@@ -13,6 +13,7 @@ import { FetchClicks } from '@/services/fetchClicks.service';
 import { Tooltip } from '@mui/material';
 import axios from 'axios';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import { useFilter } from '@/context/FilterLinksContext';
 
 interface IUrl {
     _id: string;
@@ -36,6 +37,8 @@ const LinkCard = (props: LinkCardProps) => {
     const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
     const [clicks, setClicks] = useState<number>(0);
     const [tags, setTags] = useState<string[]>([]);
+
+    const { tagFilter, setTagFilter } = useFilter();
 
     const image = props.meta?.image ?? 'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://nustedupk0-my.sharepoint.com&size=32';
 
@@ -109,6 +112,14 @@ const LinkCard = (props: LinkCardProps) => {
             }
         }
         setUrlToDelete(null);
+    };
+
+    const handleTagClick = (tagId: string) => {
+        const updatedTagFilter = tagFilter.includes(tagId) ?
+            tagFilter.filter((tag: any) => tag._id !== tagId) :
+            [...tagFilter, tagId];
+
+        setTagFilter(updatedTagFilter);
     };
 
     return (
@@ -190,10 +201,14 @@ const LinkCard = (props: LinkCardProps) => {
                         }} />
                         <p>
                             {tags.length > 0 ?
-                                tags.map((tag: string, index: number) => {
+                                tags.map((tag: any, index: number) => {
                                     return (
-                                        <span key={index} className="px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 cursor-pointer hover:bg-gray-300">
-                                            {tag}
+                                        <span
+                                            key={index}
+                                            className="px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 cursor-pointer hover:bg-gray-300"
+                                            onClick={() => handleTagClick(tag._id)}
+                                        >
+                                            {tag.name}
                                         </span>
                                     )
                                 }
