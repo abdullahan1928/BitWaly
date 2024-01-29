@@ -1,14 +1,19 @@
 import { useState, useEffect } from 'react';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format, addWeeks } from 'date-fns';
-import EastIcon from '@mui/icons-material/East';
+import { FetchClicks } from '@/services/fetchClicks.service';
 
-const LinkBarChart = ({ createdAt }: { createdAt: string }) => {
-    const [startDate, setStartDate] = useState(new Date(createdAt));
-    const [endDate, setEndDate] = useState(new Date());
+interface LinkBarChartProps {
+    id: string;
+    authToken: string;
+    createdAt: string;
+    startDate: Date;
+    endDate: Date;
+}
+
+const LinkBarChart = ({ id, authToken, createdAt, startDate, endDate }: LinkBarChartProps) => {
     const [chartData, setChartData] = useState<{
         categories: string[];
         data: number[];
@@ -21,18 +26,21 @@ const LinkBarChart = ({ createdAt }: { createdAt: string }) => {
     const maxEndDate = new Date();
 
     useEffect(() => {
+        FetchClicks(authToken, id)
+            .then((res) => {
+                console.log(res)
+            }).catch((err) => {
+                console.log(err)
+            })
+    }, []);
+
+    useEffect(() => {
         updateChartData(minStartDate, maxEndDate);
     }, []);
 
-    const handleDateChange = (selectedDate: Date, dateType: 'start' | 'end') => {
-        if (dateType === 'start') {
-            setStartDate(selectedDate);
-            updateChartData(selectedDate, endDate);
-        } else {
-            setEndDate(selectedDate);
-            updateChartData(startDate, selectedDate);
-        }
-    };
+    useEffect(() => {
+        updateChartData(startDate, endDate);
+    }, [startDate, endDate]);
 
     const updateChartData = (start: Date, end: Date) => {
         const datesInRange = [];
@@ -55,31 +63,6 @@ const LinkBarChart = ({ createdAt }: { createdAt: string }) => {
 
     return (
         <div className='flex flex-col gap-4'>
-            <div className="flex items-center justify-start gap-2">
-                <DatePicker
-                    selected={startDate}
-                    onChange={(date: Date) => handleDateChange(date, 'start')}
-                    selectsStart
-                    startDate={startDate}
-                    endDate={endDate}
-                    minDate={minStartDate}
-                    maxDate={maxEndDate}
-                    dateFormat="dd/MM/yyyy"
-                    className='p-2 border border-gray-300 rounded-md'
-                />
-                <EastIcon className='w-6 h-6 text-gray-400' />
-                <DatePicker
-                    selected={endDate}
-                    onChange={(date: Date) => handleDateChange(date, 'end')}
-                    selectsEnd
-                    startDate={startDate}
-                    endDate={endDate}
-                    minDate={minStartDate}
-                    maxDate={maxEndDate}
-                    dateFormat="dd/MM/yyyy"
-                    className='p-2 border border-gray-300 rounded-md'
-                />
-            </div>
             <HighchartsReact
                 highcharts={Highcharts}
                 options={{

@@ -37,6 +37,8 @@ const LinkCard = (props: LinkCardProps) => {
     const [clicks, setClicks] = useState<number>(0);
     const [tags, setTags] = useState<string[]>([]);
 
+    const image = props.meta?.image ?? 'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://nustedupk0-my.sharepoint.com&size=32';
+
     const navigate = useNavigate();
 
     const shortLink = `${REDIRECT_URL}/${props.shortUrl}`;
@@ -54,6 +56,7 @@ const LinkCard = (props: LinkCardProps) => {
         timeZone: 'UTC',
     });
 
+
     useEffect(() => {
         getClicks();
         getTags();
@@ -68,7 +71,7 @@ const LinkCard = (props: LinkCardProps) => {
         res.forEach((click: any) => {
             totalClicks += click.clicks;
         })
-        
+
         setClicks(totalClicks);
     }
 
@@ -110,8 +113,14 @@ const LinkCard = (props: LinkCardProps) => {
 
     return (
         <div className="flex flex-col gap-2 p-8 bg-white rounded-md shadow-md">
-            <div className="flex items-center justify-between mb-2">
-                <h3 className="text-lg font-bold text-gray-800 cursor-pointer hover:underline">
+            <div className="flex items-center justify-between flex-1 gap-4 mb-2">
+                <img
+                    src={image}
+                    alt="Link preview"
+                    className="w-12 h-12 p-1 border-2 border-gray-300 rounded-full"
+                />
+
+                <h3 className="flex-1 text-lg font-bold text-gray-800 cursor-pointer hover:underline">
                     <Link to={`/dashboard/link/${props._id}`}>
                         {props.meta?.title}
                     </Link>
@@ -155,7 +164,6 @@ const LinkCard = (props: LinkCardProps) => {
             >
                 {props.originalUrl}
             </a>
-
 
             <div className="flex items-center justify-between">
                 <div className="flex gap-6">

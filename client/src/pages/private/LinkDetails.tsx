@@ -1,13 +1,15 @@
-import LinkCard from "@/features/private/Links/components/LinkCard"
 import { useEffect, useState } from "react"
-import { Link, useParams } from "react-router-dom"
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import LinkSummary from "@/features/private/LinkDetails/LinkSummary"
+import { useParams } from "react-router-dom"
 import LinkBarChart from "@/features/private/LinkDetails/LinkBarChart"
 import { UrlRetrievalById } from "@/services/retrieveUrl.service"
 import LinkLocations from "@/features/private/LinkDetails/LinkLocations";
 import LinkReferres from "@/features/private/LinkDetails/LinkReferres";
 import LinkDevices from "@/features/private/LinkDetails/LinkDevices";
+import DateRangeFilter from "@/components/DateRangeFilter";
+import LinkCard from "@/features/private/Links/components/LinkCard";
+import LinkSummary from "@/features/private/LinkDetails/LinkSummary";
+import { Link } from "react-router-dom";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 interface IUrl {
     _id: string;
@@ -22,13 +24,15 @@ interface IUrl {
 
 const LinkDetails = () => {
     const [urlData, setUrlData] = useState<IUrl | null>(null);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
     const { id } = useParams<{ id: string }>()
     const authToken = localStorage.getItem('token')
 
     useEffect(() => {
-        fetchLink()
-    }, [])
+        fetchLink();
+    }, []);
 
     const fetchLink = async () => {
         UrlRetrievalById(authToken ?? '', id ?? '')
@@ -39,6 +43,11 @@ const LinkDetails = () => {
                 console.log(err)
             })
     }
+
+    const handleDateChange = (newStartDate: Date, newEndDate: Date) => {
+        setStartDate(newStartDate);
+        setEndDate(newEndDate);
+    };
 
     return (
         <div className="container flex flex-col max-w-6xl gap-8 p-4 mx-auto">
@@ -67,22 +76,33 @@ const LinkDetails = () => {
             />
 
             {urlData?.createdAt && (
-                <LinkBarChart
+                <DateRangeFilter
                     createdAt={urlData.createdAt}
+                    onDateChange={handleDateChange}
+                />
+            )}
+
+            {urlData?.createdAt && (
+                <LinkBarChart
+                    id={id ?? ''}
+                    authToken={authToken ?? ''}
+                    createdAt={urlData?.createdAt ?? ''}
+                    startDate={startDate}
+                    endDate={endDate}
                 />
             )}
 
             <LinkLocations
                 id={id ?? ''}
                 authToken={authToken ?? ''}
+                startDate={startDate}
+                endDate={endDate}
             />
 
             <div className="flex flex-row flex-wrap gap-10 mb-4">
                 <LinkReferres />
 
-                {id && (
-                    <LinkDevices id={id} />
-                )}
+                <LinkDevices id={id ?? ''} />
             </div>
         </div >
     )

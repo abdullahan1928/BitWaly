@@ -11,9 +11,11 @@ import LocationTable from "./components/LocationTable";
 interface LinkLocationProps {
     id: string;
     authToken: string;
+    startDate: Date;
+    endDate: Date;
 }
 
-const LinkLocations = ({ id, authToken }: LinkLocationProps) => {
+const LinkLocations = ({ id, authToken, startDate, endDate }: LinkLocationProps) => {
     const [countryData, setCountryData] = useState<CountryData[]>([]);
     const [cityData, setCityData] = useState<CityData[]>([]);
     const [currentTab, setCurrentTab] = useState(0);
@@ -21,6 +23,10 @@ const LinkLocations = ({ id, authToken }: LinkLocationProps) => {
     useEffect(() => {
         fetchData();
     }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [startDate, endDate]);
 
     const fetchData = async () => {
         axios.get(`${API_URL}/analytics/location/${id}`, {
@@ -53,13 +59,13 @@ const LinkLocations = ({ id, authToken }: LinkLocationProps) => {
     };
 
     return (
-        <Paper className="bg-white rounded-md shadow-md p-8">
-            <div className="flex justify-between items-center">
-                <h3 className="text-xl font-bold mb-4">Locations</h3>
-                <Tabs 
-                value={currentTab} 
-                onChange={handleTabChange} 
-                className="mb-4 rounded-[2rem] bg-[#f4f6fa] gap-4 border-2"
+        <Paper className="p-8 bg-white rounded-md shadow-md">
+            <div className="flex items-center justify-between">
+                <h3 className="mb-4 text-xl font-bold">Locations</h3>
+                <Tabs
+                    value={currentTab}
+                    onChange={handleTabChange}
+                    className="mb-4 rounded-[2rem] bg-[#f4f6fa] gap-4 border-2"
                     TabIndicatorProps={{
                         style: {
                             display: 'none',

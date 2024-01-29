@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import LinkCard from "./components/LinkCard";
 import { getUserUrls } from "@/features/public/Home/services/url.service";
-import { useFilter } from "@/context/filter.context";
+import { useFilter } from "@/context/FilterLinks";
 import axios from "axios";
 import { API_URL } from "@/config/config";
 
@@ -99,7 +99,9 @@ const LinkCards = () => {
                         onDeleteUrl={handleDeleteUrl}
                     />
                 ))
-                : <p className="text-gray-600">No links found.</p>
+                : <p className="text-xl text-center text-gray-600">
+                    No links found.
+                </p>
             }
         </div>
     );
