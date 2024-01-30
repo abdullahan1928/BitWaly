@@ -57,7 +57,7 @@ const AppBar = styled(MuiAppBar, { shouldForwardProp: (prop) => prop !== 'open',
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
     }),
-    position: 'absolute',
+    position: 'fixed',
     ...(open && {
         marginLeft: drawerWidth,
         width: `calc(100% - ${drawerWidth}px)`,
@@ -118,7 +118,7 @@ const SidebarItem = ({ open, icon, text, to, onClick }: SidebarItemProps) => {
                         borderRadius: 2,
                         ...(isActive && {
                             color: 'primary.main',
-                            backgroundColor: (theme) => theme.palette.action.selected,
+                            backgroundColor: 'primary.100',
                             '& svg': {
                                 color: 'primary.main',
                             },
@@ -206,7 +206,7 @@ const Sidebar = () => {
                         Welcome to the Dashboard
                     </Typography>
                     <div className='flex items-center'>
-                        <div className='flex items-center justify-center w-10 h-10 bg-gray-800 rounded-full mr-2'>
+                        <div className='flex items-center justify-center w-10 h-10 mr-2 bg-gray-800 rounded-full'>
                             {userId[0]}
                         </div>
 
@@ -233,7 +233,7 @@ const Sidebar = () => {
                                     Create New Link
                                 </button>
                                 :
-                                <p className='flex items-center justify-center mt-4 mx-2 bg-primary-500 hover:bg-primary-700 py-2 px-5 rounded-md'>
+                                <p className='flex items-center justify-center px-4 py-2 mx-2 mt-4 rounded-md bg-primary-500 hover:bg-primary-700'>
                                     <AddIcon />
                                 </p>
                         }

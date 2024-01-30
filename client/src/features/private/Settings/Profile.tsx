@@ -8,7 +8,11 @@ const Profile = () => {
 
             <Preferences />
 
+            <hr className="my-4 border-gray-400" />
+
             <Security />
+
+            <hr className="my-4 border-gray-400" />
 
             <DeleteAccount />
 

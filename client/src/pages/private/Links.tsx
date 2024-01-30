@@ -4,8 +4,8 @@ import LinkCards from '@/features/private/Links/LinkCards';
 const Links = () => {
 
     return (
-        <div className="container max-w-6xl px-4 py-8 mx-auto">
-            <h2 className="mb-4 text-4xl font-bold text-gray-800">
+        <div className="container max-w-6xl px-4 mx-auto">
+            <h2 className="mb-8 text-4xl font-bold text-gray-800">
                 Links
             </h2>
 

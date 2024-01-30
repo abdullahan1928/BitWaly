@@ -4,7 +4,7 @@ import Links from '@/pages/private/Links';
 import NewLink from '@/pages/private/NewLink';
 import Settings from '@/pages/private/Settings';
 import EditLink from '@/pages/private/EditLink';
-import { Analytics } from '@mui/icons-material';
+import Analytics from '@/pages/private/Analytics';
 
 interface IDashboardRoute {
     index?: boolean;

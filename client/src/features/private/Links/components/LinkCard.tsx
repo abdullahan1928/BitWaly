@@ -38,7 +38,7 @@ const LinkCard = (props: LinkCardProps) => {
     const [clicks, setClicks] = useState<number>(0);
     const [tags, setTags] = useState<string[]>([]);
 
-    const { tagFilter, setTagFilter } = useFilter();
+    const { tagFilter, setTagFilter, setTagFilterApplied } = useFilter();
 
     const image = props.meta?.image ?? 'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://nustedupk0-my.sharepoint.com&size=32';
 
@@ -49,15 +49,21 @@ const LinkCard = (props: LinkCardProps) => {
 
     const inputDateString = props.createdAt;
     const inputDate = new Date(inputDateString);
-    const formattedDate = inputDate.toLocaleString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        timeZone: 'UTC',
-    });
+    const formattedDate = props.showDetails ?
+        inputDate.toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+        }) :
+        inputDate.toLocaleString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            timeZone: 'UTC',
+        });
 
 
     useEffect(() => {
@@ -119,11 +125,14 @@ const LinkCard = (props: LinkCardProps) => {
             tagFilter.filter((tag: any) => tag._id !== tagId) :
             [...tagFilter, tagId];
 
-        setTagFilter(updatedTagFilter);
+        if (props.showDetails) {
+            setTagFilter(updatedTagFilter);
+            setTagFilterApplied(true);
+        }
     };
 
     return (
-        <div className="flex flex-col gap-2 p-8 bg-white rounded-md shadow-md">
+        <div className="flex flex-col gap-2 px-8 py-4 bg-white rounded-md shadow-md">
             <div className="flex items-center justify-between flex-1 gap-4 mb-2">
                 <img
                     src={image}
@@ -205,7 +214,9 @@ const LinkCard = (props: LinkCardProps) => {
                                     return (
                                         <span
                                             key={index}
-                                            className="px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 cursor-pointer hover:bg-gray-300"
+                                            className={`px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 
+                                            ${props.showDetails && 'cursor-pointer hover:bg-gray-300'}
+                                            `}
                                             onClick={() => handleTagClick(tag._id)}
                                         >
                                             {tag.name}

@@ -38,7 +38,6 @@ const LinkCards = () => {
         const filteredUrls = userUrls.filter((url: any) => {
 
             if (linkTypeFilter !== 'all' && url.isCustom !== (linkTypeFilter === 'custom')) {
-                console.log(url.isCustom, linkTypeFilter, linkTypeFilter === 'custom');
                 return false;
             }
 
@@ -64,24 +63,42 @@ const LinkCards = () => {
     return (
         <div className="flex flex-col gap-8">
             {filteredUserUrls.length > 0
-                ? filteredUserUrls.map(url => (
-                    <LinkCard
-                        key={url._id}
-                        _id={url._id}
-                        originalUrl={url.originalUrl}
-                        shortUrl={url.shortUrl}
-                        createdAt={formatCreatedAt(url.createdAt)}
-                        meta={url.meta}
-                        authToken={authToken}
-                        onDeleteUrl={handleDeleteUrl}
-                    />
-                ))
-                : <p className="text-xl text-center text-gray-600">
-                    No links found.
-                </p>
+                ? (
+                    <>
+                        {filteredUserUrls.map(url => (
+                            <LinkCard
+                                key={url._id}
+                                _id={url._id}
+                                originalUrl={url.originalUrl}
+                                shortUrl={url.shortUrl}
+                                createdAt={formatCreatedAt(url.createdAt)}
+                                meta={url.meta}
+                                authToken={authToken}
+                                onDeleteUrl={handleDeleteUrl}
+                                showDetails={true}
+                            />
+                        ))}
+                        <div className="flex items-center justify-center gap-7">
+                            <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
+                            <div className="text-lg text-center text-gray-400">
+                                It's the end of the list!
+                            </div>
+                            <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
+                        </div>
+                    </>
+                )
+                :
+                <div className="flex items-center justify-center gap-2">
+                    <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
+                    <div className="text-lg text-center text-gray-400">
+                        No Links Found!
+                    </div>
+                    <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
+                </div>
             }
         </div>
     );
+
 }
 
 export default LinkCards;
