@@ -137,7 +137,7 @@ const LinkCard = (props: LinkCardProps) => {
                 <img
                     src={image}
                     alt="Link preview"
-                    className="w-12 h-12 p-1 border-2 border-gray-300 rounded-full"
+                    className="w-12 h-12 p-1 border-2 rounded-full border-primary-400"
                 />
 
                 <h3 className="flex-1 text-lg font-bold text-gray-800 cursor-pointer hover:underline">

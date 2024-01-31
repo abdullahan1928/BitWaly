@@ -74,6 +74,10 @@ async function updateTagsForUrl(userId, urlId, tags) {
       } else {
         await existingTag.save();
       }
+    } else {
+      if (!url.tags.includes(existingTag._id)) {
+        url.tags.push(existingTag._id);
+      }
     }
   }
 
@@ -138,8 +142,6 @@ const shortenUrl = async (req, res) => {
       image = domain + '/' + image;
     }
 
-    let tagIds = [];
-
     if (customUrl) {
       const existingUrl = await Url.findOne({ shortUrl: customUrl });
 
@@ -160,22 +162,7 @@ const shortenUrl = async (req, res) => {
       });
       await newUrl.save();
 
-      if (tags && tags.length > 0) {
-        for (const tag of tags) {
-          const newTag = new Tag({
-            user: req.user,
-            name: tag,
-            urls: [newUrl._id]
-          });
-          await newTag.save();
-        }
-
-        for (const tagId of tagIds) {
-          newUrl.tags.push(tagId);
-        }
-
-        await newUrl.save();
-      }
+      updateTagsForUrl(req.user, newUrl._id, tags);
 
       res.status(201).send({ shortUrl });
     } else {
@@ -191,24 +178,7 @@ const shortenUrl = async (req, res) => {
       });
       await newUrl.save();
 
-      if (tags && tags.length > 0) {
-        for (const tag of tags) {
-          const newTag = new Tag({
-            user: req.user,
-            name: tag,
-            urls: [newUrl._id]
-          });
-          await newTag.save();
-          tagIds.push(newTag._id);
-        }
-
-        for (const tagId of tagIds) {
-          newUrl.tags.push(tagId);
-        }
-
-        await newUrl.save();
-      }
-
+      updateTagsForUrl(req.user, newUrl._id, tags);
 
       res.status(201).send({ shortUrl, totalTime, collisions });
     }
@@ -374,7 +344,8 @@ const deleteUrl = async (req, res) => {
     });
 
     for (const tag of tags) {
-      tag.urls = tag.urls.filter((urlId) => urlId === id);
+
+      tag.urls = tag.urls.filter((urlId) => urlId.toString() !== id);
 
       if (tag.urls.length === 0) {
         await Tag.findByIdAndDelete(tag._id);

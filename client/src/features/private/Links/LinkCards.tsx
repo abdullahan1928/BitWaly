@@ -18,7 +18,7 @@ const LinkCards = () => {
     const [userUrls, setUserUrls] = useState<Url[]>([]);
     const [filteredUserUrls, setFilteredUserUrls] = useState<Url[]>([]);
     const authToken = localStorage.getItem('token');
-    const { linkTypeFilter, tagFilter } = useFilter();
+    const { linkTypeFilter, tagFilter, linkTypeFilterApplied, tagFilterApplied } = useFilter();
 
     useEffect(() => {
         const fetchUserUrls = async () => {
@@ -65,6 +65,21 @@ const LinkCards = () => {
             {filteredUserUrls.length > 0
                 ? (
                     <>
+                        <div className="flex font-bold">
+                            <h3 className="text-2xl">
+                                {`${(linkTypeFilterApplied || tagFilterApplied)
+                                    ? 'Filtered:'
+                                    : 'Total:'
+                                    } 
+                                    Links`
+                                }
+                            </h3>
+                            <p className="ml-2 text-2xl">
+                                {filteredUserUrls.length}
+                            </p>
+                        </div>
+
+
                         {filteredUserUrls.map(url => (
                             <LinkCard
                                 key={url._id}

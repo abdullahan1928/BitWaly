@@ -65,7 +65,7 @@ const ChipsInput = ({ tags, onTagChange, className }: ChipsInputProps) => {
                 renderInput={handleRenderInput}
                 renderOption={(props, option, { selected }) => (
                     <li {...props} key={option} className="flex flex-row items-center justify-between px-4 py-2">
-                        <span className="">
+                        <span>
                             {option}
                         </span>
                         {selected ?

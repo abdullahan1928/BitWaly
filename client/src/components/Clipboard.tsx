@@ -1,6 +1,7 @@
 import { Snackbar, Tooltip } from '@mui/material'
 import { useState } from 'react'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { twMerge } from 'tailwind-merge';
 
 interface IProps {
     text: string
@@ -19,7 +20,10 @@ const CopyToClipboardButton = (props: IProps) => {
         <>
             <Tooltip title="Copy">
                 <ContentCopyIcon
-                    className={`text-gray-500 hover:text-gray-700 cursor-pointer hover:scale-110 ${props.className}`}
+                    className={twMerge(
+                        'text-gray-500 hover:text-gray-700 cursor-pointer hover:scale-110',
+                        props.className
+                    )}
                     onClick={handleClick}
                 />
             </Tooltip>
