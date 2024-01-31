@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { body } = require('express-validator');
-const { signupController, signinController, getUserController } = require("../controllers/auth.controller");
+const { signupController, signinController, getUserController, updateUserController, updatePasswordController, deleteAccountController } = require("../controllers/auth.controller");
 const fetchUser = require("../middleware/fetchUser");
 
 //ROUTE1: creating a user        /auth/signup,    NO AUTHENTICATION/LOGIN REQUIRED
@@ -20,5 +20,16 @@ router.post('/signin', [
 
 //ROUTE3: get logged in user details  /auth/getuser,    AUTHENTICATION/LOGIN REQUIRED
 router.post('/getuser', fetchUser, getUserController);
+
+
+//ROUTE4: update logged in user details  /auth/updateuser,    AUTHENTICATION/LOGIN REQUIRED
+router.put('/updateuser', fetchUser, updateUserController);
+
+//ROUTE5: update logged in user password  /auth/updatepassword,    AUTHENTICATION/LOGIN REQUIRED
+router.put('/updatepassword', fetchUser, updatePasswordController)
+
+
+//ROUTE6: delete logged in user account  /auth/deleteuser,    AUTHENTICATION/LOGIN REQUIRED
+router.delete('/deleteuser', fetchUser, deleteAccountController);
 
 module.exports = router;
