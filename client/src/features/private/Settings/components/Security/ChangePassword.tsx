@@ -1,15 +1,57 @@
 import PrimaryButton from "@/components/PrimaryButton"
-import { TextField } from "@mui/material"
+import { API_URL } from "@/config/config"
+import { Alert, TextField } from "@mui/material"
+import axios from "axios"
 import { useState } from "react"
 
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmNewPassword, setConfirmNewPassword] = useState('')
+    const [newPasswordsMatch, setNewPasswordsMatch] = useState(true)
+    const [passwordChanged, setPasswordChanged] = useState(true)
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        console.log('submit')
+
+        if (newPassword === confirmNewPassword) {
+            setNewPasswordsMatch(true)
+        } else {
+            setNewPasswordsMatch(false)
+        }
+
+        if (currentPassword === newPassword) {
+            setPasswordChanged(false)
+        } else {
+            setPasswordChanged(true)
+        }
+
+        if (newPasswordsMatch && passwordChanged) {
+            changePassword()
+        }
+    }
+
+    const changePassword = async () => {
+        const authToken = localStorage.getItem("token")
+
+        axios.put(`${API_URL}/auth/password`,
+            {
+                oldPassword: currentPassword,
+                newPassword: newPassword,
+            },
+            {
+                headers: {
+                    authToken: `${authToken}`
+                }
+            }
+        ).then(res => {
+            console.log(res.data)
+            setCurrentPassword('')
+            setNewPassword('')
+            setConfirmNewPassword('')
+        }).catch(err => {
+            console.log(err)
+        })
     }
 
     return (
@@ -52,9 +94,21 @@ const ChangePassword = () => {
                 </div>
             </div>
 
+            {newPasswordsMatch ? null :
+                <Alert severity="error" className="w-full" style={{ fontSize: '16px', padding: '16px' }}>
+                    New Passwords do not match
+                </Alert>
+            }
+
+            {passwordChanged ? null :
+                <Alert severity="error" className="w-full" style={{ fontSize: '16px', padding: '16px' }}>
+                    New password cannot be the same as the current password
+                </Alert>
+            }
+
             <PrimaryButton
                 text="Change password"
-                className="w-1/6 py-3 px-0 text-lg"
+                className="w-1/6 px-0 py-3 text-lg"
                 onClick={handleSubmit}
                 disabled={currentPassword === "" || newPassword === "" || confirmNewPassword === ""}
             />

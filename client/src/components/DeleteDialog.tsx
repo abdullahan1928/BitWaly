@@ -1,20 +1,20 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from '@mui/material';
 
 interface DeleteDialogProps {
+    heading: string;
+    body: string;
     deleteDialogOpen: boolean;
     closeDeleteDialog: () => void;
     handleDelete: () => void;
 }
 
-const DeleteDialog = (
-    { deleteDialogOpen, closeDeleteDialog, handleDelete }: DeleteDialogProps
-) => {
+const DeleteDialog = (props: DeleteDialogProps) => {
 
     return (
         <>
             <Dialog
-                open={deleteDialogOpen}
-                onClose={closeDeleteDialog}
+                open={props.deleteDialogOpen}
+                onClose={props.closeDeleteDialog}
                 sx={{
                     '& .MuiDialog-paper': {
                         padding: '1rem',
@@ -28,19 +28,19 @@ const DeleteDialog = (
                         fontWeight: 'bold',
                     }
                 }}>
-                    <Typography variant="h5">Delete Link?</Typography>
+                    <Typography variant="h5">
+                        {props.heading}
+                    </Typography>
                 </DialogTitle>
                 <DialogContent>
-                    Are you sure you want to delete this URL?
-                    <br />
-                    This cannot be undone.
+                    <div dangerouslySetInnerHTML={{ __html: props.body }} />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={closeDeleteDialog} color="primary">
+                    <Button onClick={props.closeDeleteDialog} color="primary">
                         Cancel
                     </Button>
                     <Button
-                        onClick={handleDelete}
+                        onClick={props.handleDelete}
                         color="error"
                         autoFocus
                         variant="contained"

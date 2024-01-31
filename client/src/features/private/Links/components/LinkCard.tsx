@@ -243,6 +243,8 @@ const LinkCard = (props: LinkCardProps) => {
             </div>
 
             <DeleteDialog
+                heading="Delete Link?"
+                body="Are you sure you want to delete this URL? <br/> This cannot be undone."
                 deleteDialogOpen={deleteDialogOpen}
                 closeDeleteDialog={closeDeleteDialog}
                 handleDelete={handleDelete}

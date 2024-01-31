@@ -176,14 +176,17 @@ const Sidebar = () => {
       logout();
     }
 
-    axios
-      .post(`${API_URL}/auth/getUser`, token, {
-        headers: {
-          authToken: `${token}`,
-        },
-      })
+    axios.get(`${API_URL}/auth/getUser`, {
+      headers: {
+        authToken: `${token}`,
+      },
+    })
       .then((res) => {
-        setName(res.data.name);
+        if (res.data.name) {
+          setName(res.data.name);
+        } else {
+          setName(res.data._id);
+        }
       })
       .catch((err) => {
         console.log(err);

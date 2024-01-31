@@ -1,7 +1,7 @@
 const Url = require('../models/Url.model');
 const Analytics = require('../models/Analytics.model');
 
-exports.allAnalyticsController = async (req, res) => {
+const allAnalyticsController = async (req, res) => {
   const { shortUrl } = req.params;
 
   try {
@@ -34,7 +34,7 @@ exports.allAnalyticsController = async (req, res) => {
   }
 };
 
-exports.clicksController = async (req, res) => {
+const clicksController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
 
@@ -76,7 +76,7 @@ exports.clicksController = async (req, res) => {
   }
 };
 
-exports.browserAnalyticsController = async (req, res) => {
+const browserAnalyticsController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
 
@@ -99,7 +99,7 @@ exports.browserAnalyticsController = async (req, res) => {
 };
 
 
-exports.osAnalyticsController = async (req, res) => {
+const osAnalyticsController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
 
@@ -121,7 +121,7 @@ exports.osAnalyticsController = async (req, res) => {
   }
 };
 
-exports.deviceAnalyticsController = async (req, res) => {
+const deviceAnalyticsController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
 
@@ -143,7 +143,7 @@ exports.deviceAnalyticsController = async (req, res) => {
 };
 
 
-exports.mobileAnalyticsController = async (req, res) => {
+const mobileAnalyticsController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
 
@@ -166,7 +166,7 @@ exports.mobileAnalyticsController = async (req, res) => {
 };
 
 
-exports.locationAnalyticsController = async (req, res) => {
+const locationAnalyticsController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
 
@@ -180,7 +180,6 @@ exports.locationAnalyticsController = async (req, res) => {
     const analyticsData = await Analytics.find({ url: urlDocument._id });
 
     const locations = analyticsData.reduce((acc, data) => {
-      console.log(data.location);
       const { country, city } = data.location;
 
       if (!acc.countryCounts[country]) {
@@ -216,6 +215,14 @@ exports.locationAnalyticsController = async (req, res) => {
   }
 };
 
-
+module.exports = {
+  allAnalyticsController,
+  clicksController,
+  browserAnalyticsController,
+  osAnalyticsController,
+  deviceAnalyticsController,
+  mobileAnalyticsController,
+  locationAnalyticsController,
+};
 
 
