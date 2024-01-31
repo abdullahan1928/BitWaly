@@ -46,7 +46,6 @@ const UrlTable = () => {
             try {
                 await deleteUrl(authToken, urlToDelete);
                 setUserUrls(prevUrls => prevUrls.filter(url => url._id !== urlToDelete));
-                console.log('URL deleted successfully');
             } catch (error) {
                 console.error('Error deleting URL:', error);
             }

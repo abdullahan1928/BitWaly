@@ -34,7 +34,6 @@ exports.allAnalyticsController = async (req, res) => {
   }
 };
 
-
 exports.clicksController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
@@ -68,7 +67,6 @@ exports.clicksController = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
-
 
 exports.browserAnalyticsController = async (req, res) => {
   const { id } = req.params;
@@ -174,12 +172,20 @@ exports.locationAnalyticsController = async (req, res) => {
     const analyticsData = await Analytics.find({ url: urlDocument._id });
 
     const locations = analyticsData.reduce((acc, data) => {
-      const country = data.location.location.country;
-      const city = data.location.location.city;
+      console.log(data.location);
+      const { country, city } = data.location;
 
-      acc.countryCounts[country] = (acc.countryCounts[country] || 0) + 1;
+      if (!acc.countryCounts[country]) {
+        acc.countryCounts[country] = 1;
+      } else {
+        acc.countryCounts[country] += 1;
+      }
 
-      acc.cityCounts[city] = (acc.cityCounts[city] || 0) + 1;
+      if (!acc.cityCounts[city]) {
+        acc.cityCounts[city] = 1;
+      } else {
+        acc.cityCounts[city] += 1;
+      }
 
       return acc;
     }, { countryCounts: {}, cityCounts: {} });

@@ -131,12 +131,12 @@ const shortenUrl = async (req, res) => {
 
     const linkTitle = title || $('head title').text() || originalUrl.split('/')[2] + '- untitled';
 
-    let image = $('head link[rel="icon"]').attr('href') || $('head link[rel="shortcut icon"]').attr('href');
+    let image = $('head link[rel="icon"]').attr('href') || $('head link[rel="shortcut icon"]').attr('href') || $('head meta[property="og:image"]').attr('content') || $('head meta[name="twitter:image"]').attr('content') || $('head meta[itemprop="image"]').attr('content') || $('head meta[name="image"]').attr('content') || $('head meta[name="twitter:image:src"]').attr('content') || $('head meta[name="twitter:image"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content');
 
-    // if (!image.startsWith('http') && !image.startsWith('https')) {
-    //   const domain = originalUrl.match(/^https?:\/\/[^/]+/)[0];
-    //   image = domain + '/' + image;
-    // }
+    if (!image.startsWith('http') && !image.startsWith('https')) {
+      const domain = originalUrl.match(/^https?:\/\/[^/]+/)[0];
+      image = domain + '/' + image;
+    }
 
     let tagIds = [];
 
@@ -223,9 +223,9 @@ const retrieveUrl = async (req, res) => {
   const shardKey = shortUrl[0].toLowerCase();
 
   //API requures credits. Use it wisely. :)
-  // let location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=${LOCATION_API_KEY}&ipAddress=${req.body.userIP}`);
+  let location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=${LOCATION_API_KEY}&ipAddress=${req.body.userIP}`);
 
-  // location.data.location.country = getCountry(location.data.location.country);
+  location.data.location.country = getCountry(location.data.location.country);
 
   try {
     const url = await Url.findOne({ shardKey, shortUrl });
@@ -243,7 +243,7 @@ const retrieveUrl = async (req, res) => {
         vendor: req.body.mobileVendor,
         referrer: req.get('Referrer'),
         userAgent: req.get('User-Agent'),
-        // location: location.data
+        location: location.data.location
       });
 
       await analyticsData.save();

@@ -65,7 +65,6 @@ const ChipsInputFilter = ({ tags, onTagChange, className, filterApplied }: Chips
             })
             .then((res) => {
                 setAllTags(res.data);
-                console.log(res.data)
             })
             .catch((err) => {
                 console.error(err)
