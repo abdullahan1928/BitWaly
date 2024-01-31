@@ -323,6 +323,7 @@ const updateUrl = async (req, res) => {
     const userId = req.user;
     const { id } = req.params;
     const { title, shortUrl, tags } = req.body;
+    console.log(tags)
 
     const existingUrls = await Url.find({ shortUrl });
     const url = await Url.findOne({ user: userId, _id: id });

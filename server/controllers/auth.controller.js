@@ -120,7 +120,6 @@ exports.updatePasswordController = async (req, res) => {
 exports.deleteAccountController = async (req, res) => {
     try {
         const userId = req.user;
-        console.log(userId)
         let user = await Users.findById(userId);
         if (!user) {
             return res.status(422).json({ errors: [{ msg: 'No user found. Perhaps it was deleted already' }] });
