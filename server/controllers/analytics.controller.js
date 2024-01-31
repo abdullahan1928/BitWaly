@@ -61,6 +61,14 @@ exports.clicksController = async (req, res) => {
       clicks: data.count,
     }));
 
+    // Calculate the total clicks for the last 7 days
+    const totalClicksLast7Days = formattedData
+      .slice(-7) // Get the last 7 days of data
+      .reduce((total, data) => total + data.clicks, 0);
+
+    // Push the total clicks for the last 7 days as an additional object
+    formattedData.push({ date: 'Last 7 Days', clicks: totalClicksLast7Days });
+
     res.json(formattedData);
   } catch (error) {
     console.error('Error in fetching click data:', error);
