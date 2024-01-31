@@ -8,6 +8,8 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Menu,
+  MenuItem,
   Theme,
   Toolbar,
   Typography,
@@ -15,7 +17,7 @@ import {
 } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -28,6 +30,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "@/config/config";
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const drawerWidth = 240;
 
@@ -162,7 +165,10 @@ const SidebarItem = ({ open, icon, text, to, onClick }: SidebarItemProps) => {
 const Sidebar = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
 
+  const navigate = useNavigate();
   const { logout } = useAuth();
 
   const toggleDrawer = () => {
@@ -187,6 +193,7 @@ const Sidebar = () => {
         } else {
           setName(res.data._id);
         }
+        setEmail(res.data.email);
       })
       .catch((err) => {
         console.log(err);
@@ -194,6 +201,20 @@ const Sidebar = () => {
 
     setOpen(true);
   }, []);
+
+  const handleMenuOpen = (event: any) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const menuItems = [
+    { label: 'Links', action: () => navigate('/dashboard/links') },
+    { label: 'Analytics', action: () => navigate('/dashboard/analytics') },
+    { label: 'Settings', action: () => navigate('/dashboard/settings') },
+  ];
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -210,7 +231,7 @@ const Sidebar = () => {
               top: `calc(100% - 1rem)`,
               backgroundColor: "white",
               color: "slateblue",
-              shadow: "0 0 10px rgba(0,0,0,0.5)",
+              boxShadow: "0 0 10px rgba(0,0,0,0.5)",
               border: ".1rem solid #dbe0eb",
               width: "2rem",
               height: "2rem",
@@ -222,26 +243,101 @@ const Sidebar = () => {
             {(open && <ChevronLeftIcon />) || (!open && <ChevronRightIcon />)}
           </IconButton>
           <Typography color="secondary" variant="h6" noWrap component="div">
-            Welcome to the Dashboard
+
           </Typography>
           {name && (
             <div className="flex items-center">
-              <div className="flex items-center justify-center w-10 h-10 mr-2 bg-gray-800 rounded-full">
-                {name[0]}
-              </div>
-
-              <Typography
-                color="secondary"
-                variant="subtitle1"
-                noWrap
-                component="div"
+              <div
+                className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-200 rounded-xl"
+                onClick={handleMenuOpen}
               >
-                {name}
-              </Typography>
+                <div className="flex items-center justify-center w-10 h-10 mr-2 bg-gray-800 rounded-full">
+                  {name[0]}
+                </div>
+                <Typography
+                  variant="subtitle1"
+                  noWrap
+                  component="div"
+                  sx={{
+                    color: "black",
+                  }}
+                >
+                  {name}
+                </Typography>
+                <ArrowDropDownIcon sx={{ color: "black" }} />
+              </div>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                sx={{
+                  "& .MuiMenu-paper": {
+                    width: "20rem",
+                    border: ".1rem solid #dbe0eb",
+                    marginTop: "0.5rem",
+                  },
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleMenuClose();
+                  }}
+                >
+                  <div className="flex items-center justify-center w-10 h-10 mr-2 text-white bg-gray-800 rounded-full">
+                    {name[0]}
+                  </div>
+                  <div className="flex flex-col">
+                    <Typography variant="subtitle1" noWrap component="div" sx={{ color: "black" }}>
+                      {name}
+                    </Typography>
+                    <Typography variant="caption" noWrap component="div" sx={{ color: "gray" }}>
+                      {email}
+                    </Typography>
+                  </div>
+                </MenuItem>
+
+                <Divider />
+
+                {menuItems.map((item, index) => (
+                  <MenuItem
+                    key={index}
+                    onClick={() => {
+                      handleMenuClose();
+                      item.action();
+                    }}
+                    sx={{
+                      padding: "1rem",
+                      "&:hover": {
+                        backgroundColor: "rgba(0,0,0,0.1)",
+                      },
+                    }}
+                  >
+                    {item.label}
+                  </MenuItem>
+                ))}
+
+                <Divider />
+
+                <MenuItem
+                  onClick={() => {
+                    logout()
+                    handleMenuClose();
+                  }}
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "rgba(0,0,0,0.1)",
+                    },
+                  }}
+                >
+                  Logout
+                </MenuItem>
+
+              </Menu>
             </div>
           )}
         </Toolbar>
       </AppBar>
+
       <Drawer variant="permanent" open={open}>
         <img
           src={`${open ? "/logo1.png" : "/logo2.png"}`}
@@ -303,10 +399,12 @@ const Sidebar = () => {
           />
         </List>
       </Drawer>
+
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Outlet />
       </Box>
+
     </Box>
   );
 };
