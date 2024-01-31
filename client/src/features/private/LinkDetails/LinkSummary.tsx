@@ -8,6 +8,7 @@ interface LinkSummaryProps {
 
 const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
     const [clicks, setClicks] = useState<number>(0);
+    let weeklyClicks = 0;
 
     useEffect(() => {
         getData();
@@ -25,6 +26,9 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
         const res = await FetchClicks(authToken, id);
         const clicks = getTotalClicks(res);
         setClicks(clicks);
+
+        weeklyClicks = res[res.length-1].clicks;
+        console.log(weeklyClicks)
     }
 
     return (
