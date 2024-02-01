@@ -1,5 +1,6 @@
 const Url = require('../models/Url.model');
 const Analytics = require('../models/Analytics.model');
+const mongoose = require('mongoose');
 
 const allAnalyticsController = async (req, res) => {
   const { shortUrl } = req.params;
@@ -34,6 +35,26 @@ const allAnalyticsController = async (req, res) => {
   }
 };
 
+const weeklyCountController = async (req, res) => {
+  const { id } = req.params;
+  console.log(id)
+
+  try {
+    const startDate = new Date(new Date() - 7 * 24 * 60 * 60 * 1000);
+
+const clickData = await Analytics.countDocuments({
+  url: id,
+  accessedAt: { $gte: startDate }
+});
+
+console.log("Total Clicks in Last 7 Days:", clickData);
+    res.json({ clickData });
+  } catch (error) {
+    console.error('Error in fetching click data:', error);
+    res.status(500).send('Server error');
+  }
+};
+
 const clicksController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
@@ -61,20 +82,13 @@ const clicksController = async (req, res) => {
       clicks: data.count,
     }));
 
-    // Calculate the total clicks for the last 7 days
-    const totalClicksLast7Days = formattedData
-      .slice(-7) // Get the last 7 days of data
-      .reduce((total, data) => total + data.clicks, 0);
-
-    // Push the total clicks for the last 7 days as an additional object
-    formattedData.push({ date: 'Last 7 Days', clicks: totalClicksLast7Days });
-
     res.json(formattedData);
   } catch (error) {
     console.error('Error in fetching click data:', error);
     res.status(500).send('Server error');
   }
 };
+
 
 const accessCountController = async (req, res) => {
   const { id } = req.params;
@@ -241,7 +255,8 @@ module.exports = {
   deviceAnalyticsController,
   mobileAnalyticsController,
   locationAnalyticsController,
-  accessCountController
+  accessCountController,
+  weeklyCountController
 };
 
 
