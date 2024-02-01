@@ -1,4 +1,4 @@
-import { FetchClicks } from "@/services/fetchClicks.service";
+import { FetchClicks, FetchWeeklyCount, FetchWeeklyChange } from "@/services/fetchClicks.service";
 import { useEffect, useState } from "react";
 
 interface LinkSummaryProps {
@@ -8,7 +8,9 @@ interface LinkSummaryProps {
 
 const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
     const [clicks, setClicks] = useState<number>(0);
-    // let weeklyClicks = 0;
+    const [weeklyClicks, setWeekyClicks] = useState<number>(0);
+    const [weeklyChange, setWeekyChange] = useState<number>(0);
+
 
     useEffect(() => {
         getData();
@@ -17,8 +19,13 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
 
 
     const getData = async () => {
-        const res = await FetchClicks(authToken, id);
-        setClicks(res);
+        const clickCount = await FetchClicks(authToken, id);
+        setClicks(clickCount);
+        const weeklyCount = await FetchWeeklyCount(authToken, id);
+        setWeekyClicks(weeklyCount.clickData)
+        const weeklyPerc = await FetchWeeklyChange(authToken, id);
+        setWeekyChange(weeklyPerc.percentageChange)
+        
     }
 
     return (
@@ -36,7 +43,7 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
                     Last 7 days
                 </p>
                 <span className="text-3xl text-[#526281] font-bold">
-                    3
+                    {weeklyClicks}
                 </span>
             </div>
             <div className="flex items-center justify-between w-full px-8 py-4 m-0 bg-white rounded-lg">
@@ -45,7 +52,7 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
                     Weekly change
                 </p>
                 <span className="text-3xl text-[#526281] font-bold">
-                    100%
+                {weeklyChange}%
                 </span>
             </div>
         </div>

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { allAnalyticsController, clicksController, browserAnalyticsController, osAnalyticsController, deviceAnalyticsController, mobileAnalyticsController, locationAnalyticsController, accessCountController, weeklyCountController } = require("../controllers/analytics.controller");
+const { allAnalyticsController, clicksController, browserAnalyticsController, osAnalyticsController, deviceAnalyticsController, mobileAnalyticsController, locationAnalyticsController, accessCountController, weeklyCountController, weeklyChangeController } = require("../controllers/analytics.controller");
 const fetchUser = require("../middleware/fetchUser");
 
 
@@ -12,6 +12,7 @@ router.get('/mobile/:id', fetchUser, mobileAnalyticsController);
 router.get('/location/:id', fetchUser, locationAnalyticsController);
 router.get("/accesscount/:id", accessCountController)
 router.get("/weeklycount/:id", weeklyCountController)
+router.get("/weeklychange/:id", weeklyChangeController)
 
 router.get('/all/:id', fetchUser, allAnalyticsController);
 

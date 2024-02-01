@@ -42,13 +42,43 @@ const weeklyCountController = async (req, res) => {
   try {
     const startDate = new Date(new Date() - 7 * 24 * 60 * 60 * 1000);
 
-const clickData = await Analytics.countDocuments({
-  url: id,
-  accessedAt: { $gte: startDate }
-});
+    const clickData = await Analytics.countDocuments({
+      url: id,
+      accessedAt: { $gte: startDate }
+    });
 
-console.log("Total Clicks in Last 7 Days:", clickData);
+    console.log("Total Clicks in Last 7 Days:", clickData);
     res.json({ clickData });
+  } catch (error) {
+    console.error('Error in fetching click data:', error);
+    res.status(500).send('Server error');
+  }
+};
+
+const weeklyChangeController = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const startDate = new Date(new Date() - 7 * 24 * 60 * 60 * 1000);
+
+    // Get the count of clicks in the last 7 days
+    const totalClicksLast7Days = await Analytics.countDocuments({
+      url: id,
+      accessedAt: { $gte: startDate }
+    });
+
+    // Get the count of clicks in the week before the last 7 days
+    const totalClicksPreviousWeek = await Analytics.countDocuments({
+      url: id,
+      accessedAt: { $lt: startDate, $gte: new Date(startDate - 7 * 24 * 60 * 60 * 1000) }
+    });
+
+    // Calculate the percentage change
+    const percentageChange = totalClicksPreviousWeek !== 0
+      ? ((totalClicksLast7Days - totalClicksPreviousWeek) / totalClicksPreviousWeek) * 100
+      : 100; // Default to 100% if there were no clicks in the previous week
+
+    res.json({ percentageChange });
   } catch (error) {
     console.error('Error in fetching click data:', error);
     res.status(500).send('Server error');
@@ -256,7 +286,8 @@ module.exports = {
   mobileAnalyticsController,
   locationAnalyticsController,
   accessCountController,
-  weeklyCountController
+  weeklyCountController,
+  weeklyChangeController,
 };
 
 
