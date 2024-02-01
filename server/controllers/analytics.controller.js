@@ -76,6 +76,24 @@ const clicksController = async (req, res) => {
   }
 };
 
+const accessCountController = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const urlDocument = await Url.findById(id);
+
+    if (!urlDocument) {
+      return res.status(404).send('URL not found');
+    }
+
+    res.send(urlDocument.accessCount.toString());
+
+  } catch (error) {
+    console.error('Error in fetching click data:', error);
+    res.status(500).send('Server error');
+  }
+}
+
 const browserAnalyticsController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
@@ -223,6 +241,7 @@ module.exports = {
   deviceAnalyticsController,
   mobileAnalyticsController,
   locationAnalyticsController,
+  accessCountController
 };
 
 

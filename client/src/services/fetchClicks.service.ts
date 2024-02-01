@@ -3,7 +3,7 @@ import { API_URL } from '@/config/config.ts';
 
 export const FetchClicks = async (authToken: string, id: string) => {
     try {
-        const response = await axios.get(`${API_URL}/analytics/clicks/${id}`, {
+        const response = await axios.get(`${API_URL}/url/accesscount/${id}`, {
             headers: {
                 authToken: `${authToken}`
             }

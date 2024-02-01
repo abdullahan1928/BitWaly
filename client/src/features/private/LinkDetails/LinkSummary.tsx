@@ -8,27 +8,17 @@ interface LinkSummaryProps {
 
 const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
     const [clicks, setClicks] = useState<number>(0);
-    let weeklyClicks = 0;
+    // let weeklyClicks = 0;
 
     useEffect(() => {
         getData();
     }, [])
 
-    const getTotalClicks = (res: any) => {
-        let totalClicks = 0;
-        res.forEach((click: any) => {
-            totalClicks += click.clicks;
-        })
-        return totalClicks;
-    }
+
 
     const getData = async () => {
         const res = await FetchClicks(authToken, id);
-        const clicks = getTotalClicks(res);
-        setClicks(clicks);
-
-        weeklyClicks = res[res.length-1].clicks;
-        console.log(weeklyClicks)
+        setClicks(res);
     }
 
     return (
