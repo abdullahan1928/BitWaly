@@ -74,14 +74,9 @@ const LinkCard = (props: LinkCardProps) => {
     const getClicks = async () => {
         if (!props.authToken) return;
 
-        const res = await FetchClicks(props.authToken, props._id);
+        const res = await FetchClicks(props.authToken, props._id)
 
-        let totalClicks = 0;
-        res.forEach((click: any) => {
-            totalClicks += click.clicks;
-        })
-
-        setClicks(totalClicks);
+        setClicks(res);
     }
 
     const getTags = async () => {

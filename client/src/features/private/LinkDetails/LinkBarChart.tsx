@@ -3,7 +3,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format, addWeeks } from 'date-fns';
-import { FetchClicks } from '@/services/fetchClicks.service';
+import { fetchEngagement } from '@/services/engagementsWDates'
 
 interface LinkBarChartProps {
     id: string;
@@ -11,54 +11,59 @@ interface LinkBarChartProps {
     createdAt: string;
     startDate: Date;
     endDate: Date;
-}
-
-const LinkBarChart = ({ id, authToken, createdAt, startDate, endDate }: LinkBarChartProps) => {
+  }
+  
+  const LinkBarChart = ({ id, authToken, createdAt, startDate, endDate }: LinkBarChartProps) => {
     const [chartData, setChartData] = useState<{
-        categories: string[];
-        data: number[];
+      categories: string[];
+      data: number[];
     }>({
-        categories: [],
-        data: [],
+      categories: [],
+      data: [],
     });
-
+  
     const minStartDate = new Date(createdAt);
     const maxEndDate = new Date();
-
+  
     useEffect(() => {
-        FetchClicks(authToken, id)
-            .then((res) => {
-                console.log(res)
-            }).catch((err) => {
-                console.log(err)
-            })
-    }, []);
+        fetchEngagement(authToken, id)
+        .then((res) => {
+          const categories = res.map((data:any) => data.date);
+          const data = res.map((data:any) => data.clicks);
 
-    useEffect(() => {
-        updateChartData(minStartDate, maxEndDate);
-    }, []);
-
-    useEffect(() => {
-        updateChartData(startDate, endDate);
-    }, [startDate, endDate]);
-
-    const updateChartData = (start: Date, end: Date) => {
-        const datesInRange = [];
-        let currentDate = new Date(start);
-
-        while (currentDate <= end) {
-            datesInRange.push(format(currentDate, 'dd/MM/yyyy'));
-            currentDate = addWeeks(currentDate, 1);
-        }
-
-        if (format(currentDate, 'dd/MM/yyyy') !== format(end, 'dd/MM/yyyy')) {
-            datesInRange.push(format(end, 'dd/MM/yyyy'));
-        }
-
-        setChartData({
-            categories: datesInRange,
-            data: Array.from({ length: datesInRange.length }, () => Math.floor(Math.random() * 100)),
+          console.log(categories)
+  
+          setChartData({
+            categories,
+            data,
+          });
+        })
+        .catch((err) => {
+          console.error(err);
         });
+    }, [id, authToken]);
+  
+    useEffect(() => {
+      updateChartData(minStartDate, maxEndDate);
+    }, []);
+  
+    useEffect(() => {
+      updateChartData(startDate, endDate);
+    }, [startDate, endDate]);
+  
+    const updateChartData = (start: Date, end: Date) => {
+      const datesInRange = [];
+      let currentDate = new Date(start);
+  
+      while (currentDate <= end) {
+        datesInRange.push(format(currentDate, 'dd/MM/yyyy'));
+        currentDate = addWeeks(currentDate, 1);
+      }
+  
+      if (format(currentDate, 'dd/MM/yyyy') !== format(end, 'dd/MM/yyyy')) {
+        datesInRange.push(format(end, 'dd/MM/yyyy'));
+      }
+  
     };
 
     return (
