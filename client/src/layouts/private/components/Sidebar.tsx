@@ -3,15 +3,11 @@ import {
     CSSObject,
     Divider,
     List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
     Theme,
     styled,
 } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
-import { Link, Outlet, useLocation } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,8 +15,9 @@ import HomeIcon from "@mui/icons-material/Home";
 import LinkIcon from "@mui/icons-material/Link";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import AddIcon from "@mui/icons-material/Add";
-
-const drawerWidth = 240;
+import drawerWidth from "../data/drawerWidth";
+import SidebarItem from "./SidebarItem";
+import { Fragment } from "react";
 
 const openedMixin = (theme: Theme): CSSObject => ({
     width: drawerWidth,
@@ -43,7 +40,8 @@ const closedMixin = (theme: Theme): CSSObject => ({
     },
 });
 
-const Drawer = styled(MuiDrawer, {
+const Drawer = styled(
+    MuiDrawer, {
     shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
     width: drawerWidth,
@@ -69,55 +67,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     position: "relative",
 }));
 
-const SidebarItem = ({ open, icon, text, to, onClick }: SidebarItemProps) => {
-    const location = useLocation();
-    const isActive = to && location.pathname === to;
-
-    return (
-        <ListItem disablePadding sx={{ display: "block" }}>
-            <Link to={to || "#"} style={{ textDecoration: "none" }}>
-                <ListItemButton
-                    sx={{
-                        minHeight: 48,
-                        justifyContent: open ? "initial" : "center",
-                        px: 2.5,
-                        margin: 1,
-                        borderRadius: 2,
-                        ...(isActive && {
-                            color: "primary.main",
-                            backgroundColor: "primary.100",
-                            "& svg": {
-                                color: "primary.main",
-                            },
-                            borderLeft: (theme) => `4px solid ${theme.palette.primary.main}`,
-                        }),
-                    }}
-                    onClick={onClick}
-                >
-                    <ListItemIcon
-                        sx={{
-                            minWidth: 0,
-                            mr: open ? 3 : "auto",
-                            justifyContent: "center",
-                        }}
-                    >
-                        {icon}
-                    </ListItemIcon>
-                    <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                </ListItemButton>
-            </Link>
-        </ListItem>
-    );
-};
-
-interface SidebarItemProps {
-    open: boolean;
-    icon: React.ReactNode;
-    text: string;
-    to?: string;
-    onClick?: () => void;
-}
-
 interface PrivateLayoutProps {
     open: boolean;
 }
@@ -125,6 +74,39 @@ interface PrivateLayoutProps {
 const Sidebar = ({ open }: PrivateLayoutProps) => {
 
     const { logout } = useAuth();
+
+    const sidebarItems = [
+        [
+            {
+                icon: <HomeIcon />,
+                text: "Home",
+                to: "/dashboard"
+            },
+            {
+                icon: <LinkIcon className="transform rotate-45" />,
+                text: "Links",
+                to: "/dashboard/links"
+            },
+            {
+                icon: <LeaderboardIcon />,
+                text: "Analytics",
+                to: "/dashboard/analytics"
+            },
+        ],
+        <Divider className="w-[85%] flex self-center" />,
+        [
+            {
+                icon: <SettingsIcon />,
+                text: "Settings",
+                to: "/dashboard/settings"
+            },
+            {
+                icon: <LogoutIcon />,
+                text: "Log out",
+                onClick: logout
+            },
+        ],
+    ];
 
     return (
         <>
@@ -151,44 +133,28 @@ const Sidebar = ({ open }: PrivateLayoutProps) => {
 
                 <Divider className="w-[85%] flex self-center" />
 
-                <List>
-                    <SidebarItem
-                        open={open}
-                        icon={<HomeIcon />}
-                        text="Home"
-                        to="/dashboard"
-                    />
-                    <SidebarItem
-                        open={open}
-                        icon={<LinkIcon className="transform rotate-45" />}
-                        text="Links"
-                        to="/dashboard/links"
-                    />
-                    <SidebarItem
-                        open={open}
-                        icon={<LeaderboardIcon />}
-                        text="Analytics"
-                        to="/dashboard/analytics"
-                    />
-                </List>
+                {sidebarItems.map((group, index) => (
+                    <Fragment key={index}>
+                        {Array.isArray(group) ? (
+                            <List>
+                                {group.map((item, itemIndex) => (
+                                    <SidebarItem
+                                        key={itemIndex}
+                                        open={open}
+                                        icon={item.icon}
+                                        text={item.text}
+                                        to={item.to}
+                                        onClick={item.onClick}
+                                    />
+                                ))}
+                            </List>
+                        ) : (
+                            group
+                        )}
+                    </Fragment>
+                ))}
 
-                <Divider className="w-[85%] flex self-center" />
-
-                <List>
-                    <SidebarItem
-                        open={open}
-                        icon={<SettingsIcon />}
-                        text="Settings"
-                        to="/dashboard/settings"
-                    />
-                    <SidebarItem
-                        open={open}
-                        icon={<LogoutIcon />}
-                        text="Log Out"
-                        onClick={logout}
-                    />
-                </List>
-            </Drawer>
+            </Drawer >
 
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />

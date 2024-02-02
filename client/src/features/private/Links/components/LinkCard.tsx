@@ -136,7 +136,7 @@ const LinkCard = (props: LinkCardProps) => {
                 />
 
                 <h3 className="flex-1 text-lg font-bold text-gray-800 cursor-pointer hover:underline">
-                    <Link to={`/dashboard/link/${props._id}`}>
+                    <Link to={`/dashboard/links/${props._id}`}>
                         {props.meta?.title}
                     </Link>
                 </h3>
@@ -228,7 +228,7 @@ const LinkCard = (props: LinkCardProps) => {
                 </div>
 
                 {(props.showDetails ?? true) && (
-                    <Link to={`/dashboard/link/${props._id}`} className='flex items-center gap-1 p-2 border border-gray-400 rounded-md hover:bg-gray-200'>
+                    <Link to={`/dashboard/links/${props._id}`} className='flex items-center gap-1 p-2 border border-gray-400 rounded-md hover:bg-gray-200'>
                         <LinkIcon className="transform rotate-45" />
                         <p>
                             Details

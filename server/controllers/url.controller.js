@@ -162,7 +162,7 @@ const shortenUrl = async (req, res) => {
       });
       await newUrl.save();
 
-      updateTagsForUrl(req.user, newUrl._id, tags);
+      checkAndUpdateTags(req.user, newUrl._id, tags);
 
       res.status(201).send({ shortUrl });
     } else {
@@ -178,7 +178,7 @@ const shortenUrl = async (req, res) => {
       });
       await newUrl.save();
 
-      updateTagsForUrl(req.user, newUrl._id, tags);
+      checkAndUpdateTags(req.user, newUrl._id, tags);
 
       res.status(201).send({ shortUrl, totalTime, collisions });
     }

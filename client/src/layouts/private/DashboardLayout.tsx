@@ -2,7 +2,7 @@ import {
   Box,
 } from "@mui/material";
 import { useState } from "react";
-import Appbar from "./components/Appbar";
+import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 
 const DashboardLayout = () => {
@@ -11,7 +11,7 @@ const DashboardLayout = () => {
   return (
     <Box sx={{ display: "flex" }}>
 
-      <Appbar open={open} setOpen={setOpen} />
+      <Header open={open} setOpen={setOpen} />
 
       <Sidebar open={open} />
 

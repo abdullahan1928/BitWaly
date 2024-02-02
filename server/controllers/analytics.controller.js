@@ -1,6 +1,5 @@
 const Url = require('../models/Url.model');
 const Analytics = require('../models/Analytics.model');
-const mongoose = require('mongoose');
 
 const allAnalyticsController = async (req, res) => {
   const { shortUrl } = req.params;
@@ -119,7 +118,6 @@ const clicksController = async (req, res) => {
   }
 };
 
-
 const accessCountController = async (req, res) => {
   const { id } = req.params;
 
@@ -159,7 +157,6 @@ const browserAnalyticsController = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
-
 
 const osAnalyticsController = async (req, res) => {
   const { id } = req.params;
@@ -204,7 +201,6 @@ const deviceAnalyticsController = async (req, res) => {
   }
 };
 
-
 const mobileAnalyticsController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
@@ -226,7 +222,6 @@ const mobileAnalyticsController = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
-
 
 const locationAnalyticsController = async (req, res) => {
   const { id } = req.params;

@@ -15,8 +15,8 @@ interface IDashboardRoute {
 export const DashboardRoutes: IDashboardRoute[] = [
     { index: true, element: <Dashboard /> },
     { path: 'links', element: <Links /> },
+    { path: 'links/:id', element: <LinkDetails /> },
     { path: 'link/new', element: <NewLink /> },
-    { path: 'link/:id', element: <LinkDetails /> },
     { path: 'link/edit/:id', element: <EditLink /> },
     { path: 'analytics', element: <Analytics /> },
     { path: 'settings', element: <Settings /> },

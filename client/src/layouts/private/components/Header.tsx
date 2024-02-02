@@ -16,8 +16,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "@/config/config";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-
-const drawerWidth = 240;
+import drawerWidth from "../data/drawerWidth";
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open",
@@ -52,7 +51,7 @@ interface AppBarProps extends MuiAppBarProps {
     setOpen?: any;
 }
 
-const Appbar = ({ open, setOpen }: AppBarProps) => {
+const Header = ({ open, setOpen }: AppBarProps) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
@@ -136,7 +135,7 @@ const Appbar = ({ open, setOpen }: AppBarProps) => {
                 {name && (
                     <div className="flex items-center">
                         <div
-                            className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-200 rounded-xl"
+                            className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-200"
                             onClick={handleMenuOpen}
                         >
                             <div className="flex items-center justify-center w-10 h-10 mr-2 bg-gray-800 rounded-full">
@@ -228,4 +227,4 @@ const Appbar = ({ open, setOpen }: AppBarProps) => {
     )
 }
 
-export default Appbar
+export default Header
