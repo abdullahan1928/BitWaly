@@ -204,25 +204,28 @@ const LinkCard = (props: LinkCardProps) => {
                             width: '1.25rem',
                         }} />
                         <p>
-                            {tags.length > 0 ?
-                                tags.map((tag: any, index: number) => {
-                                    return (
+                            {tags.length > 0 ? (
+                                <>
+                                    {tags.slice(0, 3).map((tag: any, index: number) => (
                                         <span
                                             key={index}
                                             className={`px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 
-                                            ${props.showDetails && 'cursor-pointer hover:bg-gray-300'}
-                                            `}
+                            ${props.showDetails && 'cursor-pointer hover:bg-gray-300'}
+                            `}
                                             onClick={() => handleTagClick(tag._id)}
                                         >
                                             {tag.name}
                                         </span>
-                                    )
-                                }
-                                ) : (
-                                    <span>
-                                        No tags
-                                    </span>
-                                )}
+                                    ))}
+                                    {tags.length > 3 && (
+                                        <span className="font-semibold text-gray-800">
+                                            +{tags.length - 3} more
+                                        </span>
+                                    )}
+                                </>
+                            ) : (
+                                <span>No tags</span>
+                            )}
                         </p>
                     </div>
                 </div>

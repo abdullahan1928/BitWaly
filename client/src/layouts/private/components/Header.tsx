@@ -138,7 +138,7 @@ const Header = ({ open, setOpen }: AppBarProps) => {
                             className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-200"
                             onClick={handleMenuOpen}
                         >
-                            <div className="flex items-center justify-center w-10 h-10 mr-2 bg-gray-800 rounded-full">
+                            <div className="flex items-center justify-center w-10 h-10 mr-2 text-xl bg-gray-800 rounded-full">
                                 {name[0]}
                             </div>
                             <Typography
@@ -165,15 +165,11 @@ const Header = ({ open, setOpen }: AppBarProps) => {
                                 },
                             }}
                         >
-                            <MenuItem
-                                onClick={() => {
-                                    handleMenuClose();
-                                }}
-                            >
-                                <div className="flex items-center justify-center w-10 h-10 mr-2 text-white bg-gray-800 rounded-full">
+                            <div className="flex items-center px-4 py-2 cursor-auto">
+                                <div className="flex items-center justify-center w-10 h-10 mr-2 text-white bg-gray-800 rounded-full cursor-auto">
                                     {name[0]}
                                 </div>
-                                <div className="flex flex-col">
+                                <div className="flex flex-col cursor-auto">
                                     <Typography variant="subtitle1" noWrap component="div" sx={{ color: "black" }}>
                                         {name}
                                     </Typography>
@@ -181,7 +177,7 @@ const Header = ({ open, setOpen }: AppBarProps) => {
                                         {email}
                                     </Typography>
                                 </div>
-                            </MenuItem>
+                            </div>
 
                             <Divider />
 
