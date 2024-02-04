@@ -14,8 +14,11 @@ const RedirectComponent = () => {
         if (shortUrl && !hasRedirected.current) {
             UrlRetrieval(shortUrl)
                 .then((response: string) => {
-                    window.location.href = response;
+                    // Set the ref flag before redirecting to prevent double increment
                     hasRedirected.current = true;
+
+                    // Redirect to the long URL
+                    window.location.href = response;
                 })
                 .catch(() => {
                     setIsError(true);

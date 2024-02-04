@@ -193,7 +193,11 @@ const retrieveUrl = async (req, res) => {
   const shardKey = shortUrl[0].toLowerCase();
 
   //API requures credits. Use it wisely. :)
-  let location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=${LOCATION_API_KEY}&ipAddress=${req.body.userIP}`);
+  let userIP = req.body.userIP
+  if (userIP === undefined) {
+    userIP = '192.168.10.1'
+  }
+  let location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=${LOCATION_API_KEY}&ipAddress=${userIP}`);
 
   location.data.location.country = getCountry(location.data.location.country);
 
@@ -201,9 +205,7 @@ const retrieveUrl = async (req, res) => {
     const url = await Url.findOne({ shardKey, shortUrl });
 
     if (url) {
-      console.log(url.accessCount);
       url.accessCount += 1;
-      console.log(url.accessCount);
 
       const analyticsData = new Analytics({
         url: url._id,
