@@ -51,9 +51,9 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
 
                     Weekly change
                 </p>
-                <span className="text-3xl text-[#526281] font-bold">
-                {weeklyChange}%
-                </span>
+                <span className={`text-3xl font-bold ${weeklyChange >= 0 ? 'text-green-800' : 'text-red-500'}`}>
+      {weeklyChange}%
+    </span>
             </div>
         </div>
     )
