@@ -19,7 +19,7 @@ router.post('/signin', [
 
 
 //ROUTE3: get logged in user details  /auth/getuser,    AUTHENTICATION/LOGIN REQUIRED
-router.get('/getuser', fetchUser, getUserController);
+router.get('/getUser', fetchUser, getUserController);
 
 
 //ROUTE4: update logged in user details  /auth/updateuser,    AUTHENTICATION/LOGIN REQUIRED

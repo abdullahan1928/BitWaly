@@ -9,7 +9,7 @@ const DisplayName = () => {
     const [name, setName] = useState("")
 
     useEffect(() => {
-        axios.get(`${API_URL}/auth/getuser`, {
+        axios.get(`${API_URL}/auth/getUser`, {
             headers: {
                 authToken: `${authToken}`
             }

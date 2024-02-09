@@ -359,6 +359,8 @@ const deleteUrl = async (req, res) => {
       }
     }
 
+    await Analytics.deleteMany({ url: id });
+
     if (deletedUrl) {
       return res.status(200).send("URL deleted successfully");
     } else {

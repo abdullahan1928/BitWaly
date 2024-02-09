@@ -69,10 +69,6 @@ const Header = ({ open, setOpen }: AppBarProps) => {
     };
 
     useEffect(() => {
-        if (!authToken) {
-            logout();
-        }
-
         axios.get(`${API_URL}/auth/getUser`, {
             headers: {
                 authToken: `${authToken}`,

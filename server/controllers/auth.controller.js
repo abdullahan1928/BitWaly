@@ -57,7 +57,6 @@ const signinController = async (req, res) => {
         }
 
         const authToken = jwt.sign(user.id, jwt_secret);
-
         user.lastLogin = new Date();
         await user.save();
 
