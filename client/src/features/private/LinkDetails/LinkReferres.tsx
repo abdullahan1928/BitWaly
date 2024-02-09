@@ -1,10 +1,45 @@
+import { authToken } from '@/config/authToken';
+import { API_URL } from '@/config/urls';
+import axios from 'axios';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { useEffect, useState } from 'react';
 
-const LinkReferres = () => {
+const LinkReferres = ({ id }: { id: string }) => {
+    const [chartData, setChartData] = useState<{ name: string; y: number }[]>([])
+
+    // const data = 81.41
+
+    useEffect(() => {
+        axios.get(`${API_URL}/analytics/referrer/${id}`, {
+            headers: {
+                authToken: `${authToken}`
+            }
+        }).then((res) => {
+            const data: { [key: string]: string } = res.data; // Specify the type of 'data'
+            console.log(data)
+            const countMap: { [key: string]: number } = {}; // Specify the type of 'countMap'
+
+            Object.values(data).forEach((value) => {
+                countMap[value] = (countMap[value] || 0) + 1;
+            });
+
+            const chartDataArray = Object.keys(countMap).map((key) => {
+                return {
+                    name: key,
+                    y: countMap[key]
+                };
+            });
+
+            setChartData(chartDataArray);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }, []);
+
     return (
         <div className="bg-white rounded-md shadow-md p-4 w-[48%]">
-            {/* <h3 className="text-xl font-bold mb-4">
+            {/* <h3 className="mb-4 text-xl font-bold">
                 Referrers
             </h3> */}
 
@@ -12,45 +47,38 @@ const LinkReferres = () => {
                 highcharts={Highcharts}
                 options={{
                     title: {
-                        text: 'Referrers'
+                        text: 'Referrers',
                     },
-                    chart: {
-                        type: 'pie',
-                        height: 500,
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: false
+                            },
+                            showInLegend: true
+                        }
                     },
-                    series: [
-                        {
-                            name: 'Referrers',
-                            data: [
-                                {
-                                    name: 'Google',
-                                    y: 61.41,
-                                    sliced: true,
-                                    selected: true,
-                                },
-                                {
-                                    name: 'Facebook',
-                                    y: 11.84,
-                                },
-                                {
-                                    name: 'Instagram',
-                                    y: 10.85,
-                                },
-                                {
-                                    name: 'Twitter',
-                                    y: 4.67,
-                                },
-                                {
-                                    name: 'Youtube',
-                                    y: 4.18,
-                                },
-                                {
-                                    name: 'Others',
-                                    y: 7.05,
-                                },
-                            ],
+                    legend: {
+                        align: 'right',
+                        verticalAlign: 'middle',
+                        layout: 'vertical',
+                        itemMarginBottom: 10,
+                        itemStyle: {
+                            fontSize: '14px',
+                            fontWeight: 'normal',
+                            color: '#666666'
                         },
-                    ],
+                        symbolRadius: 0,
+                        symbolHeight: 14,
+                        symbolWidth: 14,
+                    },
+                    series: [{
+                        type: 'pie',
+                        name: 'Referrers',
+                        innerSize: '80%',
+                        data: chartData,
+                    }]
                 }}
             />
 

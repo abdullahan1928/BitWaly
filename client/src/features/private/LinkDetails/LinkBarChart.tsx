@@ -5,14 +5,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
 import { fetchEngagement } from '@/services/engagementsWDates';
 import DatePicker from 'react-datepicker';
+import { authToken } from '@/config/authToken';
 
 interface LinkBarChartProps {
   id: string;
-  authToken: string;
   createdAt: string;
 }
 
-const LinkBarChart = ({ id, authToken, createdAt }: LinkBarChartProps) => {
+const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
   const [originalChartData, setOriginalChartData] = useState<{
     categories: string[];
     data: number[];
@@ -35,6 +35,8 @@ const LinkBarChart = ({ id, authToken, createdAt }: LinkBarChartProps) => {
   const minStartDate = new Date(createdAt);
 
   useEffect(() => {
+    if (!authToken) return;
+
     fetchEngagement(authToken, id)
       .then((res) => {
         const updatedData = res.map((data: any) => ({

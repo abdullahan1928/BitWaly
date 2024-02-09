@@ -3,7 +3,7 @@ import LinkCard from "./components/LinkCard";
 import { getUserUrls } from "@/features/public/Home/services/url.service";
 import { authToken } from "@/config/authToken";
 import { useFilter } from "@/hooks/useFilter";
-    
+
 interface Url {
     _id: string;
     originalUrl: string;
@@ -88,7 +88,6 @@ const LinkCards = () => {
                                 shortUrl={url.shortUrl}
                                 createdAt={formatCreatedAt(url.createdAt)}
                                 meta={url.meta}
-                                authToken={authToken}
                                 onDeleteUrl={handleDeleteUrl}
                                 showDetails={true}
                             />

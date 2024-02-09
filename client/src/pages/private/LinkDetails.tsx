@@ -28,7 +28,8 @@ const LinkDetails = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
 
-    const { id } = useParams<{ id: string }>()
+    const { id } = useParams<{ id: string }>();
+
     useEffect(() => {
         fetchLink();
     }, []);
@@ -64,15 +65,11 @@ const LinkDetails = () => {
                 shortUrl={urlData?.shortUrl ?? ''}
                 createdAt={urlData?.createdAt ?? ''}
                 meta={urlData?.meta}
-                authToken={authToken ?? ''}
                 onDeleteUrl={() => { }}
                 showDetails={false}
             />
 
-            <LinkSummary
-                id={id ?? ''}
-                authToken={authToken ?? ''}
-            />
+            <LinkSummary id={id ?? ''} />
 
             {urlData?.createdAt && (
                 <DateRangeFilter
@@ -84,7 +81,6 @@ const LinkDetails = () => {
             {urlData?.createdAt && (
                 <LinkBarChart
                     id={id ?? ''}
-                    authToken={authToken ?? ''}
                     createdAt={urlData?.createdAt ?? ''}
                 // startDate={startDate}
                 // endDate={endDate}
@@ -93,13 +89,12 @@ const LinkDetails = () => {
 
             <LinkLocations
                 id={id ?? ''}
-                authToken={authToken ?? ''}
                 startDate={startDate}
                 endDate={endDate}
             />
 
             <div className="flex flex-row flex-wrap gap-10 mb-4">
-                <LinkReferres />
+                <LinkReferres id={id ?? ''} />
 
                 <LinkDevices id={id ?? ''} />
             </div>

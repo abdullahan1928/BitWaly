@@ -14,6 +14,7 @@ import { Tooltip } from '@mui/material';
 import axios from 'axios';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import { useFilter } from '@/hooks/useFilter';
+import { authToken } from '@/config/authToken';
 
 interface IUrl {
     _id: string;
@@ -27,7 +28,6 @@ interface IUrl {
 }
 
 interface LinkCardProps extends IUrl {
-    authToken: string | null;
     onDeleteUrl: (deletedUrlId: string) => void;
     showDetails?: boolean;
 }
@@ -72,9 +72,9 @@ const LinkCard = (props: LinkCardProps) => {
     }, [])
 
     const getClicks = async () => {
-        if (!props.authToken) return;
+        if (!authToken) return;
 
-        const res = await FetchClicks(props.authToken, props._id)
+        const res = await FetchClicks(authToken, props._id)
 
         setClicks(res);
     }
@@ -82,7 +82,7 @@ const LinkCard = (props: LinkCardProps) => {
     const getTags = async () => {
         axios.get(`${API_URL}/tag/${props._id}`, {
             headers: {
-                authToken: `${props.authToken}`
+                authToken: `${authToken}`
             }
         }).then((res: any) => {
             setTags(res.data);
@@ -104,7 +104,7 @@ const LinkCard = (props: LinkCardProps) => {
     const handleDelete = async () => {
         if (urlToDelete) {
             try {
-                await deleteUrl(props.authToken, urlToDelete);
+                await deleteUrl(authToken, urlToDelete);
                 console.log('URL deleted successfully');
                 props.onDeleteUrl(urlToDelete);
                 navigate('/dashboard/links');
