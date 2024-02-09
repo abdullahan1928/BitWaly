@@ -14,6 +14,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { deleteUrl, getUserUrls } from './services/url.service';
+import { authToken } from '@/config/authToken';
 
 interface Url {
     _id: string;
@@ -26,7 +27,6 @@ const UrlTable = () => {
     const [userUrls, setUserUrls] = useState<Url[]>([]);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
-    const authToken = localStorage.getItem('token');
 
     useEffect(() => {
         const fetchUserUrls = async () => {

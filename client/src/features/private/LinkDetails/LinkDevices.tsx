@@ -1,4 +1,5 @@
-import { API_URL } from '@/config/config';
+import { authToken } from '@/config/authToken';
+import { API_URL } from '@/config/urls';
 import axios from 'axios';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
@@ -10,7 +11,6 @@ const LinkDevices = ({ id }: { id: string }) => {
     // const data = 81.41
 
     useEffect(() => {
-        const authToken = localStorage.getItem('token');
         axios.get(`${API_URL}/analytics/device/${id}`, {
             headers: {
                 authToken: `${authToken}`
@@ -45,7 +45,7 @@ const LinkDevices = ({ id }: { id: string }) => {
 
     return (
         <div className="bg-white rounded-md shadow-md p-4 w-[48%]">
-            {/* <h3 className="text-xl font-bold mb-4">
+            {/* <h3 className="mb-4 text-xl font-bold">
                 Devices
             </h3> */}
 

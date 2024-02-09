@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { API_URL } from "@/config/config";
+import { API_URL } from "@/config/urls";
 import { Tabs, Paper } from "@mui/material";
 import TabPanel from "./components/TabPanel";
 import { CountryData } from "./interfaces/CoutryData";

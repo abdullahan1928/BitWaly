@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import LinkCard from "./components/LinkCard";
 import { getUserUrls } from "@/features/public/Home/services/url.service";
-import { useFilter } from "@/context/FilterLinksContext";
-
+import { authToken } from "@/config/authToken";
+import { useFilter } from "@/hooks/useFilter";
+    
 interface Url {
     _id: string;
     originalUrl: string;
@@ -17,7 +18,6 @@ interface Url {
 const LinkCards = () => {
     const [userUrls, setUserUrls] = useState<Url[]>([]);
     const [filteredUserUrls, setFilteredUserUrls] = useState<Url[]>([]);
-    const authToken = localStorage.getItem('token');
     const { linkTypeFilter, tagFilter, linkTypeFilterApplied, tagFilterApplied } = useFilter();
 
     useEffect(() => {

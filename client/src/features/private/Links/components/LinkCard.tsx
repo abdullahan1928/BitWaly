@@ -1,5 +1,5 @@
 import DeleteDialog from '@/components/DeleteDialog';
-import { API_URL, REDIRECT_URL } from '@/config/config';
+import { API_URL, REDIRECT_URL } from '@/config/urls';
 import { deleteUrl } from '@/features/public/Home/services/url.service';
 import TrashIcon from '@mui/icons-material/Delete';
 import { useEffect, useState } from 'react';
@@ -13,7 +13,7 @@ import { FetchClicks } from '@/services/fetchClicks.service';
 import { Tooltip } from '@mui/material';
 import axios from 'axios';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import { useFilter } from '@/context/FilterLinksContext';
+import { useFilter } from '@/hooks/useFilter';
 
 interface IUrl {
     _id: string;

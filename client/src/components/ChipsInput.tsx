@@ -1,8 +1,9 @@
-import { API_URL } from '@/config/config';
+import { API_URL } from '@/config/urls';
 import { Autocomplete, Chip, TextField } from '@mui/material'
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import DoneIcon from '@mui/icons-material/Done';
+import { authToken } from '@/config/authToken';
 
 interface ChipsInputProps {
     tags: string[];
@@ -33,7 +34,6 @@ const ChipsInput = ({ tags, onTagChange, className }: ChipsInputProps) => {
     }
 
     const getAllTags = () => {
-        const authToken = localStorage.getItem('token')
         axios.get(`${API_URL}/tag`,
             {
                 headers: {

@@ -1,8 +1,10 @@
 import {
     Divider,
     IconButton,
+    InputAdornment,
     Menu,
     MenuItem,
+    TextField,
     Toolbar,
     Typography,
     styled,
@@ -14,9 +16,11 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useAuth } from "@/hooks/useAuth";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { API_URL } from "@/config/config";
+import { API_URL } from "@/config/urls";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import drawerWidth from "../data/drawerWidth";
+import SearchIcon from '@mui/icons-material/Search';
+import { authToken } from "@/config/authToken";
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open",
@@ -55,6 +59,7 @@ const Header = ({ open, setOpen }: AppBarProps) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
+    const [searchValue, setSearchValue] = useState("");
 
     const navigate = useNavigate();
     const { logout } = useAuth();
@@ -64,30 +69,24 @@ const Header = ({ open, setOpen }: AppBarProps) => {
     };
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-
-        if (!token) {
+        if (!authToken) {
             logout();
         }
 
         axios.get(`${API_URL}/auth/getUser`, {
             headers: {
-                authToken: `${token}`,
+                authToken: `${authToken}`,
             },
-        })
-            .then((res) => {
-                if (res.data.name) {
-                    setName(res.data.name);
-                } else {
-                    setName(res.data._id);
-                }
-                setEmail(res.data.email);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-
-        setOpen(true);
+        }).then((res) => {
+            if (res.data.name) {
+                setName(res.data.name);
+            } else {
+                setName(res.data._id);
+            }
+            setEmail(res.data.email);
+        }).catch((err) => {
+            console.log(err);
+        });
     }, []);
 
     const handleMenuOpen = (event: any) => {
@@ -130,10 +129,30 @@ const Header = ({ open, setOpen }: AppBarProps) => {
                     {(open && <ChevronLeftIcon />) || (!open && <ChevronRightIcon />)}
                 </IconButton>
                 <Typography color="secondary" variant="h6" noWrap component="div">
-
                 </Typography>
                 {name && (
-                    <div className="flex items-center">
+                    <div className="flex items-center gap-12">
+                        <TextField
+                            variant="outlined"
+                            size="small"
+                            value={searchValue}
+                            placeholder="Search..."
+                            onChange={(e) => setSearchValue(e.target.value)}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <IconButton size="small">
+                                            <SearchIcon />
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                            sx={{
+                                backgroundColor: "white",
+                                borderRadius: "0.5rem",
+                                width: "30rem",
+                            }}
+                        />
                         <div
                             className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-200"
                             onClick={handleMenuOpen}

@@ -1,6 +1,6 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import React, { useState } from "react";
-import { API_URL } from "@/config/config.ts";
+import { API_URL } from "@/config/urls";
 import { Link } from 'react-router-dom';
 import CustomSnackbar from "@/components/CustomSnackbar";
 import useAuthForm from "@/hooks/useAuthForm";
@@ -37,12 +37,12 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex items-center justify-center h-screen">
       <form
-        className="bg-white shadow-md rounded px-20 py-16 mb-4"
+        className="px-20 py-16 mb-4 bg-white rounded shadow-md"
         onSubmit={handleSubmit}
       >
-        <h3 className="text-3xl font-bold mb-12">
+        <h3 className="mb-12 text-3xl font-bold">
           <span className="text-3xl font-bold">
             Log In to start your journey
           </span>
@@ -63,7 +63,7 @@ const LoginForm = () => {
           />
         </div>
 
-        <div className="mb-8 relative">
+        <div className="relative mb-8">
           <label className={styles.label} htmlFor="password">
             Password
           </label>
@@ -87,9 +87,9 @@ const LoginForm = () => {
         </div>
 
         <div className="flex items-center justify-between mt-16 mb-8 text-lg">
-          <span className="inline-block align-baseline font-bold">
+          <span className="inline-block font-bold align-baseline">
             Don't have an account? &nbsp;
-            <Link to="/signup" className="text-blue-500 hover:text-blue-800">
+            <Link to="/signup" className="text-primary-600 hover:text-primary-800">
               Sign Up
             </Link>
           </span>

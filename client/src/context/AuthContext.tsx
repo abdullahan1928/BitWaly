@@ -1,4 +1,4 @@
-import React, { createContext, useState, ReactNode } from 'react';
+import { createContext, useState, ReactNode } from 'react';
 
 interface AuthContextProps {
     isAuthenticated: boolean;
@@ -8,7 +8,7 @@ interface AuthContextProps {
 
 export const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(() => {
         const storedToken = localStorage.getItem('token');
         return !!storedToken; // Set to true if token exists, false otherwise

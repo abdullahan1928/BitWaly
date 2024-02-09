@@ -1,8 +1,8 @@
 import ChipsInputFilter from "@/features/private/Links/components/ChipsInputFilter";
 import { SelectChangeEvent } from "@mui/material";
-import { useFilter } from '@/context/FilterLinksContext';
 import { useState, useEffect } from "react";
 import LinkTypeFilter from "./components/LinkTypeFilter";
+import { useFilter } from "@/hooks/useFilter";
 
 const LinksFilter = () => {
     const [linkType, setLinkType] = useState('all');

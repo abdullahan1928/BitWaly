@@ -10,6 +10,7 @@ import LinkCard from "@/features/private/Links/components/LinkCard";
 import LinkSummary from "@/features/private/LinkDetails/LinkSummary";
 import { Link } from "react-router-dom";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { authToken } from "@/config/authToken";
 
 interface IUrl {
     _id: string;
@@ -28,8 +29,6 @@ const LinkDetails = () => {
     const [endDate, setEndDate] = useState(new Date());
 
     const { id } = useParams<{ id: string }>()
-    const authToken = localStorage.getItem('token')
-
     useEffect(() => {
         fetchLink();
     }, []);

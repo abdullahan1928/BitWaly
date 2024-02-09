@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import { ReactNode, createContext, useState } from 'react';
 
 interface FilterContextProps {
     linkTypeFilter: string;
@@ -11,9 +11,9 @@ interface FilterContextProps {
     setTagFilterApplied: (filter: boolean) => void;
 }
 
-const FilterContext = createContext<FilterContextProps | undefined>(undefined);
+export const FilterContext = createContext<FilterContextProps | undefined>(undefined);
 
-export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const FilterProvider = ({ children }: { children: ReactNode }) => {
     const [linkTypeFilter, setLinkTypeFilter] = useState('all');
     const [tagFilter, setTagFilter] = useState<string[]>([]);
     const [linkTypeFilterApplied, setLinkTypeFiltersApplied] = useState(false);
@@ -26,10 +26,4 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     );
 };
 
-export const useFilter = () => {
-    const context = useContext(FilterContext);
-    if (!context) {
-        throw new Error('useFilter must be used within a FilterProvider');
-    }
-    return context;
-};
+

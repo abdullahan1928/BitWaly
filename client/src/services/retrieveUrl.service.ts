@@ -1,14 +1,18 @@
 import axios from 'axios';
-import { API_URL } from '@/config/config.ts';
+import { API_URL } from '@/config/urls';
 import { browserName, osName, mobileVendor, deviceType } from 'react-device-detect';
 
-const UrlRetrieval = async (originalUrl: string): Promise<string> => {
+const UrlRetrieval = async (originalUrl: string, referrer: string): Promise<string> => {
     try {
         const ipResponse = await axios.get('https://api.ipify.org?format=json');
         const userIP = ipResponse.data.ip;
         const response = await axios.post(`${API_URL}/url/retreive/${originalUrl}`, {
             userIP: userIP,
-            browserName, osName, mobileVendor, deviceType
+            browserName,
+            osName,
+            mobileVendor,
+            deviceType,
+            referrer
         });
         return response.data.originalUrl;
     } catch (error) {

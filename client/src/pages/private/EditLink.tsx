@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { UpdateUrl } from "@/services/updateUrl.service";
 import { UrlRetrievalById } from "@/services/retrieveUrl.service";
 import ChipsInput from "@/components/ChipsInput";
+import { authToken } from "@/config/authToken";
 
 
 const NewUrl = () => {
@@ -19,7 +20,6 @@ const NewUrl = () => {
 
     const navigate = useNavigate();
 
-    const token = localStorage.getItem("token");
     const { id } = useParams<{ id: string }>();
 
     useEffect(() => {
@@ -31,7 +31,7 @@ const NewUrl = () => {
     };
 
     const getData = async () => {
-        UrlRetrievalById(token ?? '', id ?? '')
+        UrlRetrievalById(authToken ?? '', id ?? '')
             .then((res) => {
                 setBackHalf(res.url.shortUrl);
                 setTitle(res.url.meta.title);
@@ -45,9 +45,9 @@ const NewUrl = () => {
     const handleButtonClick = async () => {
         const data = { title, shortUrl: backHalf, tags };
 
-        if (token === null || id === undefined) { return }
+        if (authToken === null || id === undefined) { return }
 
-        await UpdateUrl(token, id, data)
+        await UpdateUrl(authToken, id, data)
             .then(() => {
                 navigate('/dashboard/links');
             }).catch((error) => {

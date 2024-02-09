@@ -12,7 +12,9 @@ const RedirectComponent = () => {
 
     useEffect(() => {
         if (shortUrl && !hasRedirected.current) {
-            UrlRetrieval(shortUrl)
+            const referrer = document.referrer || 'Direct';
+
+            UrlRetrieval(shortUrl, referrer)
                 .then((response: string) => {
                     // Set the ref flag before redirecting to prevent double increment
                     hasRedirected.current = true;

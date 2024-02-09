@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_URL } from '@/config/config.ts';
+import { API_URL } from '@/config/urls';
 
 export const fetchEngagement = async (authToken: string, id: string) => {
     try {

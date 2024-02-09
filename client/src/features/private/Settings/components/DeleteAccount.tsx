@@ -1,8 +1,10 @@
 import DeleteDialog from '@/components/DeleteDialog'
 import PrimaryButton from '@/components/PrimaryButton'
-import { API_URL } from '@/config/config'
+import { API_URL } from '@/config/urls'
 import axios from 'axios'
 import { useState } from 'react'
+import { authToken } from '@/config/authToken';
+
 
 const DeleteAccount = () => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -11,7 +13,6 @@ const DeleteAccount = () => {
     }
 
     const handleDelete = () => {
-        const authToken = localStorage.getItem('token')
 
         axios.delete(`${API_URL}/auth/`, {
             headers: {

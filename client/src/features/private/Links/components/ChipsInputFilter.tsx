@@ -1,9 +1,10 @@
-import { API_URL } from '@/config/config';
+import { API_URL } from '@/config/urls';
 import { Autocomplete, Chip, TextField } from '@mui/material';
 import axios from 'axios';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import DoneIcon from '@mui/icons-material/Done';
-import { useFilter } from '@/context/FilterLinksContext';
+import { authToken } from '@/config/authToken';
+import { useFilter } from '@/hooks/useFilter';
 
 interface Tag {
     _id: string;
@@ -56,7 +57,6 @@ const ChipsInputFilter = ({ tags, onTagChange, className, filterApplied }: Chips
     }
 
     const getAllTags = () => {
-        const authToken = localStorage.getItem('token')
         axios.get(`${API_URL}/tag`,
             {
                 headers: {

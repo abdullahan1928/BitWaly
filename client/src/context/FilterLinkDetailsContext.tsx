@@ -1,14 +1,14 @@
-import { createContext, useContext, useState } from 'react';
+import { ReactNode, createContext, useState } from 'react';
 
-const DateFilterContext = createContext({
-    startDate: new Date(),
-    endDate: new Date(),
-    updateDates: (newStartDate: Date, newEndDate: Date) => {
-        console.log(newStartDate, newEndDate);
-    },
-});
+interface DateFilterContextProps {
+    startDate: Date;
+    endDate: Date;
+    updateDates: (newStartDate: Date, newEndDate: Date) => void;
+}
 
-export const DateFilterProvider = ({ children }: { children: React.ReactNode }) => {
+export const DateFilterContext = createContext({} as DateFilterContextProps);
+
+export const DateFilterProvider = ({ children }: { children: ReactNode }) => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
 
@@ -22,8 +22,4 @@ export const DateFilterProvider = ({ children }: { children: React.ReactNode }) 
             {children}
         </DateFilterContext.Provider>
     );
-};
-
-export const useDateFilter = () => {
-    return useContext(DateFilterContext);
 };
