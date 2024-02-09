@@ -86,8 +86,8 @@ const LinkDetails = () => {
                     id={id ?? ''}
                     authToken={authToken ?? ''}
                     createdAt={urlData?.createdAt ?? ''}
-                    startDate={startDate}
-                    endDate={endDate}
+                // startDate={startDate}
+                // endDate={endDate}
                 />
             )}
 
