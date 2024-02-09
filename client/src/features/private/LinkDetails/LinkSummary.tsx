@@ -1,12 +1,8 @@
+import { authToken } from "@/config/authToken";
 import { FetchClicks, FetchWeeklyCount, FetchWeeklyChange } from "@/services/fetchClicks.service";
 import { useEffect, useState } from "react";
 
-interface LinkSummaryProps {
-    id: string;
-    authToken: string;
-}
-
-const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
+const LinkSummary = ({ id }: { id: string }) => {
     const [clicks, setClicks] = useState<number>(0);
     const [weeklyClicks, setWeekyClicks] = useState<number>(0);
     const [weeklyChange, setWeekyChange] = useState<number>(0);
@@ -19,13 +15,15 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
 
 
     const getData = async () => {
+        if (!authToken) return;
+
         const clickCount = await FetchClicks(authToken, id);
         setClicks(clickCount);
         const weeklyCount = await FetchWeeklyCount(authToken, id);
         setWeekyClicks(weeklyCount.clickData)
         const weeklyPerc = await FetchWeeklyChange(authToken, id);
         setWeekyChange(weeklyPerc.percentageChange)
-        
+
     }
 
     return (
@@ -52,8 +50,8 @@ const LinkSummary = ({ id, authToken }: LinkSummaryProps) => {
                     Weekly change
                 </p>
                 <span className={`text-3xl font-bold ${weeklyChange >= 0 ? 'text-green-800' : 'text-red-500'}`}>
-      {weeklyChange}%
-    </span>
+                    {weeklyChange}%
+                </span>
             </div>
         </div>
     )

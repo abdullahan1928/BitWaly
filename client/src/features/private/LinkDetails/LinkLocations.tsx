@@ -7,15 +7,15 @@ import { CountryData } from "./interfaces/CoutryData";
 import { CityData } from "./interfaces/CityData";
 import CustomTab from "./components/CustomTab";
 import LocationTable from "./components/LocationTable";
+import { authToken } from "@/config/authToken";
 
 interface LinkLocationProps {
     id: string;
-    authToken: string;
     startDate: Date;
     endDate: Date;
 }
 
-const LinkLocations = ({ id, authToken, startDate, endDate }: LinkLocationProps) => {
+const LinkLocations = ({ id, startDate, endDate }: LinkLocationProps) => {
     const [countryData, setCountryData] = useState<CountryData[]>([]);
     const [cityData, setCityData] = useState<CityData[]>([]);
     const [currentTab, setCurrentTab] = useState(0);

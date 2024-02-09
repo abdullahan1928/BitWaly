@@ -272,6 +272,32 @@ const locationAnalyticsController = async (req, res) => {
   }
 };
 
+const referrerAnalyticsController = async (req, res) => {
+  const { id } = req.params;
+  const userId = req.user;
+
+  console.log("ID:", id)
+
+  try {
+    const urlDocument = await Url.findById({ user: userId, _id: id });
+
+    if (!urlDocument) {
+      return res.status(404).send('URL not found');
+    }
+
+    const analyticsData = await Analytics.find({ url: urlDocument._id });
+
+    const referrers = analyticsData.map(data => data.referrer);
+
+    console.log("Referrers:", referrers)
+
+    res.json(referrers);
+  } catch (error) {
+    console.error('Error in fetching referrer analytics:', error);
+    res.status(500).send('Server error');
+  }
+}
+
 module.exports = {
   allAnalyticsController,
   clicksController,
@@ -283,6 +309,7 @@ module.exports = {
   accessCountController,
   weeklyCountController,
   weeklyChangeController,
+  referrerAnalyticsController
 };
 
 

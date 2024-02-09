@@ -9,9 +9,21 @@ const RedirectComponent = () => {
     const [isError, setIsError] = useState(false);
     const hasRedirected = useRef(false);
 
+
     useEffect(() => {
         if (shortUrl && !hasRedirected.current) {
-            const referrer = document.referrer || 'Direct';
+            let referrer = document.referrer || 'Direct';
+
+            if (referrer.includes('t.co')) {
+                referrer = 'Twitter';
+            } else if (referrer.includes('facebook.com')) {
+                referrer = 'Facebook';
+            } else if (referrer.includes('linkedin.com')) {
+                referrer = 'LinkedIn';
+            } else if (referrer.includes('instagram.com')) {
+                referrer = 'Instagram';
+            }
+
 
             UrlRetrieval(shortUrl, referrer)
                 .then((response: string) => {
