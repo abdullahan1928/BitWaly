@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const uri = `mongodb+srv://admin:admin@cluster0.xafgy5n.mongodb.net/?retryWrites=true&w=majority`;
-
+const Analytics = require("../models/Analytics.model");
 
 dotenv.config();
 
@@ -21,5 +21,10 @@ const connectDB = async () => {
         console.log(`somer error occur ${error}`);
     }
 };
+
+// Delete all Analytics data
+// Analytics.deleteMany({}).then(() => {
+//     console.log("All Analytics data deleted");
+// });
 
 module.exports = connectDB;

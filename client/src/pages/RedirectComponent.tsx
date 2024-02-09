@@ -10,9 +10,16 @@ const RedirectComponent = () => {
     const hasRedirected = useRef(false);
 
 
+    const getReferrer = () => {
+        const referrer = window.location.hostname.split('.').slice(-2).join('.');
+        console.log('Referrer:', referrer);
+        return referrer;
+    }
+
     useEffect(() => {
         if (shortUrl && !hasRedirected.current) {
-            const referrer = document.referrer || 'Direct';
+
+            const referrer = getReferrer();
 
             UrlRetrieval(shortUrl, referrer)
                 .then((response: string) => {

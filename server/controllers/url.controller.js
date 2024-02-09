@@ -192,9 +192,6 @@ const retrieveUrl = async (req, res) => {
   const { shortUrl } = req.params;
   const shardKey = shortUrl[0].toLowerCase();
 
-  // const referrer = req.headers.referer || 'Direct';
-  console.log('Referrer: ', req.body.referrer);
-
   //API requures credits. Use it wisely. :)
   let userIP = req.body.userIP
   if (userIP === undefined) {
