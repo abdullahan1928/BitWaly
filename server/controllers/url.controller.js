@@ -56,7 +56,7 @@ async function updateTagsForUrl(userId, urlId, tags) {
   });
 
   // Add new tags and update existing ones
-  if (tags.length > 0) {
+  if (tags && tags.length > 0) {
 
     for (const tag of tags) {
 
@@ -127,16 +127,21 @@ async function generateUniqueShortUrl(originalUrl) {
 
 
 const shortenUrl = async (req, res) => {
-  const { originalUrl, customUrl, title, tags } = req.body;
+  const { longUrl, customUrl, title, tags, utmSource, utmMedium, utmCampaign, utmTerm, utmContent } = req.body;
+
   const user = req.user; // Assuming you have the user object available in req.user
 
+  
+  const originalUrl = utmSource && utmMedium && utmCampaign && utmTerm && utmContent
+  ? longUrl + `?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}&utm_term=${utmTerm}&utm_content=${utmContent}`
+  : longUrl;
+
   try {
-    // Check if the user has already created a short URL for the given original URL
     const existingUserUrl = await Url.findOne({ originalUrl, user });
 
     if (existingUserUrl) {
-      // User has already created a short URL for this original URL
-      return res.status(200).send({ shortUrl: existingUserUrl.shortUrl });
+      // return res.status(200).send({ shortUrl: existingUserUrl.shortUrl });
+      return res.status(409).send("You have already created a short URL for this destination URL.");
     }
 
     const html = await (await fetch(originalUrl)).text();
