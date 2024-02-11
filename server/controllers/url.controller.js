@@ -9,43 +9,6 @@ const { getCountry } = require('iso-3166-1-alpha-2')
 
 const LOCATION_API_KEY = process.env.LOCATION_API_KEY;
 
-function generateBaseHash(originalUrl) {
-  const fullHash = crypto.createHash('md5').update(originalUrl).digest('hex');
-  let shortHash = '';
-  for (let i = 0; i < 7; i++) {
-    const randomIndex = Math.floor(Math.random() * fullHash.length);
-    shortHash += fullHash[randomIndex];
-  }
-  return shortHash;
-}
-
-function modifyHash(hash) {
-  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const randomChar = chars[Math.floor(Math.random() * chars.length)];
-  const replaceIndex = Math.floor(Math.random() * hash.length);
-  return hash.substring(0, replaceIndex) + randomChar + hash.substring(replaceIndex + 1);
-}
-
-async function generateUniqueShortUrl(originalUrl) {
-  const startTime = new Date();
-
-  const shortUrl = generateBaseHash(originalUrl);
-  const shardKey = shortUrl[0].toLowerCase();
-
-  let uniqueShortUrl = shortUrl;
-  let collisions = 0;
-
-  while (await Url.exists({ shardKey, shortUrl: uniqueShortUrl })) {
-    uniqueShortUrl = modifyHash(uniqueShortUrl);
-    collisions++;
-  }
-
-  const endTime = new Date();
-  const totalTime = (endTime - startTime) / 1000;
-
-  return { shortUrl: uniqueShortUrl, shardKey, totalTime, collisions };
-}
-
 async function checkAndUpdateTags(userId, urlId, tags) {
   const existingUrl = await Url.findOne({ user: userId, _id: urlId });
 
@@ -125,12 +88,58 @@ async function updateTagsForUrl(userId, urlId, tags) {
   await url.save();
 };
 
+function generateBaseHash(originalUrl) {
+  const fullHash = crypto.createHash('md5').update(originalUrl).digest('hex');
+  let shortHash = '';
+  for (let i = 0; i < 7; i++) {
+    const randomIndex = Math.floor(Math.random() * fullHash.length);
+    shortHash += fullHash[randomIndex];
+  }
+  return shortHash;
+}
+
+function modifyHash(hash) {
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const randomChar = chars[Math.floor(Math.random() * chars.length)];
+  const replaceIndex = Math.floor(Math.random() * hash.length);
+  return hash.substring(0, replaceIndex) + randomChar + hash.substring(replaceIndex + 1);
+}
+
+async function generateUniqueShortUrl(originalUrl) {
+  const startTime = new Date();
+
+  const shortUrl = generateBaseHash(originalUrl);
+  const shardKey = shortUrl[0].toLowerCase();
+
+  let uniqueShortUrl = shortUrl;
+  let collisions = 0;
+
+  while (await Url.exists({ shardKey, shortUrl: uniqueShortUrl })) {
+    uniqueShortUrl = modifyHash(uniqueShortUrl);
+    collisions++;
+  }
+
+  const endTime = new Date();
+  const totalTime = (endTime - startTime) / 1000;
+
+  return { shortUrl: uniqueShortUrl, shardKey, totalTime, collisions };
+}
+
+
 const shortenUrl = async (req, res) => {
   const { originalUrl, customUrl, title, tags } = req.body;
+  const user = req.user; // Assuming you have the user object available in req.user
 
   try {
-    const html = await (await fetch(originalUrl)).text();
+    // Check if the user has already created a short URL for the given original URL
+    const existingUserUrl = await Url.findOne({ originalUrl, user });
 
+    if (existingUserUrl) {
+      // User has already created a short URL for this original URL
+      return res.status(200).send({ shortUrl: existingUserUrl.shortUrl });
+    }
+
+    const html = await (await fetch(originalUrl)).text();
     const $ = cheerio.load(html);
 
     const linkTitle = title || $('head title').text() || originalUrl.split('/')[2] + '- untitled';
@@ -156,13 +165,13 @@ const shortenUrl = async (req, res) => {
         originalUrl,
         shortUrl,
         shardKey,
-        user: req.user,
+        user,
         meta: { title: linkTitle, image },
         isCustom: true,
       });
       await newUrl.save();
 
-      checkAndUpdateTags(req.user, newUrl._id, tags);
+      checkAndUpdateTags(user, newUrl._id, tags);
 
       res.status(201).send({ shortUrl });
     } else {
@@ -172,21 +181,23 @@ const shortenUrl = async (req, res) => {
         originalUrl,
         shortUrl,
         shardKey,
-        user: req.user,
+        user,
         meta: { title: linkTitle, image },
         isCustom: false,
       });
       await newUrl.save();
 
-      checkAndUpdateTags(req.user, newUrl._id, tags);
+      checkAndUpdateTags(user, newUrl._id, tags);
 
       res.status(201).send({ shortUrl, totalTime, collisions });
     }
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(500).send("Error processing your request");
   }
 };
+
+
 
 const retrieveUrl = async (req, res) => {
   const { shortUrl } = req.params;

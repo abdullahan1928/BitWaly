@@ -30,6 +30,7 @@ const signupController = async (req, res) => {
 
         res.send({ authToken });
 
+
         user.save().catch(err => console.log(err));
 
     } catch (e) {
