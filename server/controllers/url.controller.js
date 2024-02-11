@@ -192,39 +192,43 @@ const retrieveUrl = async (req, res) => {
   const { shortUrl } = req.params;
   const shardKey = shortUrl[0].toLowerCase();
 
-  //API requures credits. Use it wisely. :)
-  let userIP = req.body.userIP
-  if (userIP === undefined) {
-    userIP = '192.168.10.1'
-  }
-  let location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=${LOCATION_API_KEY}&ipAddress=${userIP}`);
-
-  location.data.location.country = getCountry(location.data.location.country);
-
   try {
     const url = await Url.findOne({ shardKey, shortUrl });
 
     if (url) {
+      // Increment accessCount
       url.accessCount += 1;
 
+      // Save the updated URL without waiting for analytics data
+      await url.save();
+
+      // Respond with the original URL immediately
+      res.status(200).send({ originalUrl: url.originalUrl });
+
+      // Now proceed with analytics
+      const userIP = req.body.userIP || '192.168.10.1';
+
+      // Fetch location data
+      const location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=${LOCATION_API_KEY}&ipAddress=${userIP}`);
+      const country = getCountry(location.data.location.country);
+
+      // Create analytics data
       const analyticsData = new Analytics({
         url: url._id,
         accessedAt: new Date(),
-        ipAddress: req.body.userIP,
+        ipAddress: userIP,
         browser: req.body.browserName,
         operatingSystem: req.body.osName,
         device: req.body.deviceType,
         vendor: req.body.mobileVendor,
         referrer: req.body.referrer,
         userAgent: req.get('User-Agent'),
-        location: location.data.location
+        location: location.data.location,
+        country: country,
       });
 
+      // Save analytics data
       await analyticsData.save();
-
-      await url.save();
-
-      res.status(200).send(url);
     } else {
       res.status(404).send('URL not found');
     }
@@ -233,6 +237,7 @@ const retrieveUrl = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
 
 const retrieveUrlsForUser = async (req, res) => {
   try {
