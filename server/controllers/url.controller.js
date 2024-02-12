@@ -127,14 +127,14 @@ async function generateUniqueShortUrl(originalUrl) {
 
 
 const shortenUrl = async (req, res) => {
-  const { longUrl, customUrl, title, tags, utmSource, utmMedium, utmCampaign, utmTerm, utmContent } = req.body;
+  const { origUrl, customUrl, title, tags, utmSource, utmMedium, utmCampaign, utmTerm, utmContent } = req.body;
 
   const user = req.user; // Assuming you have the user object available in req.user
 
   
   const originalUrl = utmSource && utmMedium && utmCampaign && utmTerm && utmContent
-  ? longUrl + `?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}&utm_term=${utmTerm}&utm_content=${utmContent}`
-  : longUrl;
+  ? origUrl + `?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}&utm_term=${utmTerm}&utm_content=${utmContent}`
+  : origUrl;
 
   try {
     const existingUserUrl = await Url.findOne({ originalUrl, user });
@@ -143,6 +143,8 @@ const shortenUrl = async (req, res) => {
       // return res.status(200).send({ shortUrl: existingUserUrl.shortUrl });
       return res.status(409).send("You have already created a short URL for this destination URL.");
     }
+
+    console.log(originalUrl)
 
     const html = await (await fetch(originalUrl)).text();
     const $ = cheerio.load(html);

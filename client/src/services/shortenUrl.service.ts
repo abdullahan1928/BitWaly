@@ -8,7 +8,7 @@ interface ShortenUrlResponse {
 }
 
 interface ShortenUrlRequest {
-    originalUrl: string;
+    origUrl: string;
     customUrl: string;
     title: string;
     tags: string[];
