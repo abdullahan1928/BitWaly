@@ -3,6 +3,7 @@ import LinkCard from "./components/LinkCard";
 import { getUserUrls } from "@/features/public/Home/services/url.service";
 import { authToken } from "@/config/authToken";
 import { useFilter } from "@/hooks/useFilter";
+import { useSearch } from "@/hooks/useSearch";
 
 interface Url {
     _id: string;
@@ -19,6 +20,7 @@ const LinkCards = () => {
     const [userUrls, setUserUrls] = useState<Url[]>([]);
     const [filteredUserUrls, setFilteredUserUrls] = useState<Url[]>([]);
     const { linkTypeFilter, tagFilter, linkTypeFilterApplied, tagFilterApplied } = useFilter();
+    const { searchValue } = useSearch();
 
     useEffect(() => {
         const fetchUserUrls = async () => {
@@ -32,7 +34,7 @@ const LinkCards = () => {
         };
 
         fetchUserUrls();
-    }, [linkTypeFilter, tagFilter]);
+    }, []);
 
     useEffect(() => {
         const filteredUrls = userUrls.filter((url: any) => {
@@ -45,11 +47,19 @@ const LinkCards = () => {
                 return false;
             }
 
+            if (
+                searchValue &&
+                !url.originalUrl.toLowerCase().includes(searchValue.toLowerCase()) &&
+                !url.shortUrl.toLowerCase().includes(searchValue.toLowerCase())
+            ) {
+                return false;
+            }
+
             return true;
         });
 
         setFilteredUserUrls(filteredUrls);
-    }, [userUrls, linkTypeFilter, tagFilter]);
+    }, [userUrls, linkTypeFilter, tagFilter, searchValue]);
 
     const formatCreatedAt = (createdAt: string) => {
         const date = new Date(createdAt);

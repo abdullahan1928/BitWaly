@@ -3,11 +3,13 @@ import { SelectChangeEvent } from "@mui/material";
 import { useState, useEffect } from "react";
 import LinkTypeFilter from "./components/LinkTypeFilter";
 import { useFilter } from "@/hooks/useFilter";
+import { useSearch } from "@/hooks/useSearch";
 
 const LinksFilter = () => {
     const [linkType, setLinkType] = useState('all');
     const [tags, setTags] = useState<string[]>([]);
     const { setLinkTypeFilter, setTagFilter, linkTypeFilterApplied, setLinkTypeFiltersApplied, tagFilterApplied, setTagFilterApplied } = useFilter();
+    const { searchValue, searchActive, setSearchActive, clearSearch } = useSearch();
 
     useEffect(() => {
         const linkTypeFiltersActive = linkType !== 'all';
@@ -16,7 +18,10 @@ const LinksFilter = () => {
         const tagFiltersActive = tags.length > 0;
         setTagFilterApplied(tagFiltersActive);
 
-    }, [linkType, setLinkTypeFiltersApplied, setTagFilterApplied, tags]);
+        const isSearchActive = searchValue !== '';
+        setSearchActive(isSearchActive);
+
+    }, [linkType, searchValue, setLinkTypeFiltersApplied, setSearchActive, setTagFilterApplied, tags]);
 
     const handleLinkChange = (event: SelectChangeEvent<string>) => {
         setLinkType(event.target.value);
@@ -33,6 +38,7 @@ const LinksFilter = () => {
         setTagFilter([]);
         setLinkType('all');
         setTags([]);
+        clearSearch();
     }
 
     return (
@@ -51,7 +57,7 @@ const LinksFilter = () => {
                 filterApplied={tagFilterApplied}
             />
 
-            {(linkTypeFilterApplied || tagFilterApplied) && (
+            {(linkTypeFilterApplied || tagFilterApplied || searchActive) && (
                 <button
                     className="px-4 py-2 text-base font-semibold text-white rounded-md bg-secondary-500 hover:bg-secondary-600"
                     onClick={clearFilters}

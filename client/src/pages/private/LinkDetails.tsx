@@ -11,6 +11,7 @@ import LinkSummary from "@/features/private/LinkDetails/LinkSummary";
 import { Link } from "react-router-dom";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { authToken } from "@/config/authToken";
+import { DateFilterProvider } from "@/context/FilterLinkDetailsContext";
 
 interface IUrl {
     _id: string;
@@ -50,55 +51,58 @@ const LinkDetails = () => {
     };
 
     return (
-        <div className="container flex flex-col max-w-6xl gap-8 p-4 mx-auto">
+        <DateFilterProvider>
 
-            <Link to="/dashboard/links" className="flex items-center text-primary hover:underline">
-                <ChevronLeftIcon className='inline-block text-base' />
-                <p className='inline-block ml-2 text-base'>
-                    Back to Links
-                </p>
-            </Link>
+            <div className="container flex flex-col max-w-6xl gap-8 p-4 mx-auto">
 
-            <LinkCard
-                _id={id ?? ''}
-                originalUrl={urlData?.originalUrl ?? ''}
-                shortUrl={urlData?.shortUrl ?? ''}
-                createdAt={urlData?.createdAt ?? ''}
-                meta={urlData?.meta}
-                onDeleteUrl={() => { }}
-                showDetails={false}
-            />
+                <Link to="/dashboard/links" className="flex items-center text-primary hover:underline">
+                    <ChevronLeftIcon className='inline-block text-base' />
+                    <p className='inline-block ml-2 text-base'>
+                        Back to Links
+                    </p>
+                </Link>
 
-            <LinkSummary id={id ?? ''} />
-
-            {urlData?.createdAt && (
-                <DateRangeFilter
-                    createdAt={urlData.createdAt}
-                    onDateChange={handleDateChange}
-                />
-            )}
-
-            {urlData?.createdAt && (
-                <LinkBarChart
-                    id={id ?? ''}
+                <LinkCard
+                    _id={id ?? ''}
+                    originalUrl={urlData?.originalUrl ?? ''}
+                    shortUrl={urlData?.shortUrl ?? ''}
                     createdAt={urlData?.createdAt ?? ''}
-                // startDate={startDate}
-                // endDate={endDate}
+                    meta={urlData?.meta}
+                    onDeleteUrl={() => { }}
+                    showDetails={false}
                 />
-            )}
 
-            <LinkLocations
-                id={id ?? ''}
-                startDate={startDate}
-                endDate={endDate}
-            />
+                <LinkSummary id={id ?? ''} />
 
-            <div className="flex flex-row flex-wrap gap-10 mb-4">
-                <LinkReferres id={id ?? ''} />
+                {urlData?.createdAt && (
+                    <DateRangeFilter
+                        createdAt={urlData.createdAt}
+                        onDateChange={handleDateChange}
+                    />
+                )}
 
-                <LinkDevices id={id ?? ''} />
-            </div>
-        </div >
+                {urlData?.createdAt && (
+                    <LinkBarChart
+                        id={id ?? ''}
+                        createdAt={urlData?.createdAt ?? ''}
+                    // startDate={startDate}
+                    // endDate={endDate}
+                    />
+                )}
+
+                <LinkLocations
+                    id={id ?? ''}
+                    startDate={startDate}
+                    endDate={endDate}
+                />
+
+                <div className="flex flex-row flex-wrap gap-10 mb-4">
+                    <LinkReferres id={id ?? ''} />
+
+                    <LinkDevices id={id ?? ''} />
+                </div>
+            </div >
+        </DateFilterProvider>
     )
 }
 

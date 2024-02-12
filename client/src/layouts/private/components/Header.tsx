@@ -20,7 +20,9 @@ import { API_URL } from "@/config/urls";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import drawerWidth from "../data/drawerWidth";
 import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear'; // Import the clear icon
 import { authToken } from "@/config/authToken";
+import { useSearch } from "@/hooks/useSearch";
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== "open",
@@ -59,7 +61,8 @@ const Header = ({ open, setOpen }: AppBarProps) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
-    const [searchValue, setSearchValue] = useState("");
+    const { searchValue, setSearch, clearSearch } = useSearch();
+    const [search, setSearchValue] = useState("");
 
     const navigate = useNavigate();
     const { logout } = useAuth();
@@ -91,6 +94,22 @@ const Header = ({ open, setOpen }: AppBarProps) => {
 
     const handleMenuClose = () => {
         setAnchorEl(null);
+    };
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchValue(event.target.value);
+    };
+
+
+    const handleClearSearch = () => {
+        setSearchValue("");
+        clearSearch();
+    };
+
+    const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            setSearch(search);
+        }
     };
 
     const menuItems = [
@@ -132,15 +151,25 @@ const Header = ({ open, setOpen }: AppBarProps) => {
                     <TextField
                         variant="outlined"
                         size="small"
-                        value={searchValue}
+                        value={search}
                         placeholder="Search..."
-                        onChange={(e) => setSearchValue(e.target.value)}
+                        onChange={handleSearchChange}
+                        onKeyPress={handleSearchKeyPress}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
                                     <IconButton size="small">
                                         <SearchIcon />
                                     </IconButton>
+                                </InputAdornment>
+                            ),
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    {searchValue && (
+                                        <IconButton size="small" onClick={handleClearSearch}>
+                                            <ClearIcon />
+                                        </IconButton>
+                                    )}
                                 </InputAdornment>
                             ),
                         }}
@@ -238,4 +267,4 @@ const Header = ({ open, setOpen }: AppBarProps) => {
     )
 }
 
-export default Header
+export default Header;
