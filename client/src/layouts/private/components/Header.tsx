@@ -109,6 +109,7 @@ const Header = ({ open, setOpen }: AppBarProps) => {
     const handleSearchKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             setSearch(search);
+            navigate('/dashboard/links');
         }
     };
 
@@ -179,6 +180,7 @@ const Header = ({ open, setOpen }: AppBarProps) => {
                             width: "30rem",
                         }}
                     />
+
                     <div
                         className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-200"
                         onClick={handleMenuOpen}
@@ -198,6 +200,7 @@ const Header = ({ open, setOpen }: AppBarProps) => {
                         </Typography>
                         <ArrowDropDownIcon sx={{ color: "black" }} />
                     </div>
+
                     <Menu
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
