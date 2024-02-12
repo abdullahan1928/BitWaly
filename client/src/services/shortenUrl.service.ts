@@ -12,6 +12,11 @@ interface ShortenUrlRequest {
     customUrl: string;
     title: string;
     tags: string[];
+    utmSource: string;
+    utmMedium: string;
+    utmCampaign: string;
+    utmTerm: string;
+    utmContent: string;
 }
 
 const UrlShortener = async (data: ShortenUrlRequest): Promise<ShortenUrlResponse> => {

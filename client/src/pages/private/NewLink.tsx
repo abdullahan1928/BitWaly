@@ -15,6 +15,11 @@ interface ShortenUrlRequest {
   customUrl: string;
   title: string;
   tags: string[];
+  utmSource: string;
+  utmMedium: string;
+  utmCampaign: string;
+  utmTerm: string;
+  utmContent: string;
 }
 
 const NewLink = () => {
@@ -40,9 +45,14 @@ const NewLink = () => {
   };
 
   const handleButtonClick = async () => {
-    if (showUtmFields && !(utmSource && utmMedium && utmCampaign && utmTerm && utmContent)) {
-        setUtmError("All UTM fields are required when one is filled.");
-        return;
+    if (
+      showUtmFields &&
+      !(utmSource && utmMedium && utmCampaign && utmTerm && utmContent)
+    ) {
+      setUtmError(
+        "Either UTM fields should be empty or all UTM fields are required when one is filled."
+      );
+      return;
     }
     const origUrl = /^https?:\/\//i.test(longUrl)
       ? longUrl
@@ -53,6 +63,11 @@ const NewLink = () => {
       customUrl: backHalf,
       title,
       tags,
+      utmSource,
+      utmMedium,
+      utmCampaign,
+      utmTerm,
+      utmContent,
     };
 
     await UrlShortener(data)
@@ -154,86 +169,95 @@ const NewLink = () => {
       </div>
 
       <div className="flex flex-col w-full gap-2">
-        
         <div className="flex flex-row w-full max-md:flex-wrap">
-                <FormControlLabel
-                    control={<Checkbox checked={showUtmFields} onChange={() => setShowUtmFields(!showUtmFields)} />}
-                    label=""
-                />
-                    <h3 className="text-2xl font-medium">UTM Parameters (optional)</h3>
-            </div>
-
-        {showUtmFields && ( <div>
-          <div className="flex flex-row w-full gap-4 max-md:flex-wrap">
-            <div className="flex flex-col gap-2 w-full max-md:w-1/3">
-              <p>UTM Source</p>
-              <TextField
-                id="outlined-basic"
-                placeholder="Enter UTM Source"
-                variant="outlined"
-                className="w-full"
-                value={utmSource}
-                onChange={(e) => setUtmSource(e.target.value)}
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={showUtmFields}
+                onChange={() => setShowUtmFields(!showUtmFields)}
               />
-            </div>
-
-            <div className="flex flex-col gap-2 w-full max-md:w-1/3">
-              <p>UTM Medium</p>
-              <TextField
-                id="outlined-basic"
-                placeholder="Enter UTM Medium"
-                variant="outlined"
-                className="w-full"
-                value={utmMedium}
-                onChange={(e) => setUtmMedium(e.target.value)}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2 w-full max-md:w-1/3">
-              <p>UTM Campaign</p>
-              <TextField
-                id="outlined-basic"
-                placeholder="Enter UTM Campaign"
-                variant="outlined"
-                className="w-full"
-                value={utmCampaign}
-                onChange={(e) => setUtmCampaign(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-row w-full gap-4 max-md:flex-wrap">
-            <div className="flex flex-col gap-2 w-full max-md:w-1/2">
-              <p>UTM Term</p>
-              <TextField
-                id="outlined-basic"
-                placeholder="Enter UTM Term"
-                variant="outlined"
-                className="w-full"
-                value={utmTerm}
-                onChange={(e) => setUtmTerm(e.target.value)}
-              />
-            </div>
-
-            <div className="flex flex-col gap-2 w-full max-md:w-1/2">
-              <p>UTM Content</p>
-              <TextField
-                id="outlined-basic"
-                placeholder="Enter UTM Content"
-                variant="outlined"
-                className="w-full"
-                value={utmContent}
-                onChange={(e) => setUtmContent(e.target.value)}
-              />
-            </div>
-          </div>
+            }
+            label=""
+          />
+          <h3 className="text-2xl font-medium">UTM Parameters (optional)</h3>
         </div>
+
+        {showUtmFields && (
+          <div>
+            <div className="flex flex-row w-full gap-4 max-md:flex-wrap">
+              <div className="flex flex-col gap-2 w-full max-md:w-1/3">
+                <p>UTM Source</p>
+                <TextField
+                  id="outlined-basic"
+                  placeholder="Enter UTM Source"
+                  variant="outlined"
+                  className="w-full"
+                  value={utmSource}
+                  onChange={(e) => setUtmSource(e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 w-full max-md:w-1/3">
+                <p>UTM Medium</p>
+                <TextField
+                  id="outlined-basic"
+                  placeholder="Enter UTM Medium"
+                  variant="outlined"
+                  className="w-full"
+                  value={utmMedium}
+                  onChange={(e) => setUtmMedium(e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 w-full max-md:w-1/3">
+                <p>UTM Campaign</p>
+                <TextField
+                  id="outlined-basic"
+                  placeholder="Enter UTM Campaign"
+                  variant="outlined"
+                  className="w-full"
+                  value={utmCampaign}
+                  onChange={(e) => setUtmCampaign(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-row w-full gap-4 max-md:flex-wrap">
+              <div className="flex flex-col gap-2 w-full max-md:w-1/2">
+                <p>UTM Term</p>
+                <TextField
+                  id="outlined-basic"
+                  placeholder="Enter UTM Term"
+                  variant="outlined"
+                  className="w-full"
+                  value={utmTerm}
+                  onChange={(e) => setUtmTerm(e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-2 w-full max-md:w-1/2">
+                <p>UTM Content</p>
+                <TextField
+                  id="outlined-basic"
+                  placeholder="Enter UTM Content"
+                  variant="outlined"
+                  className="w-full"
+                  value={utmContent}
+                  onChange={(e) => setUtmContent(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
         )}
         {utmError && (
-                <Alert severity="error" className="w-full" style={{ fontSize: '16px', padding: '16px' }}>
-                    {utmError}
-                </Alert>
-            )}
+          <Alert
+            severity="error"
+            className="w-full"
+            style={{ fontSize: "16px", padding: "16px" }}
+          >
+            {utmError}
+          </Alert>
+        )}
       </div>
 
       <div
