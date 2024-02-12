@@ -11,6 +11,11 @@ const analyticsSchema = new mongoose.Schema({
   operatingSystem: String,
   vendor: String,
   location: {},
+  utmSource: String,
+  utmMedium: String,
+  utmCampaign: String,
+  utmTerm: String,
+  utmContent: String,
 });
 
 const Analytics = mongoose.model('Analytics', analyticsSchema);

@@ -189,7 +189,7 @@ const NewLink = () => {
                 <p>UTM Source</p>
                 <TextField
                   id="outlined-basic"
-                  placeholder="Enter UTM Source"
+                  placeholder="e.g., newsletter, social_media, partner"
                   variant="outlined"
                   className="w-full"
                   value={utmSource}
@@ -201,7 +201,7 @@ const NewLink = () => {
                 <p>UTM Medium</p>
                 <TextField
                   id="outlined-basic"
-                  placeholder="Enter UTM Medium"
+                  placeholder="e.g., email, banner_ad, referral"
                   variant="outlined"
                   className="w-full"
                   value={utmMedium}
@@ -213,7 +213,7 @@ const NewLink = () => {
                 <p>UTM Campaign</p>
                 <TextField
                   id="outlined-basic"
-                  placeholder="Enter UTM Campaign"
+                  placeholder="e.g., summer_sale, launch_event, holiday_promo"
                   variant="outlined"
                   className="w-full"
                   value={utmCampaign}
@@ -227,7 +227,7 @@ const NewLink = () => {
                 <p>UTM Term</p>
                 <TextField
                   id="outlined-basic"
-                  placeholder="Enter UTM Term"
+                  placeholder="e.g., keyword, source, adset"
                   variant="outlined"
                   className="w-full"
                   value={utmTerm}
@@ -239,7 +239,7 @@ const NewLink = () => {
                 <p>UTM Content</p>
                 <TextField
                   id="outlined-basic"
-                  placeholder="Enter UTM Content"
+                  placeholder="e.g., banner_ad, video_intro, text_link"
                   variant="outlined"
                   className="w-full"
                   value={utmContent}

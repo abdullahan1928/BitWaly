@@ -243,6 +243,11 @@ const retrieveUrl = async (req, res) => {
         userAgent: req.get('User-Agent'),
         location: location.data.location,
         country: country,
+        utmSource: req.query.utm_source || req.params.utm_source || '',
+        utmMedium: req.query.utm_medium || '',
+        utmCampaign: req.query.utm_campaign || '',
+        utmTerm: req.query.utm_term || '',
+        utmContent: req.query.utm_content || '',
       });
 
       // Save analytics data
