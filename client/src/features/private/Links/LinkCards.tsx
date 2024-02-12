@@ -32,7 +32,7 @@ const LinkCards = () => {
         };
 
         fetchUserUrls();
-    }, [authToken, linkTypeFilter, tagFilter]);
+    }, [linkTypeFilter, tagFilter]);
 
     useEffect(() => {
         const filteredUrls = userUrls.filter((url: any) => {
@@ -78,7 +78,6 @@ const LinkCards = () => {
                                 {filteredUserUrls.length}
                             </p>
                         </div>
-
 
                         {filteredUserUrls.map(url => (
                             <LinkCard

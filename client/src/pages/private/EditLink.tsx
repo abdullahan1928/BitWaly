@@ -1,4 +1,3 @@
-import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { useEffect, useState } from "react";
@@ -9,6 +8,7 @@ import { UpdateUrl } from "@/services/updateUrl.service";
 import { UrlRetrievalById } from "@/services/retrieveUrl.service";
 import ChipsInput from "@/components/ChipsInput";
 import { authToken } from "@/config/authToken";
+import CustomInput from "@/components/CustomInput";
 
 
 const NewUrl = () => {
@@ -61,22 +61,13 @@ const NewUrl = () => {
         <div className="container flex flex-col max-w-4xl gap-6 px-4 py-8 mx-auto text-xl">
             <h3 className="text-4xl">Update Link</h3>
 
-            <div className="flex flex-col w-full gap-2">
-                <p className="flex flex-row items-end justify-between">
-                    Title
-                    <span className="text-base text-gray-500">
-                        (optional)
-                    </span>
-                </p>
-                <TextField
-                    id="outlined-basic"
-                    placeholder="My favorite link"
-                    variant="outlined"
-                    className="w-full"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-            </div>
+            <CustomInput
+                label="Title"
+                value={title}
+                onChange={setTitle}
+                placeholder="My favorite link"
+                optional
+            />
 
             <hr className="w-full" />
 
@@ -94,31 +85,18 @@ const NewUrl = () => {
                     </Select>
                 </div>
 
-                <div className="flex flex-col w-full gap-2">
-                    <p className="flex flex-row items-end justify-between">
-                        Enter a back-half
-                        <span className="text-base text-gray-500">
-                            (optional)
-                        </span>
-                    </p>
-                    <TextField
-                        id="outlined-basic"
-                        placeholder="example: favorite link"
-                        variant="outlined"
-                        className="w-full"
-                        value={backHalf}
-                        onChange={(e) => setBackHalf(e.target.value)}
-                        sx={
-                            duplicateError ?
-                                {
-                                    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                                        borderColor: "red",
-                                    },
-                                }
-                                : {}
-                        }
-                    />
-                </div>
+                <CustomInput
+                    label="Enter a back-half"
+                    value={backHalf}
+                    onChange={setBackHalf}
+                    placeholder="example: favorite link"
+                    optional
+                    sx={{
+                        "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                            borderColor: duplicateError ? "red" : "",
+                        },
+                    }}
+                />
             </div>
 
             <div className="flex flex-col w-full gap-2">

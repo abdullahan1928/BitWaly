@@ -131,10 +131,10 @@ const shortenUrl = async (req, res) => {
 
   const user = req.user; // Assuming you have the user object available in req.user
 
-  
+
   const originalUrl = utmSource && utmMedium && utmCampaign && utmTerm && utmContent
-  ? origUrl + `?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}&utm_term=${utmTerm}&utm_content=${utmContent}`
-  : origUrl;
+    ? origUrl + `?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}&utm_term=${utmTerm}&utm_content=${utmContent}`
+    : origUrl;
 
   try {
     const existingUserUrl = await Url.findOne({ originalUrl, user });
@@ -144,8 +144,6 @@ const shortenUrl = async (req, res) => {
       return res.status(409).send("You have already created a short URL for this destination URL.");
     }
 
-    console.log(originalUrl)
-
     const html = await (await fetch(originalUrl)).text();
     const $ = cheerio.load(html);
 
@@ -153,7 +151,7 @@ const shortenUrl = async (req, res) => {
 
     let image = $('head link[rel="icon"]').attr('href') || $('head link[rel="shortcut icon"]').attr('href') || $('head meta[property="og:image"]').attr('content') || $('head meta[name="twitter:image"]').attr('content') || $('head meta[itemprop="image"]').attr('content') || $('head meta[name="image"]').attr('content') || $('head meta[name="twitter:image:src"]').attr('content') || $('head meta[name="twitter:image"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content');
 
-    if (!image.startsWith('http') && !image.startsWith('https')) {
+    if (image !== undefined && !image.startsWith('http') && !image.startsWith('https')) {
       const domain = originalUrl.match(/^https?:\/\/[^/]+/)[0];
       image = domain + '/' + image;
     }
