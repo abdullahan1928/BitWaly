@@ -7,15 +7,18 @@ import { AuthProvider } from './context/AuthContext.tsx';
 import { ThemeProvider } from '@mui/material';
 import theme from './mui.config.ts';
 import { SearchProvider } from './context/SearchContext.tsx';
+import { FilterProvider } from './context/FilterLinksContext.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <SearchProvider>
-          <ThemeProvider theme={theme}>
-            <App />
-          </ThemeProvider>
+          <FilterProvider>
+            <ThemeProvider theme={theme}>
+              <App />
+            </ThemeProvider>
+          </FilterProvider>
         </SearchProvider>
       </AuthProvider>
     </BrowserRouter>
