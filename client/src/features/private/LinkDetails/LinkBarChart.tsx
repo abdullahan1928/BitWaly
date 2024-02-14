@@ -74,12 +74,14 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
     });
 
     const filteredCategories = originalChartData.categories.filter((date: string, index: number) => {
+      console.log('date', date);
       const currentDate = formattedDates[index];
       const isInDateRange = currentDate >= start && currentDate <= end;
       return isInDateRange;
     });
 
     const filteredData = originalChartData.data.filter((clicks: number, index: number) => {
+      console.log('clicks', clicks);
       const currentDate = formattedDates[index];
       const isInDateRange = currentDate >= start && currentDate <= end;
       return isInDateRange;
@@ -90,10 +92,6 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
       data: filteredData,
     });
   };
-
-
-
-
 
   return (
     <div className="flex flex-col gap-4">
