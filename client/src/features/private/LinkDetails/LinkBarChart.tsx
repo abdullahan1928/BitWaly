@@ -66,31 +66,24 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
   }, [startDate, endDate]);
 
   const updateChartData = (start: Date, end: Date) => {
-    console.log('Updating chart data...');
 
     const formattedDates = originalChartData.categories.map((date: string) => {
       // Assuming the date format is 'DD/MM/YYYY'
       const [day, month, year] = date.split('/');
       return new Date(`${month}/${day}/${year}`);
     });
-    console.log('Formatted Dates:', formattedDates);
 
     const filteredCategories = originalChartData.categories.filter((date: string, index: number) => {
       const currentDate = formattedDates[index];
       const isInDateRange = currentDate >= start && currentDate <= end;
-      console.log('Original Date:', date, 'Formatted Date:', currentDate, 'Is in Date Range:', isInDateRange);
       return isInDateRange;
     });
 
     const filteredData = originalChartData.data.filter((clicks: number, index: number) => {
       const currentDate = formattedDates[index];
       const isInDateRange = currentDate >= start && currentDate <= end;
-      console.log('Original Clicks:', clicks, 'Is in Date Range:', isInDateRange);
       return isInDateRange;
     });
-
-    console.log('Filtered Categories:', filteredCategories);
-    console.log('Filtered Data:', filteredData);
 
     setSelectedChartData({
       categories: filteredCategories,

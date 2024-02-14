@@ -212,8 +212,12 @@ const retrieveUrl = async (req, res) => {
     const url = await Url.findOne({ shardKey, shortUrl });
 
     if (url) {
+      console.log('Url access count before increment', url.accessCount);
+
       // Increment accessCount
       url.accessCount += 1;
+
+      console.log('Url access count after increment', url.accessCount);
 
       // Save the updated URL without waiting for analytics data
       await url.save();
@@ -223,7 +227,7 @@ const retrieveUrl = async (req, res) => {
 
       // Now proceed with analytics
       const userIP = req.body.userIP || '192.168.10.1';
-
+      
       // Fetch location data
       const location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=${LOCATION_API_KEY}&ipAddress=${userIP}`);
       const country = getCountry(location.data.location.country);

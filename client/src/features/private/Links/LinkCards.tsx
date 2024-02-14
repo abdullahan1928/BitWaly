@@ -19,7 +19,7 @@ interface Url {
 const LinkCards = () => {
     const [userUrls, setUserUrls] = useState<Url[]>([]);
     const [filteredUserUrls, setFilteredUserUrls] = useState<Url[]>([]);
-    const { linkTypeFilter, tagFilter, linkTypeFilterApplied, tagFilterApplied } = useFilter();
+    const { linkTypeFilter, tagFilter, dateFilter, linkTypeFilterApplied, tagFilterApplied, dateFilterApplied } = useFilter();
     const { searchValue } = useSearch();
 
     useEffect(() => {
@@ -47,6 +47,19 @@ const LinkCards = () => {
                 return false;
             }
 
+            if (dateFilterApplied) {
+                const createdAtDate = new Date(url.createdAt);
+                const startDate = dateFilter[0] ? dateFilter[0].toDate() : null;
+                const endDate = dateFilter[1] ? dateFilter[1].toDate() : null;
+
+                if (startDate && createdAtDate < startDate) {
+                    return false;
+                }
+                if (endDate && createdAtDate > endDate) {
+                    return false;
+                }
+            }
+
             if (
                 searchValue &&
                 !url.originalUrl.toLowerCase().includes(searchValue.toLowerCase()) &&
@@ -59,7 +72,7 @@ const LinkCards = () => {
         });
 
         setFilteredUserUrls(filteredUrls);
-    }, [userUrls, linkTypeFilter, tagFilter, searchValue]);
+    }, [userUrls, linkTypeFilter, tagFilter, searchValue, dateFilterApplied, dateFilter]);
 
     const formatCreatedAt = (createdAt: string) => {
         const date = new Date(createdAt);

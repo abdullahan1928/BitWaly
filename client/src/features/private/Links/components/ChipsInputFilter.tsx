@@ -20,8 +20,29 @@ interface ChipsInputProps {
 
 const ChipsInputFilter = ({ tags, onTagChange, className, filterApplied }: ChipsInputProps) => {
     const [allTags, setAllTags] = useState<Tag[]>([]);
-
     const { tagFilter, setTagFilter } = useFilter();
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+
+    useEffect(() => {
+        getAllTags();
+        const tagsSelected = allTags.filter((tag: any) => tagFilter.includes(tag._id)) || allTags.filter((tag: any) => tags.includes(tag._id));
+        setSelectedTags(tagsSelected);
+    }, [tagFilter, tags])
+
+    const getAllTags = () => {
+        axios.get(`${API_URL}/tag`,
+            {
+                headers: {
+                    authToken: `${authToken}`
+                }
+            })
+            .then((res) => {
+                setAllTags(res.data);
+            })
+            .catch((err) => {
+                console.error(err)
+            })
+    }
 
     const handleTagChange = (_: SyntheticEvent<Element, Event>, value: (string | Tag)[]) => {
         onTagChange(value.map((tag: any) => tag._id));
@@ -55,27 +76,6 @@ const ChipsInputFilter = ({ tags, onTagChange, className, filterApplied }: Chips
             />
         )
     }
-
-    const getAllTags = () => {
-        axios.get(`${API_URL}/tag`,
-            {
-                headers: {
-                    authToken: `${authToken}`
-                }
-            })
-            .then((res) => {
-                setAllTags(res.data);
-            })
-            .catch((err) => {
-                console.error(err)
-            })
-    }
-
-    useEffect(() => {
-        getAllTags()
-    }, [])
-
-    const selectedTags = allTags.filter(tag => tagFilter.includes(tag._id)) || allTags.filter(tag => tags.includes(tag._id));
 
     return (
         <Autocomplete

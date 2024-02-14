@@ -42,6 +42,16 @@ const LoginForm = () => {
         className="px-20 py-16 mb-4 bg-white rounded shadow-md"
         onSubmit={handleSubmit}
       >
+
+        <Link to="/">
+          <img
+            src='/logo1.png'
+            alt="logo"
+            className="w-36 mb-4 mt-0 mx-auto cursor-pointer"
+          />
+        </Link>
+
+
         <h3 className="mb-12 text-3xl font-bold">
           <span className="text-3xl font-bold">
             Log In to start your journey

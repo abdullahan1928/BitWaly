@@ -7,17 +7,10 @@ import {
     styled,
 } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
-import { Link, Outlet } from "react-router-dom";
-import SettingsIcon from "@mui/icons-material/Settings";
-import LogoutIcon from "@mui/icons-material/Logout";
-import { useAuth } from "@/hooks/useAuth";
-import HomeIcon from "@mui/icons-material/Home";
-import LinkIcon from "@mui/icons-material/Link";
-import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
-import drawerWidth from "../data/drawerWidth";
-import SidebarItem from "./SidebarItem";
-import { Fragment } from "react";
+import drawerWidth from "./data/drawerWidth";
+import SidebarItems from "./Sidebar/SidebarItems";
 
 const openedMixin = (theme: Theme): CSSObject => ({
     width: drawerWidth,
@@ -72,49 +65,17 @@ interface PrivateLayoutProps {
 }
 
 const Sidebar = ({ open }: PrivateLayoutProps) => {
-
-    const { logout } = useAuth();
-
-    const sidebarItems = [
-        [
-            {
-                icon: <HomeIcon />,
-                text: "Home",
-                to: "/dashboard"
-            },
-            {
-                icon: <LinkIcon className="transform rotate-45" />,
-                text: "Links",
-                to: "/dashboard/links"
-            },
-            {
-                icon: <LeaderboardIcon />,
-                text: "Analytics",
-                to: "/dashboard/analytics"
-            },
-        ],
-        <Divider className="w-[85%] flex self-center" />,
-        [
-            {
-                icon: <SettingsIcon />,
-                text: "Settings",
-                to: "/dashboard/settings"
-            },
-            {
-                icon: <LogoutIcon />,
-                text: "Log out",
-                onClick: logout
-            },
-        ],
-    ];
+    const navigate = useNavigate();
 
     return (
         <>
             <Drawer variant="permanent" open={open}>
+
                 <img
                     src={`${open ? "/logo1.png" : "/logo2.png"}`}
                     alt="logo"
-                    className="w-[80%] flex self-center my-2"
+                    className="w-[80%] flex self-center my-2 cursor-pointer"
+                    onClick={() => navigate("/dashboard")}
                 />
 
                 <List>
@@ -133,26 +94,7 @@ const Sidebar = ({ open }: PrivateLayoutProps) => {
 
                 <Divider className="w-[85%] flex self-center" />
 
-                {sidebarItems.map((group, index) => (
-                    <Fragment key={index}>
-                        {Array.isArray(group) ? (
-                            <List>
-                                {group.map((item, itemIndex) => (
-                                    <SidebarItem
-                                        key={itemIndex}
-                                        open={open}
-                                        icon={item.icon}
-                                        text={item.text}
-                                        to={item.to}
-                                        onClick={item.onClick}
-                                    />
-                                ))}
-                            </List>
-                        ) : (
-                            group
-                        )}
-                    </Fragment>
-                ))}
+                <SidebarItems open={open} />
 
             </Drawer >
 

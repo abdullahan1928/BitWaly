@@ -36,7 +36,6 @@ const allAnalyticsController = async (req, res) => {
 
 const weeklyCountController = async (req, res) => {
   const { id } = req.params;
-  console.log(id)
 
   try {
     const startDate = new Date(new Date() - 7 * 24 * 60 * 60 * 1000);
@@ -46,7 +45,6 @@ const weeklyCountController = async (req, res) => {
       accessedAt: { $gte: startDate }
     });
 
-    console.log("Total Clicks in Last 7 Days:", clickData);
     res.json({ clickData });
   } catch (error) {
     console.error('Error in fetching click data:', error);
@@ -276,8 +274,6 @@ const referrerAnalyticsController = async (req, res) => {
   const { id } = req.params;
   const userId = req.user;
 
-  console.log("ID:", id)
-
   try {
     const urlDocument = await Url.findById({ user: userId, _id: id });
 
@@ -288,8 +284,6 @@ const referrerAnalyticsController = async (req, res) => {
     const analyticsData = await Analytics.find({ url: urlDocument._id });
 
     const referrers = analyticsData.map(data => data.referrer);
-
-    console.log("Referrers:", referrers)
 
     res.json(referrers);
   } catch (error) {

@@ -108,7 +108,7 @@ const UtmFields = ({
             </div>
 
             {showUtmFields && (
-                <div className="flex flex-col w-full gap-4 p-8 bg-gray-200 rounded-md">
+                <div className="flex flex-col w-full gap-4 p-8 bg-white rounded-md">
 
                     <div className="flex flex-row flex-wrap w-full gap-4 max-md:flex-wrap">
                         <CustomInput
