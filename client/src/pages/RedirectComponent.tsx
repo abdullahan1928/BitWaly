@@ -12,16 +12,15 @@ const RedirectComponent = () => {
 
     useEffect(() => {
         if (shortUrl && !hasRedirected.current) {
-            const referrer = document.referrer || 'Direct';
+            let referrer = document.referrer;
 
-            // if (referrer.includes('t.co')) {
-            //     referrer = 'Twitter';
-            // } else if (referrer.includes('facebook.com')) {
-            //     referrer = 'Facebook';
-            // } else if (referrer.includes('linkedin.com')) {
-            //     referrer = 'LinkedIn';
-            // }
-
+            if (referrer.includes('t.co')) {
+                referrer = 'Twitter';
+            } else if (referrer.includes('facebook.com')) {
+                referrer = 'Facebook';
+            } else if (referrer.includes('linkedin.com')) {
+                referrer = 'LinkedIn';
+            }
 
             UrlRetrieval(shortUrl, referrer)
                 .then((response: string) => {
