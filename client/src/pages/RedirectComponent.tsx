@@ -12,7 +12,7 @@ const RedirectComponent = () => {
 
     useEffect(() => {
         if (shortUrl && !hasRedirected.current) {
-            let referrer = document.referrer;
+            let referrer = document.referrer || 'Direct';
 
             if (referrer.includes('t.co')) {
                 referrer = 'Twitter';
@@ -21,6 +21,7 @@ const RedirectComponent = () => {
             } else if (referrer.includes('linkedin.com')) {
                 referrer = 'LinkedIn';
             }
+
 
             UrlRetrieval(shortUrl, referrer)
                 .then((response: string) => {
