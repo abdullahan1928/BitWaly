@@ -29,7 +29,7 @@ interface IUrl {
 
 interface LinkCardProps extends IUrl {
     onDeleteUrl: (deletedUrlId: string) => void;
-    showDetails?: boolean;
+    isLinksPage?: boolean;
 }
 
 const LinkCard = (props: LinkCardProps) => {
@@ -49,7 +49,7 @@ const LinkCard = (props: LinkCardProps) => {
 
     const inputDateString = props.createdAt;
     const inputDate = new Date(inputDateString);
-    const formattedDate = props.showDetails ?
+    const formattedDate = props.isLinksPage ?
         inputDate.toLocaleString('en-US', {
             month: 'long',
             day: 'numeric',
@@ -120,7 +120,7 @@ const LinkCard = (props: LinkCardProps) => {
             tagFilter.filter((tag: any) => tag._id !== tagId) :
             [...tagFilter, tagId];
 
-        if (props.showDetails) {
+        if (props.isLinksPage) {
             setTagFilter(updatedTagFilter);
             setTagFilterApplied(true);
         }
@@ -132,7 +132,7 @@ const LinkCard = (props: LinkCardProps) => {
                 <img
                     src={image}
                     alt="Link preview"
-                    className="w-12 h-12 p-1 border-2 rounded-full border-primary-400"
+                    className="w-12 h-12 p-1 border-2 border-gray-300 rounded-full"
                 />
 
                 <h3 className="flex-1 text-lg font-bold text-gray-800 cursor-pointer hover:underline">
@@ -182,7 +182,7 @@ const LinkCard = (props: LinkCardProps) => {
 
             <div className="flex items-center justify-between">
                 <div className="flex gap-6">
-                    {(props.showDetails ?? true) && (
+                    {(props.isLinksPage ?? true) && (
                         <div className="flex items-end gap-2">
                             <LeaderboardIcon className={`w-5 h-5 text-gray-500 ${clicks > 0 ? 'text-[#3C6946]' : ''}`} />
                             <span className={`text-sm ${clicks > 0 ? 'text-[#3C6946]' : ''} font-bold`}>
@@ -206,21 +206,31 @@ const LinkCard = (props: LinkCardProps) => {
                         <p>
                             {tags.length > 0 ? (
                                 <>
-                                    {tags.slice(0, 3).map((tag: any, index: number) => (
-                                        <span
-                                            key={index}
-                                            className={`px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 
-                            ${props.showDetails && 'cursor-pointer hover:bg-gray-300'}
-                            `}
-                                            onClick={() => handleTagClick(tag._id)}
-                                        >
-                                            {tag.name}
-                                        </span>
-                                    ))}
-                                    {tags.length > 3 && (
-                                        <span className="font-semibold text-gray-800">
-                                            +{tags.length - 3} more
-                                        </span>
+                                    {!props.isLinksPage ? (
+                                        tags.map((tag: any, index: number) => (
+                                            <span
+                                                key={index}
+                                                className={`px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 ${props.isLinksPage && 'cursor-pointer hover:bg-gray-300'
+                                                    }`}
+                                                onClick={() => handleTagClick(tag._id)}
+                                            >
+                                                {tag.name}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        tags.slice(0, 3).map((tag: any, index: number) => (
+                                            <span
+                                                key={index}
+                                                className={`px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 ${props.isLinksPage && 'cursor-pointer hover:bg-gray-300'
+                                                    }`}
+                                                onClick={() => handleTagClick(tag._id)}
+                                            >
+                                                {tag.name}
+                                            </span>
+                                        ))
+                                    )}
+                                    {props.isLinksPage && tags.length > 3 && (
+                                        <span className="font-semibold text-gray-800">+{tags.length - 3} more</span>
                                     )}
                                 </>
                             ) : (
@@ -230,7 +240,7 @@ const LinkCard = (props: LinkCardProps) => {
                     </div>
                 </div>
 
-                {(props.showDetails ?? true) && (
+                {(props.isLinksPage ?? true) && (
                     <Link to={`/dashboard/links/${props._id}`} className='flex items-center gap-1 p-2 border border-gray-400 rounded-md hover:bg-gray-200'>
                         <LinkIcon className="transform rotate-45" />
                         <p>

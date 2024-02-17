@@ -1,6 +1,9 @@
 import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
 import { useEffect, useState } from 'react';
+import HighchartsReact from 'highcharts-react-official';
+import HighchartsExporting from 'highcharts/modules/exporting';
+
+HighchartsExporting(Highcharts);
 
 interface PieChartProps {
     title: string;
@@ -123,6 +126,9 @@ const PieChart = ({ title, chartData, setChartData, totalEngagements, setTotalEn
                     },
                     symbol: 'circle',
                     sybmoPadding: 10,
+                },
+                exporting: {
+                    enabled: true,
                 },
                 series: [{
                     type: 'pie',

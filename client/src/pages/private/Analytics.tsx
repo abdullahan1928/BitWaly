@@ -1,3 +1,4 @@
+import Performance from "@/features/private/Analytics/Performance"
 
 const Analytics = () => {
     return (
@@ -6,6 +7,8 @@ const Analytics = () => {
             <h3 className="text-3xl font-semibold font-proxima-nova">
                 Analytics
             </h3>
+
+            <Performance />
 
         </div>
     )

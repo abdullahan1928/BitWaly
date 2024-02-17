@@ -69,7 +69,7 @@ const LinkDetails = () => {
                     createdAt={urlData?.createdAt ?? ''}
                     meta={urlData?.meta}
                     onDeleteUrl={() => { }}
-                    showDetails={false}
+                    isLinksPage={false}
                 />
 
                 <LinkSummary id={id ?? ''} />

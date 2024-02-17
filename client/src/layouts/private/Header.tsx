@@ -75,15 +75,17 @@ const Header = ({ open, setOpen }: AppBarProps) => {
         <AppBar position="fixed" open={open}>
             <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
 
-                <ToggleSidebarButton
-                    open={open}
-                    toggleDrawer={toggleDrawer}
-                />
+                <div className="flex items-center gap-12 max-lg:hidden">
+                    <ToggleSidebarButton
+                        open={open}
+                        toggleDrawer={toggleDrawer}
+                    />
+                </div>
 
                 <Typography color="secondary" variant="h6" noWrap component="div">
                 </Typography>
 
-                <div className="flex items-center gap-12">
+                <div className="flex items-center gap-12 max-lg:gap-6">
 
                     <SearchBar />
 

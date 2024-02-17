@@ -111,7 +111,7 @@ const LinkCards = () => {
                                 createdAt={formatCreatedAt(url.createdAt)}
                                 meta={url.meta}
                                 onDeleteUrl={handleDeleteUrl}
-                                showDetails={true}
+                                isLinksPage={true}
                             />
                         ))}
                         <div className="flex items-center justify-center gap-7">
