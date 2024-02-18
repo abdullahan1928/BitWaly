@@ -96,7 +96,7 @@ const LinkDetails = () => {
                     endDate={endDate}
                 />
 
-                <div className="flex flex-row flex-wrap gap-10 mb-4">
+                <div className="flex flex-row flex-wrap gap-10 mb-4 max-lg:flex-col">
                     <LinkReferres id={id ?? ''} />
 
                     <LinkDevices id={id ?? ''} />

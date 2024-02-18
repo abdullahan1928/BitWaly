@@ -43,7 +43,7 @@ const LinkReferres = ({ id }: { id: string }) => {
     }, [id]);
 
     return (
-        <div className="bg-white rounded-md shadow-md p-4 w-[48%]">
+        <div className="bg-white rounded-md shadow-md p-4 w-[48%] max-lg:w-full">
 
             <PieChart
                 title="Referrers"

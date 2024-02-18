@@ -32,18 +32,27 @@ const LocationTable = ({ data }: DataTableProps) => {
     };
 
     return (
-        <Table sx={{ minWidth: 650 }}>
+        <Table sx={{
+            minWidth: 650,
+            'media (max-width: 640px)': {
+                minWidth: 300,
+            },
+        }}>
             <TableHead>
                 <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
                     <TableCell>Sr#</TableCell>
                     <TableCell>
                         {data[0] && (isCountryData(data[0]) || isCityData(data[0])) ? (isCountryData(data[0]) ? "Country" : "City") : ""}
                     </TableCell>
-                    <TableCell></TableCell>
-                    <TableCell>Engagements</TableCell>
                     <TableCell
-                        sx={{ textAlign: 'right' }}
-                    >%</TableCell>
+                        sx={{
+                            '@media (max-width: 640px)': {
+                                display: 'none',
+                            },
+                        }}
+                    ></TableCell>
+                    <TableCell sx={{ textAlign: 'right' }}>Engagements</TableCell>
+                    <TableCell sx={{ textAlign: 'right' }}>%</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody sx={{ '& td': { border: 'none' }, }}>
@@ -57,7 +66,13 @@ const LocationTable = ({ data }: DataTableProps) => {
                                     ? item.city
                                     : ""}
                         </TableCell>
-                        <TableCell style={{ position: 'relative', width: '100%' }}>
+                        <TableCell sx={{
+                            position: 'relative',
+                            width: '100%',
+                            '@media (max-width: 640px)': {
+                                display: 'none',
+                            },
+                        }}>
                             <LinearProgress
                                 variant="determinate"
                                 value={(item.count / calculateTotalPercentage()) * 100}
@@ -75,12 +90,10 @@ const LocationTable = ({ data }: DataTableProps) => {
                                 }}
                             />
                         </TableCell>
-                        <TableCell
-                            sx={{ textAlign: 'right' }}
-                        >
-                            {item.count}
+                        <TableCell sx={{ textAlign: 'right' }}>{item.count}</TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>
+                            {Math.round((item.count / calculateTotalPercentage()) * 100)}%
                         </TableCell>
-                        <TableCell>{Math.round((item.count / calculateTotalPercentage()) * 100)}%</TableCell>
                     </TableRow>
                 ))}
             </TableBody>

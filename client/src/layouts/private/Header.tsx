@@ -39,6 +39,9 @@ const AppBar = styled(MuiAppBar, {
     boxShadow: "none",
     backgroundColor: "white",
     border: "1px solid #dbe0eb",
+    [theme.breakpoints.down("md")]: {
+        display: "none",
+    },
 }));
 
 interface AppBarProps extends MuiAppBarProps {

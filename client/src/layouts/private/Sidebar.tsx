@@ -49,6 +49,10 @@ const Drawer = styled(
         ...closedMixin(theme),
         "& .MuiDrawer-paper": closedMixin(theme),
     }),
+    // hidden when screen size is medium
+    [theme.breakpoints.down("md")]: {
+        display: "none",
+    },
 }));
 
 const DrawerHeader = styled("div")(({ theme }) => ({

@@ -1,3 +1,269 @@
+// import DeleteDialog from '@/components/DeleteDialog';
+// import { API_URL, REDIRECT_URL } from '@/config/urls';
+// import { deleteUrl } from '@/features/public/Home/services/url.service';
+// import TrashIcon from '@mui/icons-material/Delete';
+// import { useEffect, useState } from 'react';
+// import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+// import CopyToClipboardButton from '@/components/Clipboard';
+// import EditIcon from '@mui/icons-material/Edit';
+// import LinkIcon from '@mui/icons-material/Link';
+// import { Link, useNavigate } from 'react-router-dom';
+// import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+// import { FetchClicks } from '@/services/fetchClicks.service';
+// import { Tooltip } from '@mui/material';
+// import axios from 'axios';
+// import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+// import { useFilter } from '@/hooks/useFilter';
+// import { authToken } from '@/config/authToken';
+
+// interface IUrl {
+//     _id: string;
+//     originalUrl: string;
+//     shortUrl: string;
+//     createdAt: string;
+//     meta?: {
+//         title: string;
+//         image: string;
+//     };
+// }
+
+// interface LinkCardProps extends IUrl {
+//     onDeleteUrl: (deletedUrlId: string) => void;
+//     isLinksPage?: boolean;
+// }
+
+// const LinkCard = (props: LinkCardProps) => {
+//     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+//     const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
+//     const [clicks, setClicks] = useState<number>(0);
+//     const [tags, setTags] = useState<string[]>([]);
+
+//     const { tagFilter, setTagFilter, setTagFilterApplied } = useFilter();
+
+//     const image = props.meta?.image ?? 'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://nustedupk0-my.sharepoint.com&size=32';
+
+//     const navigate = useNavigate();
+
+//     const shortLink = `${REDIRECT_URL}/${props.shortUrl}`;
+//     const shortLinkWithoutProtocol = shortLink.replace('https://', '').replace('http://', '');
+
+//     const inputDateString = props.createdAt;
+//     const inputDate = new Date(inputDateString);
+//     const formattedDate = props.isLinksPage ?
+//         inputDate.toLocaleString('en-US', {
+//             month: 'long',
+//             day: 'numeric',
+//             year: 'numeric',
+//         }) :
+//         inputDate.toLocaleString('en-US', {
+//             month: 'long',
+//             day: 'numeric',
+//             year: 'numeric',
+//             hour: 'numeric',
+//             minute: 'numeric',
+//             second: 'numeric',
+//             timeZone: 'UTC',
+//         });
+
+
+//     useEffect(() => {
+//         getClicks();
+//         getTags();
+//     }, [])
+
+//     const getClicks = async () => {
+//         if (!authToken) return;
+
+//         const res = await FetchClicks(authToken, props._id)
+
+//         setClicks(res);
+//     }
+
+//     const getTags = async () => {
+//         axios.get(`${API_URL}/tag/${props._id}`, {
+//             headers: {
+//                 authToken: `${authToken}`
+//             }
+//         }).then((res: any) => {
+//             setTags(res.data);
+//         }).catch((err: any) => {
+//             console.error(err);
+//         })
+//     }
+
+//     const openDeleteDialog = (urlId: string) => {
+//         setUrlToDelete(urlId);
+//         setDeleteDialogOpen(true);
+//     };
+
+//     const closeDeleteDialog = () => {
+//         setUrlToDelete(null);
+//         setDeleteDialogOpen(false);
+//     };
+
+//     const handleDelete = async () => {
+//         if (urlToDelete) {
+//             try {
+//                 await deleteUrl(authToken, urlToDelete);
+//                 console.log('URL deleted successfully');
+//                 props.onDeleteUrl(urlToDelete);
+//                 navigate('/dashboard/links');
+//             } catch (error) {
+//                 console.error('Error deleting URL:', error);
+//             }
+//         }
+//         setUrlToDelete(null);
+//     };
+
+//     const handleTagClick = (tagId: string) => {
+//         const updatedTagFilter = tagFilter.includes(tagId) ?
+//             tagFilter.filter((tag: any) => tag._id !== tagId) :
+//             [...tagFilter, tagId];
+
+//         if (props.isLinksPage) {
+//             setTagFilter(updatedTagFilter);
+//             setTagFilterApplied(true);
+//         }
+//     };
+
+//     return (
+//         <div className="flex flex-col gap-2 px-8 py-4 bg-white rounded-md shadow-md">
+//             <div className="flex items-center justify-between flex-1 gap-4 mb-2">
+//                 <img
+//                     src={image}
+//                     alt="Link preview"
+//                     className="w-12 h-12 p-1 border-2 border-gray-300 rounded-full"
+//                 />
+
+//                 <h3 className="flex-1 text-lg font-bold text-gray-800 cursor-pointer hover:underline">
+//                     <Link to={`/dashboard/links/${props._id}`}>
+//                         {props.meta?.title}
+//                     </Link>
+//                 </h3>
+
+//                 <div className="flex items-center gap-2">
+//                     <CopyToClipboardButton text={shortLink} />
+
+//                     <Link to={`/dashboard/link/edit/${props._id}`} className="flex items-center gap-1 p-2 border border-gray-400 rounded-md hover:bg-gray-200">
+//                         <Tooltip title="Edit">
+//                             <EditIcon className="cursor-pointer text-primary-500 hover:text-primary-600"
+//                             />
+//                         </Tooltip>
+//                     </Link>
+
+//                     <Tooltip title="Delete">
+//                         <TrashIcon className="text-red-500 cursor-pointer hover:text-red-600"
+//                             onClick={() => openDeleteDialog(props._id)}
+//                         />
+//                     </Tooltip>
+//                 </div>
+
+//             </div>
+
+//             <hr className="my-2" />
+
+//             <a
+//                 href={shortLink}
+//                 target="_blank"
+//                 rel="noreferrer"
+//                 className="text-base font-semibold text-blue-500 hover:text-blue-600 hover:underline"
+//             >
+//                 {shortLinkWithoutProtocol}
+//             </a>
+
+//             <a
+//                 href={props.originalUrl}
+//                 target="_blank"
+//                 rel="noreferrer"
+//                 className="mb-2 overflow-hidden text-base cursor-pointer overflow-ellipsis whitespace-nowrap hover:underline"
+//             >
+//                 {props.originalUrl}
+//             </a>
+
+//             <div className="flex items-center justify-between">
+//                 <div className="flex gap-6">
+//                     {(props.isLinksPage ?? true) && (
+//                         <div className="flex items-end gap-2">
+//                             <LeaderboardIcon className={`w-5 h-5 text-gray-500 ${clicks > 0 ? 'text-[#3C6946]' : ''}`} />
+//                             <span className={`text-sm ${clicks > 0 ? 'text-[#3C6946]' : ''} font-bold`}>
+//                                 {clicks} engagements
+//                             </span>
+//                         </div>
+//                     )}
+
+//                     <div className="flex items-center gap-2">
+//                         <CalendarTodayIcon className="w-5 h-5 text-gray-500" />
+//                         <p className="text-sm text-gray-500">
+//                             {formattedDate}
+//                         </p>
+//                     </div>
+
+//                     <div className="flex items-center gap-2">
+//                         <LocalOfferIcon sx={{
+//                             color: 'gray',
+//                             width: '1.25rem',
+//                         }} />
+//                         <p>
+//                             {tags.length > 0 ? (
+//                                 <>
+//                                     {!props.isLinksPage ? (
+//                                         tags.map((tag: any, index: number) => (
+//                                             <span
+//                                                 key={index}
+//                                                 className={`px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 ${props.isLinksPage && 'cursor-pointer hover:bg-gray-300'
+//                                                     }`}
+//                                                 onClick={() => handleTagClick(tag._id)}
+//                                             >
+//                                                 {tag.name}
+//                                             </span>
+//                                         ))
+//                                     ) : (
+//                                         tags.slice(0, 3).map((tag: any, index: number) => (
+//                                             <span
+//                                                 key={index}
+//                                                 className={`px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 ${props.isLinksPage && 'cursor-pointer hover:bg-gray-300'
+//                                                     }`}
+//                                                 onClick={() => handleTagClick(tag._id)}
+//                                             >
+//                                                 {tag.name}
+//                                             </span>
+//                                         ))
+//                                     )}
+//                                     {props.isLinksPage && tags.length > 3 && (
+//                                         <span className="font-semibold text-gray-800">+{tags.length - 3} more</span>
+//                                     )}
+//                                 </>
+//                             ) : (
+//                                 <span>No tags</span>
+//                             )}
+//                         </p>
+//                     </div>
+//                 </div>
+
+//                 {(props.isLinksPage ?? true) && (
+//                     <Link to={`/dashboard/links/${props._id}`} className='flex items-center gap-1 p-2 border border-gray-400 rounded-md hover:bg-gray-200'>
+//                         <LinkIcon className="transform rotate-45" />
+//                         <p>
+//                             Details
+//                         </p>
+//                     </Link>
+//                 )}
+//             </div>
+
+//             <DeleteDialog
+//                 heading="Delete Link?"
+//                 body="Are you sure you want to delete this URL? <br/> This cannot be undone."
+//                 deleteDialogOpen={deleteDialogOpen}
+//                 closeDeleteDialog={closeDeleteDialog}
+//                 handleDelete={handleDelete}
+//             />
+
+//         </div >
+//     )
+// }
+
+// export default LinkCard
+
 import DeleteDialog from '@/components/DeleteDialog';
 import { API_URL, REDIRECT_URL } from '@/config/urls';
 import { deleteUrl } from '@/features/public/Home/services/url.service';
@@ -12,9 +278,8 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import { FetchClicks } from '@/services/fetchClicks.service';
 import { Tooltip } from '@mui/material';
 import axios from 'axios';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import { useFilter } from '@/hooks/useFilter';
 import { authToken } from '@/config/authToken';
+import TagsChips from './TagsChips';
 
 interface IUrl {
     _id: string;
@@ -37,8 +302,6 @@ const LinkCard = (props: LinkCardProps) => {
     const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
     const [clicks, setClicks] = useState<number>(0);
     const [tags, setTags] = useState<string[]>([]);
-
-    const { tagFilter, setTagFilter, setTagFilterApplied } = useFilter();
 
     const image = props.meta?.image ?? 'https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://nustedupk0-my.sharepoint.com&size=32';
 
@@ -115,33 +378,83 @@ const LinkCard = (props: LinkCardProps) => {
         setUrlToDelete(null);
     };
 
-    const handleTagClick = (tagId: string) => {
-        const updatedTagFilter = tagFilter.includes(tagId) ?
-            tagFilter.filter((tag: any) => tag._id !== tagId) :
-            [...tagFilter, tagId];
-
-        if (props.isLinksPage) {
-            setTagFilter(updatedTagFilter);
-            setTagFilterApplied(true);
-        }
-    };
-
     return (
-        <div className="flex flex-col gap-2 px-8 py-4 bg-white rounded-md shadow-md">
-            <div className="flex items-center justify-between flex-1 gap-4 mb-2">
+        <div className="flex flex-row gap-2 p-8 bg-white rounded-md shadow-md max-lg:flex-col">
+            <div className="flex flex-row justify-start flex-1 gap-4 mb-2">
+
                 <img
                     src={image}
                     alt="Link preview"
-                    className="w-12 h-12 p-1 border-2 border-gray-300 rounded-full"
+                    className="w-12 h-12 p-1 border-2 border-gray-300 rounded-full max-sm:hidden"
                 />
 
-                <h3 className="flex-1 text-lg font-bold text-gray-800 cursor-pointer hover:underline">
-                    <Link to={`/dashboard/links/${props._id}`}>
-                        {props.meta?.title}
-                    </Link>
-                </h3>
+                <div className='flex flex-col flex-1 gap-4'>
+                    <h3 className="flex-1 text-lg font-bold text-gray-800 break-all cursor-pointer hover:underline line-clamp-1 max-md:text-3xl">
+                        <Link to={`/dashboard/links/${props._id}`}>
+                            {props.meta?.title}
+                        </Link>
+                    </h3>
 
-                <div className="flex items-center gap-2">
+                    <div className="flex flex-col gap-2">
+
+                        <a
+                            href={shortLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-base font-semibold text-blue-500 hover:text-blue-600 hover:underline"
+                        >
+                            {shortLinkWithoutProtocol}
+                        </a>
+
+                        <a
+                            href={props.originalUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mb-2 text-base break-all cursor-pointer hover:underline line-clamp-1"
+                        >
+                            {props.originalUrl}
+                        </a>
+
+                        <div className="flex items-center justify-between">
+                            <div className="flex gap-6 max-sm:flex-col max-sm:gap-4">
+                                {(props.isLinksPage ?? true) && (
+                                    <div className="flex items-end gap-2">
+                                        <LeaderboardIcon
+                                            fontSize='small'
+                                            className={
+                                                `
+                                        ${clicks > 0 ? 'text-[#3C6946]' : 'text-gray-500'}
+                                        `}
+                                        />
+                                        <span className={`text-sm ${clicks > 0 ? 'text-[#3C6946]' : ''} font-bold`}>
+                                            {clicks} engagements
+                                        </span>
+                                    </div>
+                                )}
+
+                                <div className="flex items-center gap-2">
+                                    <CalendarTodayIcon className="w-5 h-5 text-gray-500" />
+                                    <p className="text-sm text-gray-500">
+                                        {formattedDate}
+                                    </p>
+                                </div>
+
+                                <TagsChips
+                                    tags={tags}
+                                    isLinksPage={props.isLinksPage ?? true}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <hr className="my-2" />
+
+            <div className="flex flex-col justify-between gap-2 max-lg:flex-row">
+
+                <div className="flex items-center justify-between gap-2">
                     <CopyToClipboardButton text={shortLink} />
 
                     <Link to={`/dashboard/link/edit/${props._id}`} className="flex items-center gap-1 p-2 border border-gray-400 rounded-md hover:bg-gray-200">
@@ -158,92 +471,13 @@ const LinkCard = (props: LinkCardProps) => {
                     </Tooltip>
                 </div>
 
-            </div>
-
-            <hr className="my-2" />
-
-            <a
-                href={shortLink}
-                target="_blank"
-                rel="noreferrer"
-                className="text-base font-semibold text-blue-500 hover:text-blue-600 hover:underline"
-            >
-                {shortLinkWithoutProtocol}
-            </a>
-
-            <a
-                href={props.originalUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mb-2 overflow-hidden text-base cursor-pointer overflow-ellipsis whitespace-nowrap hover:underline"
-            >
-                {props.originalUrl}
-            </a>
-
-            <div className="flex items-center justify-between">
-                <div className="flex gap-6">
-                    {(props.isLinksPage ?? true) && (
-                        <div className="flex items-end gap-2">
-                            <LeaderboardIcon className={`w-5 h-5 text-gray-500 ${clicks > 0 ? 'text-[#3C6946]' : ''}`} />
-                            <span className={`text-sm ${clicks > 0 ? 'text-[#3C6946]' : ''} font-bold`}>
-                                {clicks} engagements
-                            </span>
-                        </div>
-                    )}
-
-                    <div className="flex items-center gap-2">
-                        <CalendarTodayIcon className="w-5 h-5 text-gray-500" />
-                        <p className="text-sm text-gray-500">
-                            {formattedDate}
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <LocalOfferIcon sx={{
-                            color: 'gray',
-                            width: '1.25rem',
-                        }} />
-                        <p>
-                            {tags.length > 0 ? (
-                                <>
-                                    {!props.isLinksPage ? (
-                                        tags.map((tag: any, index: number) => (
-                                            <span
-                                                key={index}
-                                                className={`px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 ${props.isLinksPage && 'cursor-pointer hover:bg-gray-300'
-                                                    }`}
-                                                onClick={() => handleTagClick(tag._id)}
-                                            >
-                                                {tag.name}
-                                            </span>
-                                        ))
-                                    ) : (
-                                        tags.slice(0, 3).map((tag: any, index: number) => (
-                                            <span
-                                                key={index}
-                                                className={`px-2 py-1 mr-1 text-sm font-semibold text-gray-800 bg-gray-200 ${props.isLinksPage && 'cursor-pointer hover:bg-gray-300'
-                                                    }`}
-                                                onClick={() => handleTagClick(tag._id)}
-                                            >
-                                                {tag.name}
-                                            </span>
-                                        ))
-                                    )}
-                                    {props.isLinksPage && tags.length > 3 && (
-                                        <span className="font-semibold text-gray-800">+{tags.length - 3} more</span>
-                                    )}
-                                </>
-                            ) : (
-                                <span>No tags</span>
-                            )}
-                        </p>
-                    </div>
-                </div>
-
                 {(props.isLinksPage ?? true) && (
-                    <Link to={`/dashboard/links/${props._id}`} className='flex items-center gap-1 p-2 border border-gray-400 rounded-md hover:bg-gray-200'>
+                    <Link
+                        to={`/dashboard/links/${props._id}`}
+                        className='flex items-center justify-center gap-1 p-2 border border-gray-400 rounded-md hover:bg-gray-200'
+                    >
                         <LinkIcon className="transform rotate-45" />
-                        <p>
+                        <p className="text-lg">
                             Details
                         </p>
                     </Link>
