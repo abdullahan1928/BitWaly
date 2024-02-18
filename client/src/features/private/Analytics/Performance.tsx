@@ -2,7 +2,7 @@ import InsightsIcon from '@mui/icons-material/Insights';
 
 const Performance = () => {
     return (
-        <div className="flex flex-col gap-4 text-gray-800 bg-white rounded-lg shadow-md w-[40%]">
+        <div className="flex flex-col w-full gap-4 text-gray-800 bg-white rounded-lg shadow-md">
 
             <h3 className="p-6 text-xl font-semibold font-proxima-nova">
                 Clicks + scans over time
