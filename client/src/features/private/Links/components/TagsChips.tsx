@@ -1,6 +1,6 @@
 import { useFilter } from '@/hooks/useFilter';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 interface TagsChipsProps {
     isLinksPage: boolean;

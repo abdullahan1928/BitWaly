@@ -37,7 +37,7 @@ const LineChart = () => {
     };
 
     return (
-        <AnalyticsCard title='Clicks + scans by referrer'>
+        <AnalyticsCard title='Clicks + scans over time'>
             <HighchartsReact highcharts={Highcharts} options={options} />
         </AnalyticsCard>
     );
