@@ -30,7 +30,7 @@ const Performance = () => {
     return (
         <div className="flex flex-col w-full gap-4 text-gray-800 bg-white rounded-lg shadow-md">
             <h3 className="p-6 text-xl font-semibold font-proxima-nova">
-                Clicks + scans over time
+                How your links are performing
             </h3>
             <div className="flex flex-col items-center gap-4 pb-4">
                 {clicksData ? (

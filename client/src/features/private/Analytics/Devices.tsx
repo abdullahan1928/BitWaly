@@ -1,13 +1,13 @@
-import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
+import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import { fetchDevices } from '@/services/analyticsSummary';
 import { authToken } from '@/config/authToken';
 
 const Devices = () => {
     const [subtitle, setSubtitle] = useState<string>('');
-    const [hoveredData, setHoveredData] = useState<{ name: string; percentage: number, engangement: number } | null>(null);
+    const [hoveredData, setHoveredData] = useState<{ name: string; percentage: number; engangement: number } | null>(null);
     const [chartData, setChartData] = useState<{ name: string; y: number; color?: string }[]>([]);
     const [totalEngagements, setTotalEngagements] = useState<number>(0);
 
@@ -16,11 +16,22 @@ const Devices = () => {
             try {
                 if (authToken !== null) {
                     const response = await fetchDevices(authToken);
-                    const data = response.map((deviceData: { device: string, count: number }) => ({
+                    const data = response.map((deviceData:any) => ({
                         name: deviceData.device,
                         y: deviceData.count,
                     }));
-                    setChartData(data);
+
+                    setChartData(() => {
+                        const updatedChartData = data.map((dataItem:any) => ({
+                            ...dataItem,
+                            color: hoveredData && dataItem.name === hoveredData.name ? '#E33E7F' : '#CCCCCC',
+                        }));
+
+                        return updatedChartData;
+                    });
+
+                    const total = data.reduce((acc:any, dataItem:any) => acc + dataItem.y, 0);
+                    setTotalEngagements(total);
                 }
             } catch (error) {
                 console.error('Error fetching device data:', error);
@@ -28,26 +39,7 @@ const Devices = () => {
         };
 
         fetchData();
-    }, []);
-
-    useEffect(() => {
-        const total = chartData.reduce((acc, dataItem) => acc + dataItem.y, 0);
-        setTotalEngagements(total);
-
-        if (hoveredData !== null) {
-            const updatedChartData = chartData.map((dataItem) => ({
-                ...dataItem,
-                color: dataItem.name === hoveredData.name ? '#E33E7F' : '#CCCCCC'
-            }));
-            setChartData(updatedChartData);
-        } else {
-            const updatedChartData = chartData.map((dataItem) => ({
-                ...dataItem,
-                color: undefined
-            }));
-            setChartData(updatedChartData);
-        }
-    }, [hoveredData, chartData]);
+    }, [hoveredData]);
 
     useEffect(() => {
         if (hoveredData) {
@@ -93,7 +85,7 @@ const Devices = () => {
                             allowPointSelect: true,
                             cursor: 'pointer',
                             dataLabels: {
-                                enabled: false
+                                enabled: false,
                             },
                             showInLegend: true,
                             point: {
@@ -111,25 +103,25 @@ const Devices = () => {
                                     },
                                     legendItemClick: function (this: any) {
                                         if (this.visible) {
-                                            setTotalEngagements(prevTotal => {
+                                            setTotalEngagements((prevTotal) => {
                                                 const newTotal = prevTotal - this.y;
                                                 return newTotal;
                                             });
                                         } else {
-                                            setTotalEngagements(prevTotal => {
+                                            setTotalEngagements((prevTotal) => {
                                                 const newTotal = prevTotal + this.y;
                                                 return newTotal;
                                             });
                                         }
                                     },
-                                }
-                            }
+                                },
+                            },
                         },
                     },
                     tooltip: {
                         formatter: function (this: any) {
                             return `<b>${this.point.name}</b>: ${((this.point.y / totalEngagements) * 100).toFixed(2)}%`;
-                        }
+                        },
                     },
                     legend: {
                         align: 'right',
@@ -139,7 +131,7 @@ const Devices = () => {
                         itemStyle: {
                             fontSize: '14px',
                             fontWeight: 'normal',
-                            color: '#666666'
+                            color: '#666666',
                         },
                         symbol: 'circle',
                         sybmoPadding: 10,
@@ -147,12 +139,14 @@ const Devices = () => {
                     exporting: {
                         enabled: true,
                     },
-                    series: [{
-                        type: 'pie',
-                        name: '',
-                        innerSize: '80%',
-                        data: chartData,
-                    }],
+                    series: [
+                        {
+                            type: 'pie',
+                            name: '',
+                            innerSize: '80%',
+                            data: chartData,
+                        },
+                    ],
                     chart: {
                         height: 300,
                     },
@@ -160,6 +154,6 @@ const Devices = () => {
             />
         </AnalyticsCard>
     );
-}
+};
 
 export default Devices;

@@ -1,15 +1,39 @@
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
+import { fetchClicksWithDates } from '@/services/analyticsSummary';
+import React, { useEffect, useState } from 'react';
+import { authToken } from '@/config/authToken';
 
 const LineChart = () => {
-    const generateData = () => {
-        const data = [];
-        for (let i = 0; i < 20; i++) {
-            data.push(Math.floor(Math.random() * 50));
-        }
-        return data;
-    };
+    interface ClickData {
+        date: string;
+        clicks: number;
+    }
+    const [chartData, setChartData] = useState<ClickData[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (authToken !== null) {
+                    const response = await fetchClicksWithDates(authToken);
+    
+                    // Check if response and response.data are defined
+                    if (response && response.data) {
+                        const clickData: ClickData[] = response.data;
+                        setChartData(clickData);
+                    } else {
+                        console.error('Invalid response structure:', response);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching click data:', error);
+            }
+        };
+    
+        fetchData();
+    }, []);
+    
 
     const options = {
         title: {
@@ -19,7 +43,7 @@ const LineChart = () => {
             height: 300,
         },
         xAxis: {
-            categories: ['01/30', '01/31', '02/01', '02/02', '02/03', '02/04', '02/05', '02/06', '02/07', '02/08', '02/09', '02/10', '02/11', '02/12', '02/13', '02/14', '02/15', '02/16', '02/17', '02/18', '02/19', '02/20', '02/21', '02/22', '02/23', '02/24', '02/25', '02/26', '02/27', '02/28']
+            categories: chartData.map(dataPoint => dataPoint.date),
         },
         yAxis: {
             title: {
@@ -28,10 +52,10 @@ const LineChart = () => {
         },
         series: [
             {
-                name: 'Data',
-                data: generateData(),
+                name: 'Clicks',
+                data: chartData.map(dataPoint => dataPoint.clicks),
                 color: '#E33E7F',
-                showInLegend: false
+                showInLegend: false,
             },
         ],
     };

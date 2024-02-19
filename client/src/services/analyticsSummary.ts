@@ -18,6 +18,23 @@ export const fetchLocations = async (authToken: string) => {
     }
 };
 
+export const fetchTopLocations = async (authToken: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/summary/toplocations`, {
+            headers: {
+                authToken: `${authToken}`
+            }
+        });
+        if (response) {
+            return response;
+        } else {
+            console.error('Failed to fetch user data');
+        }
+    } catch (error) {
+        console.log(error)
+    }
+};
+
 export const fetchReferrers = async (authToken: string) => {
     try {
         const response = await axios.get(`${API_URL}/summary/referrers`, {
@@ -62,6 +79,24 @@ export const fetchClicks = async (authToken: string) => {
         });
         if (response) {
             return response.data;
+        } else {
+            console.error('Failed to fetch user data');
+        }
+    } catch (error) {
+        console.log(error)
+    }
+};
+
+
+export const fetchClicksWithDates = async (authToken: string) => {
+    try {
+        const response = await axios.get(`${API_URL}/summary/clickswithdates`, {
+            headers: {
+                authToken: `${authToken}`
+            }
+        });
+        if (response) {
+            return response;
         } else {
             console.error('Failed to fetch user data');
         }
