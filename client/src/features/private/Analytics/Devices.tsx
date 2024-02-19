@@ -2,21 +2,35 @@ import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import { useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
+import { fetchDevices } from '@/services/analyticsSummary';
+import { authToken } from '@/config/authToken';
 
 const Devices = () => {
     const [subtitle, setSubtitle] = useState<string>('');
     const [hoveredData, setHoveredData] = useState<{ name: string; percentage: number, engangement: number } | null>(null);
-    const [chartData, setChartData] = useState<{ name: string; y: number; color?: string }[]>([
-        { name: 'Desktop', y: 10 },
-        { name: 'E-Reader', y: 53 },
-        { name: 'Tablet', y: 75 },
-        { name: 'Mobile', y: 92 },
-        { name: 'Others', y: 23 },
-    ]);
+    const [chartData, setChartData] = useState<{ name: string; y: number; color?: string }[]>([]);
     const [totalEngagements, setTotalEngagements] = useState<number>(0);
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (authToken !== null) {
+                    const response = await fetchDevices(authToken);
+                    const data = response.map((deviceData: { device: string, count: number }) => ({
+                        name: deviceData.device,
+                        y: deviceData.count,
+                    }));
+                    setChartData(data);
+                }
+            } catch (error) {
+                console.error('Error fetching device data:', error);
+            }
+        };
 
+        fetchData();
+    }, []);
+
+    useEffect(() => {
         const total = chartData.reduce((acc, dataItem) => acc + dataItem.y, 0);
         setTotalEngagements(total);
 
@@ -33,7 +47,7 @@ const Devices = () => {
             }));
             setChartData(updatedChartData);
         }
-    }, [hoveredData]);
+    }, [hoveredData, chartData]);
 
     useEffect(() => {
         if (hoveredData) {
@@ -58,7 +72,7 @@ const Devices = () => {
     }, [totalEngagements, hoveredData]);
 
     return (
-        <AnalyticsCard title='Clicks + scans by device'>
+        <AnalyticsCard title='Clicks & scans by Devices'>
             <HighchartsReact
                 highcharts={Highcharts}
                 options={{
@@ -144,8 +158,8 @@ const Devices = () => {
                     },
                 }}
             />
-        </AnalyticsCard >
-    )
+        </AnalyticsCard>
+    );
 }
 
-export default Devices
+export default Devices;

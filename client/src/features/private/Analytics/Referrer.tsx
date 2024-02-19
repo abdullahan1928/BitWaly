@@ -1,23 +1,30 @@
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from 'highcharts';
 import AnalyticsCard from "@/features/private/Analytics/AnalyticsCard";
+import { fetchReferrers } from "@/services/analyticsSummary";
+import { useEffect, useState } from "react";
+import { authToken } from "@/config/authToken";
 
 const Referrer = () => {
+    const [referrerData, setReferrerData] = useState([]);
 
-    const chartData = [
-        { name: 'LinkedIn', y: 54 },
-        { name: 'Twitter', y: 25 },
-        { name: 'Facebook', y: 43 },
-        { name: 'Instagram', y: 54 },
-        { name: 'Pinterest', y: 73 },
-        { name: 'YouTube', y: 12 },
-        { name: 'Direct', y: 7 },
-        { name: 'Others', y: 47 }
-    ];
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (authToken !== null) {
+                    const response = await fetchReferrers(authToken);
+                    setReferrerData(response);
+                }
+            } catch (error) {
+                console.error('Error fetching referrer data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     return (
-        <AnalyticsCard title="Clicks + scans by referrer">
-
+        <AnalyticsCard title="Clicks & scans by Referrers">
             <HighchartsReact
                 highcharts={Highcharts}
                 options={{
@@ -29,7 +36,7 @@ const Referrer = () => {
                         text: '',
                     },
                     xAxis: {
-                        categories: chartData.map((data) => data.name),
+                        categories: referrerData.map((data) => data.referrer),
                         crosshair: true,
                     },
                     yAxis: {
@@ -55,7 +62,10 @@ const Referrer = () => {
                     series: [
                         {
                             name: 'Referrer',
-                            data: chartData,
+                            data: referrerData.map((data) => ({
+                                name: data.referrer,
+                                y: data.count,
+                            })),
                             color: '#E33E7F',
                             showInLegend: false,
                         },
@@ -63,7 +73,7 @@ const Referrer = () => {
                 }}
             />
         </AnalyticsCard>
-    )
-}
+    );
+};
 
-export default Referrer
+export default Referrer;

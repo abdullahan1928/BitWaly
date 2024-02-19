@@ -32,6 +32,7 @@ app.use('/url', require('./routes/url.route'));
 app.use('/auth', require('./routes/auth.route'));
 app.use('/analytics', require('./routes/analytics.route'));
 app.use('/tag', require('./routes/tag.route'));
+app.use('/summary', require('./routes/summary.route'));
 
 const environment = process.env.NODE_ENV;
 
