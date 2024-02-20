@@ -29,7 +29,7 @@ const useAuthForm = ({ apiEndpoint, successMessage }: IUseAuthForm) => {
         const password = data.get("password") as string;
 
         try {
-            const res = await axios.post(apiEndpoint, { email, password });
+            const res = await axios.post(apiEndpoint, { email, password, role: "user" });
             setSnackbarMessage(successMessage);
             setSnackbarSeverity("success");
             setSnackbarOpen(true);

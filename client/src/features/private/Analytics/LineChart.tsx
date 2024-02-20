@@ -2,7 +2,7 @@ import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { fetchClicksWithDates } from '@/services/analyticsSummary';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { authToken } from '@/config/authToken';
 
 const LineChart = () => {

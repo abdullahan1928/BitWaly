@@ -8,6 +8,7 @@ const Tag = require('../models/Tag.model');
 const Analytics = require('../models/Analytics.model');
 
 const signupController = async (req, res) => {
+    const role = req.body.role;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
@@ -24,6 +25,7 @@ const signupController = async (req, res) => {
         const user = await new Users({
             email: req.body.email,
             password: hashedPassword,
+            role: role,
         });
 
         const authToken = jwt.sign(user.id, jwt_secret);
