@@ -14,6 +14,7 @@ import { Tooltip } from '@mui/material';
 import axios from 'axios';
 import { authToken } from '@/config/authToken';
 import TagsChips from './TagsChips';
+import Skeleton from '@mui/material/Skeleton';
 
 interface IUrl {
     _id: string;
@@ -29,6 +30,7 @@ interface IUrl {
 interface LinkCardProps extends IUrl {
     onDeleteUrl: (deletedUrlId: string) => void;
     isLinksPage?: boolean;
+    loading?: boolean;
 }
 
 const LinkCard = (props: LinkCardProps) => {
@@ -64,9 +66,11 @@ const LinkCard = (props: LinkCardProps) => {
 
 
     useEffect(() => {
-        getClicks();
-        getTags();
-    }, [])
+        if (!props.loading) {
+            getClicks();
+            getTags();
+        }
+    }, [props.loading]);
 
     const getClicks = async () => {
         if (!authToken) return;
@@ -116,38 +120,54 @@ const LinkCard = (props: LinkCardProps) => {
         <div className="flex flex-row gap-2 p-8 bg-white rounded-md shadow-md max-lg:flex-col">
             <div className="flex flex-row justify-start flex-1 gap-4 mb-2">
 
-                <img
-                    src={image}
-                    alt="Link preview"
-                    className="w-12 h-12 p-1 border-2 border-gray-300 rounded-full max-sm:hidden"
-                />
+                {props.loading ? (
+                    <Skeleton variant="circular" width={48} height={48} />
+                ) : (
+                    <img
+                        src={image}
+                        alt="Link preview"
+                        className="w-12 h-12 p-1 border-2 border-gray-300 rounded-full max-sm:hidden"
+                    />
+                )}
 
                 <div className='flex flex-col flex-1 gap-4'>
-                    <h3 className="flex-1 text-lg font-bold text-gray-800 break-all cursor-pointer hover:underline line-clamp-1 max-md:text-3xl">
-                        <Link to={`/dashboard/links/${props._id}`}>
-                            {props.meta?.title}
-                        </Link>
-                    </h3>
+                    {props.loading ? (
+                        <Skeleton variant="text" width={200} height={30} />
+                    ) : (
+                        <h3 className="flex-1 text-lg font-bold text-gray-800 break-all cursor-pointer hover:underline line-clamp-1 max-md:text-3xl">
+                            <Link to={`/dashboard/links/${props._id}`}>
+                                {props.meta?.title}
+                            </Link>
+                        </h3>
+                    )}
 
                     <div className="flex flex-col gap-2">
 
-                        <a
-                            href={shortLink}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-base font-semibold text-blue-500 hover:text-blue-600 hover:underline"
-                        >
-                            {shortLinkWithoutProtocol}
-                        </a>
+                        {props.loading ? (
+                            <Skeleton variant="text" width={200} height={30} />
+                        ) : (
+                            <a
+                                href={shortLink}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-base font-semibold text-blue-500 hover:text-blue-600 hover:underline"
+                            >
+                                {shortLinkWithoutProtocol}
+                            </a>
+                        )}
 
-                        <a
-                            href={props.originalUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="mb-2 text-base break-all cursor-pointer hover:underline line-clamp-1"
-                        >
-                            {props.originalUrl}
-                        </a>
+                        {props.loading ? (
+                            <Skeleton variant="text" width={200} height={30} />
+                        ) : (
+                            <a
+                                href={props.originalUrl}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="mb-2 text-base break-all cursor-pointer hover:underline line-clamp-1"
+                            >
+                                {props.originalUrl}
+                            </a>
+                        )}
 
                         <div className="flex items-center justify-between">
                             <div className="flex gap-6 max-sm:flex-col max-sm:gap-4">
@@ -168,9 +188,13 @@ const LinkCard = (props: LinkCardProps) => {
 
                                 <div className="flex items-center gap-2">
                                     <CalendarTodayIcon className="w-5 h-5 text-gray-500" />
-                                    <p className="text-sm text-gray-500">
-                                        {formattedDate}
-                                    </p>
+                                    {props.loading ? (
+                                        <Skeleton variant="text" width={200} height={30} />
+                                    ) : (
+                                        <p className="text-sm text-gray-500">
+                                            {formattedDate}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <TagsChips

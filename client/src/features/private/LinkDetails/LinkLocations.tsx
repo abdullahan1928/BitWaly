@@ -19,6 +19,7 @@ const LinkLocations = ({ id, startDate, endDate }: LinkLocationProps) => {
     const [countryData, setCountryData] = useState<CountryData[]>([]);
     const [cityData, setCityData] = useState<CityData[]>([]);
     const [currentTab, setCurrentTab] = useState(0);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         fetchData();
@@ -29,6 +30,8 @@ const LinkLocations = ({ id, startDate, endDate }: LinkLocationProps) => {
     }, [startDate, endDate]);
 
     const fetchData = async () => {
+        setLoading(true);
+
         axios.get(`${API_URL}/analytics/location/${id}`, {
             headers: {
                 authToken: `${authToken}`,
@@ -46,11 +49,12 @@ const LinkLocations = ({ id, startDate, endDate }: LinkLocationProps) => {
                 count: data.count,
             }));
 
-
             setCountryData(countryData);
             setCityData(cityData);
+            setLoading(false);
         }).catch((err) => {
             console.log(err);
+            setLoading(false);
         });
     };
 
@@ -81,10 +85,10 @@ const LinkLocations = ({ id, startDate, endDate }: LinkLocationProps) => {
                 </Tabs>
             </div>
             <TabPanel value={currentTab} index={0}>
-                <LocationTable data={countryData} />
+                <LocationTable title="Country" data={countryData} loading={loading} />
             </TabPanel>
             <TabPanel value={currentTab} index={1}>
-                <LocationTable data={cityData} />
+                <LocationTable title="City" data={cityData} loading={loading} />
             </TabPanel>
         </Paper>
     );

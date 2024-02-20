@@ -6,12 +6,15 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Skeleton from "@mui/material/Skeleton";
 
 interface DataTableProps {
+    title: string;
     data: CountryData[] | CityData[];
+    loading?: boolean;
 }
 
-const LocationTable = ({ data }: DataTableProps) => {
+const LocationTable = ({ title, data, loading }: DataTableProps) => {
     const isCountryData = (
         data: CountryData | CityData
     ): data is CountryData => {
@@ -42,7 +45,7 @@ const LocationTable = ({ data }: DataTableProps) => {
                 <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
                     <TableCell>Sr#</TableCell>
                     <TableCell>
-                        {data[0] && (isCountryData(data[0]) || isCityData(data[0])) ? (isCountryData(data[0]) ? "Country" : "City") : ""}
+                        {title}
                     </TableCell>
                     <TableCell
                         sx={{
@@ -56,46 +59,64 @@ const LocationTable = ({ data }: DataTableProps) => {
                 </TableRow>
             </TableHead>
             <TableBody sx={{ '& td': { border: 'none' }, }}>
-                {data.map((item, index) => (
-                    <TableRow key={index} style={{ whiteSpace: 'nowrap' }}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>
-                            {isCountryData(item)
-                                ? item.country
-                                : isCityData(item)
-                                    ? item.city
-                                    : ""}
-                        </TableCell>
-                        <TableCell sx={{
-                            position: 'relative',
-                            width: '100%',
-                            '@media (max-width: 640px)': {
-                                display: 'none',
-                            },
-                        }}>
-                            <LinearProgress
-                                variant="determinate"
-                                value={(item.count / calculateTotalPercentage()) * 100}
-                                sx={{
-                                    height: 12,
-                                    borderRadius: 6,
-                                    backgroundColor: '#f4f6fa',
-                                    position: 'absolute',
-                                    left: 0,
-                                    right: 0,
-                                    margin: 'auto',
-                                    '& .MuiLinearProgress-bar': {
+                {loading ? (
+                    <>
+                        {[1, 2, 3, 4, 5].map((_, index) => (
+                            <TableRow key={index}>
+                                {[1, 2, 3, 4, 5].map((_, index) => (
+                                    <TableCell key={index}>
+                                        {index === 0 ? <Skeleton variant="text" width={50} height={50} /> : ""}
+                                        {index === 1 ? <Skeleton variant="text" width={100} height={50} /> : ""}
+                                        {index === 2 ? <Skeleton variant="text" width={500} height={50} /> : ""}
+                                        {index === 3 ? <Skeleton variant="text" width={100} height={50} /> : ""}
+                                        {index === 4 ? <Skeleton variant="text" width={100} height={50} /> : ""}
+                                    </TableCell>
+                                ))}
+                            </TableRow>
+                        ))}
+                    </>
+                ) : (
+                    data.map((item, index) => (
+                        <TableRow key={index} style={{ whiteSpace: 'nowrap' }}>
+                            <TableCell>{index + 1}</TableCell>
+                            <TableCell>
+                                {isCountryData(item)
+                                    ? item.country
+                                    : isCityData(item)
+                                        ? item.city
+                                        : ""}
+                            </TableCell>
+                            <TableCell sx={{
+                                position: 'relative',
+                                width: '100%',
+                                '@media (max-width: 640px)': {
+                                    display: 'none',
+                                },
+                            }}>
+                                <LinearProgress
+                                    variant="determinate"
+                                    value={(item.count / calculateTotalPercentage()) * 100}
+                                    sx={{
+                                        height: 12,
                                         borderRadius: 6,
-                                    },
-                                }}
-                            />
-                        </TableCell>
-                        <TableCell sx={{ textAlign: 'right' }}>{item.count}</TableCell>
-                        <TableCell sx={{ textAlign: 'right' }}>
-                            {Math.round((item.count / calculateTotalPercentage()) * 100)}%
-                        </TableCell>
-                    </TableRow>
-                ))}
+                                        backgroundColor: '#f4f6fa',
+                                        position: 'absolute',
+                                        left: 0,
+                                        right: 0,
+                                        margin: 'auto',
+                                        '& .MuiLinearProgress-bar': {
+                                            borderRadius: 6,
+                                        },
+                                    }}
+                                />
+                            </TableCell>
+                            <TableCell sx={{ textAlign: 'right' }}>{item.count}</TableCell>
+                            <TableCell sx={{ textAlign: 'right' }}>
+                                {Math.round((item.count / calculateTotalPercentage()) * 100)}%
+                            </TableCell>
+                        </TableRow>
+                    ))
+                )}
             </TableBody>
         </Table>
     );

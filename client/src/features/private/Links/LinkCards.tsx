@@ -4,6 +4,7 @@ import { getUserUrls } from "@/features/public/Home/services/url.service";
 import { authToken } from "@/config/authToken";
 import { useFilter } from "@/hooks/useFilter";
 import { useSearch } from "@/hooks/useSearch";
+import Skeleton from "@mui/material/Skeleton";
 
 interface Url {
     _id: string;
@@ -19,6 +20,7 @@ interface Url {
 const LinkCards = () => {
     const [userUrls, setUserUrls] = useState<Url[]>([]);
     const [filteredUserUrls, setFilteredUserUrls] = useState<Url[]>([]);
+    const [loading, setLoading] = useState(true);
     const { linkTypeFilter, tagFilter, dateFilter, linkTypeFilterApplied, tagFilterApplied, dateFilterApplied } = useFilter();
     const { searchValue } = useSearch();
 
@@ -28,6 +30,7 @@ const LinkCards = () => {
                 const urls = await getUserUrls(authToken);
                 const sortedUrls = urls.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 setUserUrls(sortedUrls);
+                setLoading(false); // Once data is fetched, set loading to false
             } catch (error) {
                 console.error('Error fetching user URLs:', error);
             }
@@ -74,6 +77,7 @@ const LinkCards = () => {
         setFilteredUserUrls(filteredUrls);
     }, [userUrls, linkTypeFilter, tagFilter, searchValue, dateFilterApplied, dateFilter]);
 
+
     const formatCreatedAt = (createdAt: string) => {
         const date = new Date(createdAt);
         return date.toLocaleString();
@@ -85,53 +89,75 @@ const LinkCards = () => {
 
     return (
         <div className="flex flex-col gap-8">
-            {filteredUserUrls.length > 0
-                ? (
-                    <>
-                        <div className="flex font-bold">
-                            <h3 className="text-2xl">
-                                {`${(linkTypeFilterApplied || tagFilterApplied)
-                                    ? 'Filtered:'
-                                    : 'Total:'
-                                    } 
-                                    Links`
-                                }
-                            </h3>
-                            <p className="ml-2 text-2xl">
-                                {filteredUserUrls.length}
-                            </p>
+            {loading ? (
+                <>
+                    <div className="flex items-center gap-4 font-bold">
+                        <h3 className="text-2xl">
+                            {`${(linkTypeFilterApplied || tagFilterApplied)
+                                ? 'Filtered:'
+                                : 'Total:'
+                                } 
+                            Links`
+                            }
+                        </h3>
+                        <Skeleton variant="text" width={50} height={50} />
+                    </div>
+                    {[...Array(5)].map((_, index) => (
+                        <div key={index}>
+                            <Skeleton variant="rectangular" height={200} />
                         </div>
+                    ))}
+                </>
+            ) : (
+                <>
+                    {filteredUserUrls.length > 0 ? (
+                        <>
+                            <div className="flex font-bold">
+                                <h3 className="text-2xl">
+                                    {`${(linkTypeFilterApplied || tagFilterApplied)
+                                        ? 'Filtered'
+                                        : 'Total'
+                                        } 
+                                    Links:`
+                                    }
+                                </h3>
+                                <p className="ml-2 text-2xl">
+                                    {filteredUserUrls.length}
+                                </p>
+                            </div>
 
-                        {filteredUserUrls.map(url => (
-                            <LinkCard
-                                key={url._id}
-                                _id={url._id}
-                                originalUrl={url.originalUrl}
-                                shortUrl={url.shortUrl}
-                                createdAt={formatCreatedAt(url.createdAt)}
-                                meta={url.meta}
-                                onDeleteUrl={handleDeleteUrl}
-                                isLinksPage={true}
-                            />
-                        ))}
-                        <div className="flex items-center justify-center gap-7">
+                            {filteredUserUrls.map(url => (
+                                <LinkCard
+                                    key={url._id}
+                                    _id={url._id}
+                                    originalUrl={url.originalUrl}
+                                    shortUrl={url.shortUrl}
+                                    createdAt={formatCreatedAt(url.createdAt)}
+                                    meta={url.meta}
+                                    onDeleteUrl={handleDeleteUrl}
+                                    isLinksPage={true}
+                                />
+                            ))}
+
+                            <div className="flex items-center justify-center gap-7">
+                                <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
+                                <div className="text-lg text-center text-gray-400">
+                                    It's the end of the list!
+                                </div>
+                                <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
+                            </div>
+                        </>
+                    ) : (
+                        <div className="flex items-center justify-center gap-2">
                             <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
                             <div className="text-lg text-center text-gray-400">
-                                It's the end of the list!
+                                No Links Found!
                             </div>
                             <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
                         </div>
-                    </>
-                )
-                :
-                <div className="flex items-center justify-center gap-2">
-                    <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
-                    <div className="text-lg text-center text-gray-400">
-                        No Links Found!
-                    </div>
-                    <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
-                </div>
-            }
+                    )}
+                </>
+            )}
         </div>
     );
 

@@ -16,21 +16,20 @@ const Devices = () => {
             try {
                 if (authToken !== null) {
                     const response = await fetchDevices(authToken);
-                    const data = response.map((deviceData:any) => ({
+                    const data = response.map((deviceData: any) => ({
                         name: deviceData.device,
                         y: deviceData.count,
                     }));
 
                     setChartData(() => {
-                        const updatedChartData = data.map((dataItem:any) => ({
+                        const updatedChartData = data.map((dataItem: any) => ({
                             ...dataItem,
-                            color: hoveredData && dataItem.name === hoveredData.name ? '#E33E7F' : '#E33E7F',
                         }));
 
                         return updatedChartData;
                     });
 
-                    const total = data.reduce((acc:any, dataItem:any) => acc + dataItem.y, 0);
+                    const total = data.reduce((acc: any, dataItem: any) => acc + dataItem.y, 0);
                     setTotalEngagements(total);
                 }
             } catch (error) {
@@ -39,6 +38,22 @@ const Devices = () => {
         };
 
         fetchData();
+    }, [hoveredData]);
+
+    useEffect(() => {
+        if (hoveredData !== null) {
+            const updatedChartData = chartData.map((dataItem) => ({
+                ...dataItem,
+                color: dataItem.name === hoveredData.name ? '#E33E7F' : '#CCCCCC'
+            }));
+            setChartData(updatedChartData);
+        } else {
+            const updatedChartData = chartData.map((dataItem) => ({
+                ...dataItem,
+                color: undefined
+            }));
+            setChartData(updatedChartData);
+        }
     }, [hoveredData]);
 
     useEffect(() => {

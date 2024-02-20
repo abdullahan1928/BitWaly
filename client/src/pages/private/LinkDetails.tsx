@@ -1,14 +1,13 @@
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import LinkBarChart from "@/features/private/LinkDetails/LinkBarChart"
-import { UrlRetrievalById } from "@/services/retrieveUrl.service"
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import LinkBarChart from "@/features/private/LinkDetails/LinkBarChart";
+import { UrlRetrievalById } from "@/services/retrieveUrl.service";
 import LinkLocations from "@/features/private/LinkDetails/LinkLocations";
 import LinkReferres from "@/features/private/LinkDetails/LinkReferres";
 import LinkDevices from "@/features/private/LinkDetails/LinkDevices";
 import DateRangeFilter from "@/components/DateRangeFilter";
 import LinkCard from "@/features/private/Links/components/LinkCard";
 import LinkSummary from "@/features/private/LinkDetails/LinkSummary";
-import { Link } from "react-router-dom";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { authToken } from "@/config/authToken";
 import { DateFilterProvider } from "@/context/FilterLinkDetailsContext";
@@ -28,6 +27,7 @@ const LinkDetails = () => {
     const [urlData, setUrlData] = useState<IUrl | null>(null);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
+    const [loading, setLoading] = useState(true);
 
     const { id } = useParams<{ id: string }>();
 
@@ -36,14 +36,15 @@ const LinkDetails = () => {
     }, []);
 
     const fetchLink = async () => {
-        UrlRetrievalById(authToken ?? '', id ?? '')
-            .then((res) => {
-                setUrlData(res.url)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-    }
+        try {
+            const res = await UrlRetrievalById(authToken ?? '', id ?? '');
+            setUrlData(res.url);
+            setLoading(false);
+        } catch (error) {
+            console.log(error);
+            setLoading(false);
+        }
+    };
 
     const handleDateChange = (newStartDate: Date, newEndDate: Date) => {
         setStartDate(newStartDate);
@@ -52,9 +53,7 @@ const LinkDetails = () => {
 
     return (
         <DateFilterProvider>
-
             <div className="container flex flex-col max-w-6xl gap-8 p-4 mx-auto">
-
                 <Link to="/dashboard/links" className="flex items-center text-primary hover:underline">
                     <ChevronLeftIcon className='inline-block text-base' />
                     <p className='inline-block ml-2 text-base'>
@@ -70,6 +69,7 @@ const LinkDetails = () => {
                     meta={urlData?.meta}
                     onDeleteUrl={() => { }}
                     isLinksPage={false}
+                    loading={loading}
                 />
 
                 <LinkSummary id={id ?? ''} />
@@ -85,8 +85,6 @@ const LinkDetails = () => {
                     <LinkBarChart
                         id={id ?? ''}
                         createdAt={urlData?.createdAt ?? ''}
-                    // startDate={startDate}
-                    // endDate={endDate}
                     />
                 )}
 
@@ -103,7 +101,7 @@ const LinkDetails = () => {
                 </div>
             </div >
         </DateFilterProvider>
-    )
-}
+    );
+};
 
-export default LinkDetails
+export default LinkDetails;

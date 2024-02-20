@@ -36,7 +36,7 @@ const Referrer = () => {
                         text: '',
                     },
                     xAxis: {
-                        categories: referrerData.map((data) => data.referrer),
+                        categories: referrerData.map((data: any) => data.referrer),
                         crosshair: true,
                     },
                     yAxis: {
@@ -62,7 +62,7 @@ const Referrer = () => {
                     series: [
                         {
                             name: 'Referrer',
-                            data: referrerData.map((data) => ({
+                            data: referrerData.map((data: any) => ({
                                 name: data.referrer,
                                 y: data.count,
                             })),

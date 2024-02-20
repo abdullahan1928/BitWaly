@@ -6,31 +6,24 @@ import { format } from 'date-fns';
 import { fetchEngagement } from '@/services/engagementsWDates';
 import DatePicker from 'react-datepicker';
 import { authToken } from '@/config/authToken';
+import BarChartSkeleton from './LinkBarSkelton';
 
 interface LinkBarChartProps {
   id: string;
   createdAt: string;
 }
 
+interface ChartData {
+  categories: string[];
+  data: number[];
+}
+
 const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
-  const [originalChartData, setOriginalChartData] = useState<{
-    categories: string[];
-    data: number[];
-  }>({
-    categories: [],
-    data: [],
-  });
-
-  const [selectedChartData, setSelectedChartData] = useState<{
-    categories: string[];
-    data: number[];
-  }>({
-    categories: [],
-    data: [],
-  });
-
+  const [originalChartData, setOriginalChartData] = useState<ChartData>({ categories: [], data: [] });
+  const [selectedChartData, setSelectedChartData] = useState<ChartData>({ categories: [], data: [] });
   const [startDate, setStartDate] = useState(new Date(createdAt));
   const [endDate, setEndDate] = useState(new Date());
+  const [loading, setLoading] = useState(true);
 
   const minStartDate = new Date(createdAt);
 
@@ -51,6 +44,8 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
 
         setOriginalChartData(chartData);
         setSelectedChartData(chartData);
+
+        setLoading(false);
       })
       .catch((err) => {
         console.error(err);
@@ -68,7 +63,6 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
   const updateChartData = (start: Date, end: Date) => {
 
     const formattedDates = originalChartData.categories.map((date: string) => {
-      // Assuming the date format is 'DD/MM/YYYY'
       const [day, month, year] = date.split('/');
       return new Date(`${month}/${day}/${year}`);
     });
@@ -117,48 +111,60 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
           dateFormat="dd/MM/yyyy"
         />
       </div>
-      <HighchartsReact
-        highcharts={Highcharts}
-        options={{
-          chart: {
-            type: 'column',
-          },
-          title: {
-            text: 'Engagements over time',
-          },
-          xAxis: {
-            categories: selectedChartData.categories,
-            crosshair: true,
-          },
-          yAxis: {
-            min: 0,
+
+      <div className='bg-white rounded-xl'>
+
+      <h3 className="my-4 text-xl font-semibold text-center">
+        Engagements over time
+      </h3>
+
+      {loading ? (
+        <BarChartSkeleton barCount={7} width={80} />
+      ) : (
+        <HighchartsReact
+          highcharts={Highcharts}
+          options={{
+            chart: {
+              type: 'column',
+            },
             title: {
-              text: 'Engagements',
+              text: '',
             },
-          },
-          tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat:
-              '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-              '<td style="padding:0"><b>{point.y} engagements</b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true,
-          },
-          plotOptions: {
-            column: {
-              pointPadding: 0.2,
+            xAxis: {
+              categories: selectedChartData.categories,
+              crosshair: true,
             },
-          },
-          series: [
-            {
-              name: 'Link Clicks',
-              data: selectedChartData.data,
-              color: '#E33E7F',
+            yAxis: {
+              min: 0,
+              title: {
+                text: 'Engagements',
+              },
             },
-          ],
-        }}
-      />
+            tooltip: {
+              headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+              pointFormat:
+                '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y} engagements</b></td></tr>',
+              footerFormat: '</table>',
+              shared: true,
+              useHTML: true,
+            },
+            plotOptions: {
+              column: {
+                pointPadding: 0.2,
+              },
+            },
+            series: [
+              {
+                name: 'Link Clicks',
+                data: selectedChartData.data,
+                color: '#E33E7F',
+              },
+            ],
+          }}
+        />
+      )}
+      </div>
     </div>
   );
 };

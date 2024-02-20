@@ -7,6 +7,7 @@ import PieChart from './components/PieChart';
 const LinkReferres = ({ id }: { id: string }) => {
     const [chartData, setChartData] = useState<{ name: string; y: number }[]>([]);
     const [totalEngagements, setTotalEngagements] = useState<number>(0);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         axios.get(`${API_URL}/analytics/referrer/${id}`, {
@@ -37,6 +38,8 @@ const LinkReferres = ({ id }: { id: string }) => {
 
             setChartData(chartDataArray);
             setTotalEngagements(total);
+
+            setLoading(false);
         }).catch((err) => {
             console.log(err);
         });
@@ -45,12 +48,17 @@ const LinkReferres = ({ id }: { id: string }) => {
     return (
         <div className="bg-white rounded-md shadow-md p-4 w-[48%] max-lg:w-full">
 
+            <h3 className="text-xl font-semibold text-center">
+                Referrers
+            </h3>
+
             <PieChart
                 title="Referrers"
                 chartData={chartData}
                 setChartData={setChartData}
                 totalEngagements={totalEngagements}
                 setTotalEngagements={setTotalEngagements}
+                loading={loading}
             />
 
         </div>

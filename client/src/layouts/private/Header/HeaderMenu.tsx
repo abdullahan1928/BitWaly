@@ -3,13 +3,15 @@ import { Divider, Menu, MenuItem, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useState } from "react";
+import Skeleton from "@mui/material/Skeleton";
 
 interface HeaderMenuProps {
     name: string;
     email: string;
+    loading?: boolean;
 }
 
-const HeaderMenu = ({ name, email, }: HeaderMenuProps) => {
+const HeaderMenu = ({ name, email, loading }: HeaderMenuProps) => {
     const [anchorEl, setAnchorEl] = useState(null);
 
     const navigate = useNavigate();
@@ -35,9 +37,16 @@ const HeaderMenu = ({ name, email, }: HeaderMenuProps) => {
                 className="flex items-center px-2 py-1 cursor-pointer hover:bg-gray-200"
                 onClick={handleMenuOpen}
             >
-                <div className="flex items-center justify-center w-10 h-10 mr-2 text-xl bg-gray-800 rounded-full">
-                    {name[0]}
+                <div className={`flex items-center justify-center w-10 h-10 mr-2 text-xl ${!loading && 'bg-gray-800'} 
+                rounded-full`}>
+                    {loading ?
+                        <Skeleton variant="circular" width={40} height={40} /> :
+                        <>
+                            {name[0]}
+                        </>
+                    }
                 </div>
+
                 <Typography
                     variant="subtitle1"
                     noWrap
@@ -46,7 +55,12 @@ const HeaderMenu = ({ name, email, }: HeaderMenuProps) => {
                         color: "black",
                     }}
                 >
-                    {name}
+                    {loading ?
+                        <Skeleton variant="text" width={100} height={50} /> :
+                        <>
+                            {name}
+                        </>
+                    }
                 </Typography>
                 <ArrowDropDownIcon sx={{ color: "black" }} />
             </div>

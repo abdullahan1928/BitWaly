@@ -52,6 +52,7 @@ interface AppBarProps extends MuiAppBarProps {
 const Header = ({ open, setOpen }: AppBarProps) => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const toggleDrawer = () => {
         setOpen(!open);
@@ -69,6 +70,7 @@ const Header = ({ open, setOpen }: AppBarProps) => {
                 setName(res.data._id);
             }
             setEmail(res.data.email);
+            setLoading(false);
         }).catch((err) => {
             console.log(err);
         });
@@ -92,7 +94,7 @@ const Header = ({ open, setOpen }: AppBarProps) => {
 
                     <SearchBar />
 
-                    <HeaderMenu name={name} email={email} />
+                    <HeaderMenu name={name} email={email} loading={loading} />
                 </div>
             </Toolbar>
         </AppBar>
