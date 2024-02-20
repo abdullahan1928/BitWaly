@@ -28,7 +28,7 @@ const signupController = async (req, res) => {
             role: role,
         });
 
-        const authToken = jwt.sign(user.id, jwt_secret);
+        const authToken = jwt.sign({ id: user.id, role: user.role }, jwt_secret);
 
         res.send({ authToken });
 
@@ -47,7 +47,7 @@ const signinController = async (req, res) => {
         return res.status(422).json({ errors: errors.array() });
     }
 
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
     try {
         let user = await Users.findOne({ email });
@@ -59,7 +59,8 @@ const signinController = async (req, res) => {
             return res.status(422).json({ errors: [{ msg: 'Invalid Credentials' }] });
         }
 
-        const authToken = jwt.sign(user.id, jwt_secret);
+        console.log(user.id, jwt_secret, role)
+        const authToken = jwt.sign({ id: user.id, role: user.role }, jwt_secret);
         user.lastLogin = new Date();
         await user.save();
 

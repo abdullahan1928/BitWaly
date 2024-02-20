@@ -7,7 +7,8 @@ const fetchUser = require("../middleware/fetchUser");
 //ROUTE1: creating a user        /auth/signup,    NO AUTHENTICATION/LOGIN REQUIRED
 router.post('/signup', [
     body('email').not().isEmpty().withMessage('Email is required').isEmail(),
-    body('password').not().isEmpty().withMessage('Password is required').isLength({ min: 5 })
+    body('password').not().isEmpty().withMessage('Password is required').isLength({ min: 5 }),
+    body('role').not().isEmpty().withMessage('Role is required').isIn(['user', 'admin'])
 ], signupController);
 
 
