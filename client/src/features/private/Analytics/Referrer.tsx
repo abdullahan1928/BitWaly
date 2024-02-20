@@ -1,12 +1,12 @@
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from 'highcharts';
 import AnalyticsCard from "@/features/private/Analytics/AnalyticsCard";
-import { fetchReferrers } from "@/services/analyticsSummary";
+import { fetchReferrers } from "@/services/analyticsSummary"; // Assuming you have a ReferrerData type
 import { useEffect, useState } from "react";
 import { authToken } from "@/config/authToken";
 
 const Referrer = () => {
-    const [referrerData, setReferrerData] = useState([]);
+    const [referrerData, setReferrerData] = useState<any[]>([]); // Use 'any[]' as a generic array type
 
     useEffect(() => {
         const fetchData = async () => {

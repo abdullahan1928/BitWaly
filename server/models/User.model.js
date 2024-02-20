@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     lastLogin: { type: Date },
-    role: { type: String }
+    role: { type: String, default: "user"}
 });
 
 User = mongoose.model("Users", userSchema);

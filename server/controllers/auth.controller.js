@@ -8,7 +8,6 @@ const Tag = require('../models/Tag.model');
 const Analytics = require('../models/Analytics.model');
 
 const signupController = async (req, res) => {
-    const role = req.body.role;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array() });
@@ -25,10 +24,9 @@ const signupController = async (req, res) => {
         const user = await new Users({
             email: req.body.email,
             password: hashedPassword,
-            role: role,
         });
 
-        const authToken = jwt.sign({ id: user.id, role: user.role }, jwt_secret);
+        const authToken = jwt.sign(user.id, jwt_secret);
 
         res.send({ authToken });
 
@@ -47,7 +45,7 @@ const signinController = async (req, res) => {
         return res.status(422).json({ errors: errors.array() });
     }
 
-    const { email, password, role } = req.body;
+    const { email, password } = req.body;
 
     try {
         let user = await Users.findOne({ email });
@@ -59,8 +57,7 @@ const signinController = async (req, res) => {
             return res.status(422).json({ errors: [{ msg: 'Invalid Credentials' }] });
         }
 
-        console.log(user.id, jwt_secret, role)
-        const authToken = jwt.sign({ id: user.id, role: user.role }, jwt_secret);
+        const authToken = jwt.sign(user.id, jwt_secret);
         user.lastLogin = new Date();
         await user.save();
 

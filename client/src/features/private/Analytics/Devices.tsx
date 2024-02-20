@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
@@ -24,7 +24,7 @@ const Devices = () => {
                     setChartData(() => {
                         const updatedChartData = data.map((dataItem:any) => ({
                             ...dataItem,
-                            color: hoveredData && dataItem.name === hoveredData.name ? '#E33E7F' : '#CCCCCC',
+                            color: hoveredData && dataItem.name === hoveredData.name ? '#E33E7F' : '#E33E7F',
                         }));
 
                         return updatedChartData;
