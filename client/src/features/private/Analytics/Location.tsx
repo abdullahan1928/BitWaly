@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Tabs } from "@mui/material";
 import CustomTab from "../LinkDetails/components/CustomTab";
 import TabPanel from "../LinkDetails/components/TabPanel";
-import { fetchLocations } from "@/services/analyticsSummary";  // Import your service
+import { fetchLocations } from "@/services/analyticsSummary";
 import { CountryData } from "../LinkDetails/interfaces/CoutryData";
 import { CityData } from "../LinkDetails/interfaces/CityData";
 import VerticalLocationTable from "./VerticalLocationTable";
@@ -10,7 +10,8 @@ import { authToken } from "@/config/authToken";
 
 const Location = () => {
     const [currentTab, setCurrentTab] = useState(0);
-    const [locationData, setLocationData] = useState({ countries: [], cities: [] });
+    const [locationData, setLocationData] = useState<{ countries: CountryData[], cities: CityData[] } | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,18 +29,21 @@ const Location = () => {
                                 count: data.count,
                             })),
                         });
+                        setLoading(false); // Set loading to false after data is fetched
                     } else {
                         console.error('Invalid response structure:', responseData);
+                        setLoading(false); // Set loading to false in case of invalid response
                     }
                 }
             } catch (error) {
                 console.error('Error fetching location data:', error);
+                setLoading(false); // Set loading to false in case of error
             }
         };
-    
+
         fetchData();
     }, []);
-    
+
 
     const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
         setCurrentTab(newValue);
@@ -68,10 +72,18 @@ const Location = () => {
                 </Tabs>
             </div>
             <TabPanel value={currentTab} index={0}>
-                <VerticalLocationTable data={locationData.countries} />
+                <VerticalLocationTable
+                    title="Country"
+                    data={locationData?.countries || []}
+                    loading={loading}
+                />
             </TabPanel>
             <TabPanel value={currentTab} index={1}>
-                <VerticalLocationTable data={locationData.cities} />
+                <VerticalLocationTable
+                    title="City"
+                    data={locationData?.cities || []}
+                    loading={loading}
+                />
             </TabPanel>
         </div>
     );

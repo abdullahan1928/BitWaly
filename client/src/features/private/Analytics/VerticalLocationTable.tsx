@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { LinearProgress, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { LinearProgress, Skeleton, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import TablePagination from "@mui/material/TablePagination";
 import { CityData } from "../LinkDetails/interfaces/CityData";
 import { CountryData } from "../LinkDetails/interfaces/CoutryData";
 
 interface VerticalLocationTableProps {
+    title: string;
     data: CountryData[] | CityData[];
+    loading: boolean;
 }
 
-const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({ data }) => {
+const VerticalLocationTable = ({ title, data, loading }: VerticalLocationTableProps) => {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -52,7 +54,7 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({ data }) =
                     <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
                         <TableCell>Sr#</TableCell>
                         <TableCell>
-                            {data[0] && (isCountryData(data[0]) || isCityData(data[0])) ? (isCountryData(data[0]) ? "Country" : "City") : ""}
+                            {title}
                         </TableCell>
                         <TableCell
                             sx={{
@@ -66,50 +68,74 @@ const VerticalLocationTable: React.FC<VerticalLocationTableProps> = ({ data }) =
                     </TableRow>
                 </TableHead>
                 <TableBody sx={{ '& td': { border: 'none' }, }}>
-                    {displayedData.map((item, index) => (
-                        <TableRow key={index} style={{ whiteSpace: 'nowrap' }}>
-                            <TableCell>{index + 1 + page * rowsPerPage}</TableCell>
-                            <TableCell>
-                                {isCountryData(item)
-                                    ? item.country
-                                    : isCityData(item)
-                                        ? item.city
-                                        : ""}
-                            </TableCell>
-                            <TableCell
-                                sx={{
-                                    position: 'relative',
-                                    width: '100%',
-                                    '@media (max-width: 640px)': {
-                                        display: 'none',
-                                    },
-                                }}
-                            >
-                                <LinearProgress
-                                    variant="determinate"
-                                    value={(item.count / calculateTotalPercentage()) * 100}
+                    {loading ? (
+                        <>
+                            {[...Array(5)].map((_, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={30} height={50} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={100} height={50} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={250} height={50} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={100} height={50} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={50} height={50} />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </>
+                    ) : (
+                        displayedData.map((item, index) => (
+                            <TableRow key={index} style={{ whiteSpace: 'nowrap' }}>
+                                <TableCell>{index + 1 + page * rowsPerPage}</TableCell>
+                                <TableCell>
+                                    {isCountryData(item)
+                                        ? item.country
+                                        : isCityData(item)
+                                            ? item.city
+                                            : ""}
+                                </TableCell>
+                                <TableCell
                                     sx={{
-                                        height: 12,
-                                        borderRadius: 6,
-                                        backgroundColor: '#f4f6fa',
-                                        position: 'absolute',
-                                        left: 0,
-                                        right: 0,
-                                        margin: 'auto',
-                                        '& .MuiLinearProgress-bar': {
-                                            borderRadius: 6,
+                                        position: 'relative',
+                                        width: '100%',
+                                        '@media (max-width: 640px)': {
+                                            display: 'none',
                                         },
                                     }}
-                                />
-                            </TableCell>
-                            <TableCell sx={{ textAlign: 'right' }}>{item.count}</TableCell>
-                            <TableCell sx={{ textAlign: 'right' }}>
-                                {((item.count / calculateTotalPercentage()) * 100).toFixed(2)}%
-                            </TableCell>
-                        </TableRow>
-                    ))}
+                                >
+                                    <LinearProgress
+                                        variant="determinate"
+                                        value={(item.count / calculateTotalPercentage()) * 100}
+                                        sx={{
+                                            height: 12,
+                                            borderRadius: 6,
+                                            backgroundColor: '#f4f6fa',
+                                            position: 'absolute',
+                                            left: 0,
+                                            right: 0,
+                                            margin: 'auto',
+                                            '& .MuiLinearProgress-bar': {
+                                                borderRadius: 6,
+                                            },
+                                        }}
+                                    />
+                                </TableCell>
+                                <TableCell sx={{ textAlign: 'right' }}>{item.count}</TableCell>
+                                <TableCell sx={{ textAlign: 'right' }}>
+                                    {((item.count / calculateTotalPercentage()) * 100).toFixed(2)}%
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
                 </TableBody>
-            </Table>
+            </Table >
             <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 component="div"

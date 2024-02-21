@@ -1,10 +1,12 @@
 import InsightsIcon from '@mui/icons-material/Insights';
 import { useEffect, useState } from 'react';
+import { Skeleton } from '@mui/material'; // Import Skeleton component from Material-UI
 import { fetchClicks } from '@/services/analyticsSummary';
 import { authToken } from '@/config/authToken';
 
 const Performance = () => {
     const [clicksData, setClicksData] = useState<{ totalClicks: number; firstLinkDate: string } | null>(null);
+    const [loading, setLoading] = useState(true); // State to track loading status
 
     useEffect(() => {
         const fetchData = async () => {
@@ -12,9 +14,11 @@ const Performance = () => {
                 if (authToken !== null) {
                     const response = await fetchClicks(authToken);
                     setClicksData(response);
+                    setLoading(false); // Set loading to false after data is fetched
                 }
             } catch (error) {
                 console.error('Error fetching clicks data:', error);
+                setLoading(false); // Set loading to false in case of error
             }
         };
 
@@ -33,15 +37,18 @@ const Performance = () => {
                 How your links are performing
             </h3>
             <div className="flex flex-col items-center gap-4 pb-4">
-                {clicksData ? (
+                {loading ? (
+                    <>
+                        <Skeleton variant="rectangular" width={300} height={50} animation="wave" />
+                        <Skeleton variant="rectangular" width={300} height={30} animation="wave" />
+                    </>
+                ) : (
                     <span className="flex flex-row items-center gap-2 text-2xl font-semibold font-proxima-nova">
                         <InsightsIcon className="w-20 h-20" />
-                        <p>{clicksData.totalClicks} clicks + scans</p>
+                        <p>{clicksData?.totalClicks} clicks + scans</p>
                     </span>
-                ) : (
-                    <p>Loading...</p>
                 )}
-                {clicksData && (
+                {!loading && clicksData && (
                     <div>
                         <p>{formatDateString(clicksData.firstLinkDate)} - {formatDateString(new Date().toISOString())}</p>
                     </div>

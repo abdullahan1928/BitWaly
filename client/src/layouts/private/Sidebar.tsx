@@ -89,7 +89,7 @@ const Sidebar = ({ open }: PrivateLayoutProps) => {
                                 Create New Link
                             </button>
                         ) : (
-                            <p className="flex items-center justify-center px-4 py-2 mx-2 mt-4 rounded-md bg-primary-500 hover:bg-primary-700">
+                            <p className="flex items-center justify-center px-4 py-2 mx-2 mt-4 font-bold text-white rounded-md cursor-pointer bg-secondary-500">
                                 <AddIcon />
                             </p>
                         )}
