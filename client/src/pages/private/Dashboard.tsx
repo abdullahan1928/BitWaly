@@ -1,7 +1,19 @@
+import DashboardCards from "@/features/private/Dashboard/DashboardCards";
+import GettingStarted from "@/features/private/Dashboard/GettingStarted";
 
 const Dashboard = () => {
     return (
-        <div>Dashboard</div>
+        <div className="container max-w-6xl px-4 mx-auto max-lg:px-0">
+
+            <h2 className="mb-8 text-2xl font-bold">
+                BitWaly : One and the only best link shortner
+            </h2>
+
+            <DashboardCards />
+
+            <GettingStarted />
+
+        </div>
     )
 }
 
