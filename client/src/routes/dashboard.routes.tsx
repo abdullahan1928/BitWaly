@@ -11,7 +11,7 @@ interface IDashboardRoute {
     path?: string;
     element: JSX.Element;
 }
-
+    
 export const DashboardRoutes: IDashboardRoute[] = [
     { index: true, element: <Dashboard /> },
     { path: 'links', element: <Links /> },

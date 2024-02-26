@@ -35,7 +35,7 @@ const routes: IRoutes[] = [
         element: <AdminGuard />,
         children: AdminRoutes,
     },
-    {
+    {   
         path: 'dashboard/*',
         element: <AuthGuard />,
         children: DashboardRoutes,

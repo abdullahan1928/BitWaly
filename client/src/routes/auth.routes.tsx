@@ -6,7 +6,7 @@ interface IAuthRoute {
     path?: string;
     element: JSX.Element;
 }
-
+    
 export const AuthRoutes: IAuthRoute[] = [
     { path: 'login', element: <Login /> },
     { path: 'signup', element: <SignUp /> },
