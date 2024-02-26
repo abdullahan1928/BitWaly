@@ -32,7 +32,7 @@ const ChangePassword = () => {
     }
 
     const changePassword = async () => {
-        const authToken = localStorage.getItem('authToken')
+        const authToken = localStorage.getItem('token')
 
         axios.put(`${API_URL}/auth/password`,
             {

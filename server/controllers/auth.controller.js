@@ -24,6 +24,7 @@ const signupController = async (req, res) => {
         const user = await new Users({
             email: req.body.email,
             password: hashedPassword,
+            role: 'user',
         });
 
         const authToken = jwt.sign(user.id, jwt_secret);

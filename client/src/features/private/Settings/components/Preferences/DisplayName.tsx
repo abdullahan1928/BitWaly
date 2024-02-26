@@ -8,7 +8,7 @@ const DisplayName = () => {
     const [name, setName] = useState("")
 
     useEffect(() => {
-        const authToken = localStorage.getItem('authToken')
+        const authToken = localStorage.getItem('token')
 
         axios.get(`${API_URL}/auth/getUser`, {
             headers: {
@@ -25,10 +25,8 @@ const DisplayName = () => {
         setName(e.target.value)
     }
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-
-        const authToken = localStorage.getItem('authToken')
+    const handleSubmit = () => {
+        const authToken = localStorage.getItem('token')
 
         axios.put(`${API_URL}/auth/name`,
             {

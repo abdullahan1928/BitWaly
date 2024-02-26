@@ -31,9 +31,10 @@ const LinkCards = () => {
                 const urls = await getUserUrls(authToken);
                 const sortedUrls = urls.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
                 setUserUrls(sortedUrls);
-                setLoading(false); // Once data is fetched, set loading to false
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching user URLs:', error);
+                setLoading(false);
             }
         };
 

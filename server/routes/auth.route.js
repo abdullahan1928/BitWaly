@@ -8,7 +8,6 @@ const fetchUser = require("../middleware/fetchUser");
 router.post('/signup', [
     body('email').not().isEmpty().withMessage('Email is required').isEmail(),
     body('password').not().isEmpty().withMessage('Password is required').isLength({ min: 5 }),
-    body('role').not().isEmpty().withMessage('Role is required').isIn(['user', 'admin'])
 ], signupController);
 
 

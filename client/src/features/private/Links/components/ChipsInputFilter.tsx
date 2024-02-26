@@ -29,7 +29,7 @@ const ChipsInputFilter = ({ tags, onTagChange, className, filterApplied }: Chips
     }, [tagFilter, tags])
 
     const getAllTags = () => {
-        const authToken = localStorage.getItem('authToken');
+        const authToken = localStorage.getItem('token');
 
         axios.get(`${API_URL}/tag`,
             {

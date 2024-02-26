@@ -1,4 +1,4 @@
-import AdminDasbhoard from '@/pages/Admin/AdminDasbhoard';
+import AdminDasbhoard from '@/pages/admin/AdminDasbhoard';
 
 interface IDashboardRoute {
     index?: boolean;
