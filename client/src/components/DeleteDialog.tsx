@@ -10,7 +10,7 @@ interface DeleteDialogProps {
 
 const DeleteDialog = (props: DeleteDialogProps) => {
 
-    return (
+    return (    
         <>
             <Dialog
                 open={props.deleteDialogOpen}

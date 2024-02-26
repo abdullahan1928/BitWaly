@@ -9,7 +9,7 @@ interface IProps {
     className?: string
 }
 
-const CopyToClipboardButton = (props: IProps) => {
+const CopyToClipboardButton = (props: IProps) => {  
     const [open, setOpen] = useState(false)
     const handleClick = () => {
         setOpen(true)

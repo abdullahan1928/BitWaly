@@ -6,7 +6,7 @@ interface CustomLinkProps {
     children: React.ReactNode;
     className?: string;
 }
-
+    
 const CustomLink = ({ to, children, className }: CustomLinkProps) => (
     <Link
         to={to}

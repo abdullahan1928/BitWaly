@@ -7,7 +7,7 @@ import DoneIcon from '@mui/icons-material/Done';
 interface ChipsInputProps {
     tags: string[];
     onTagChange: (newTags: string[]) => void;
-    className?: string;
+    className?: string; 
 }
 
 const ChipsInput = ({ tags, onTagChange, className }: ChipsInputProps) => {

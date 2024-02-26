@@ -12,7 +12,7 @@ const PrimaryButton = (props: IProps) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleClick = async () => {
-    try {
+    try { 
       setLoading(true);
       if (props.onClick) {
         await props.onClick();
@@ -35,7 +35,6 @@ const PrimaryButton = (props: IProps) => {
     >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center">
-          {/* Tailwind CSS spinner (replace with your preferred spinner) */}
           <div className="w-6 h-6 border-t-2 border-primary-100 border-solid rounded-full animate-spin"></div>
         </div>
       )}
