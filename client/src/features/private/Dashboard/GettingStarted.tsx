@@ -12,6 +12,30 @@ const ListItem = ({ icon, text }: { icon: JSX.Element, text: string }) => {
 }
 
 const GettingStarted = () => {
+
+    const listItems = [
+        {
+            icon: <Link sx={{ color: 'primary.main' }} />,
+            text: "Shorten your first link"
+        },
+        {
+            icon: <AutoFixNormal sx={{ color: 'primary.main' }} />,
+            text: "Customize your link"
+        },
+        {
+            icon: <Share sx={{ color: 'primary.main' }} />,
+            text: "Share your shortened link"
+        },
+        {
+            icon: <Analytics sx={{ color: 'primary.main' }} />,
+            text: "Track your link Analytics"
+        },
+        {
+            icon: <Leaderboard sx={{ color: 'primary.main' }} />,
+            text: "Track overall performance"
+        }
+    ]
+
     return (
         <div className="p-16 bg-white border-2 border-gray-200 rounded-lg transform hover:scale-100 max-md:p-8">
             <h2 className="text-2xl font-semibold max-md:text-3xl max-md:text-center">
@@ -21,26 +45,9 @@ const GettingStarted = () => {
             <div className="flex flex-row justify-between gap-4 mt-8 max-md:flex-col">
 
                 <div className="flex flex-col mt-4 w-1/2 space-y-4 max-md:w-full max-md:items-center">
-                    <ListItem
-                        icon={<Link sx={{ color: 'primary.main' }} />}
-                        text="Shorten your first link"
-                    />
-                    <ListItem
-                        icon={<AutoFixNormal sx={{ color: 'primary.main' }} />}
-                        text="Customize your link"
-                    />
-                    <ListItem
-                        icon={<Share sx={{ color: 'primary.main' }} />}
-                        text="Share your shortened link"
-                    />
-                    <ListItem
-                        icon={<Analytics sx={{ color: 'primary.main' }} />}
-                        text="Track your link Analytics"
-                    />
-                    <ListItem
-                        icon={<Leaderboard sx={{ color: 'primary.main' }} />}
-                        text="Track overall performance"
-                    />
+                    {listItems.map((item, index) => (
+                        <ListItem key={index} icon={item.icon} text={item.text} />
+                    ))}
                 </div>
 
                 <div className="w-1/2 flex flex-row justify-center items-center cursor-pointer transform hover:scale-105 max-md:w-full">
