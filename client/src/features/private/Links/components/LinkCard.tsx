@@ -12,7 +12,6 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import { FetchClicks } from '@/services/fetchClicks.service';
 import { Tooltip } from '@mui/material';
 import axios from 'axios';
-import { authToken } from '@/config/authToken';
 import TagsChips from './TagsChips';
 import Skeleton from '@mui/material/Skeleton';
 
@@ -73,6 +72,8 @@ const LinkCard = (props: LinkCardProps) => {
     }, [props.loading]);
 
     const getClicks = async () => {
+        const authToken = localStorage.getItem('token');
+
         if (!authToken) return;
 
         const res = await FetchClicks(authToken, props._id)
@@ -81,6 +82,8 @@ const LinkCard = (props: LinkCardProps) => {
     }
 
     const getTags = async () => {
+        const authToken = localStorage.getItem('token');
+
         axios.get(`${API_URL}/tag/${props._id}`, {
             headers: {
                 authToken: `${authToken}`
@@ -103,6 +106,8 @@ const LinkCard = (props: LinkCardProps) => {
     };
 
     const handleDelete = async () => {
+        const authToken = localStorage.getItem('token');
+
         if (urlToDelete) {
             try {
                 await deleteUrl(authToken, urlToDelete);

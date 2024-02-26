@@ -3,7 +3,6 @@ import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import { fetchDevices } from '@/services/analyticsSummary';
-import { authToken } from '@/config/authToken';
 import { Skeleton } from '@mui/material';
 
 const Devices = () => {
@@ -14,6 +13,8 @@ const Devices = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const authToken = localStorage.getItem('token');
+
         const fetchData = async () => {
             try {
                 if (authToken !== null) {
@@ -44,6 +45,8 @@ const Devices = () => {
     }, [hoveredData]);
 
     useEffect(() => {
+        const authToken = localStorage.getItem('token');
+
         const fetchData = async () => {
             try {
                 if (authToken !== null) {

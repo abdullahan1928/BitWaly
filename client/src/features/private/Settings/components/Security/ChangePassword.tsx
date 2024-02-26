@@ -1,5 +1,4 @@
 import PrimaryButton from "@/components/PrimaryButton"
-import { authToken } from "@/config/authToken"
 import { API_URL } from "@/config/urls"
 import { Alert, TextField } from "@mui/material"
 import axios from "axios"
@@ -33,6 +32,8 @@ const ChangePassword = () => {
     }
 
     const changePassword = async () => {
+        const authToken = localStorage.getItem('authToken')
+
         axios.put(`${API_URL}/auth/password`,
             {
                 oldPassword: currentPassword,

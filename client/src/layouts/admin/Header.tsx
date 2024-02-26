@@ -9,7 +9,6 @@ import axios from "axios";
 import { API_URL } from "@/config/urls";
 import drawerWidth from "./data/drawerWidth";
 import ToggleSidebarButton from "./Header/ToggleSidebarButton";
-import SearchBar from "./Header/SearchBar";
 import HeaderMenu from "./Header/HeaderMenu";
 
 const AppBar = styled(MuiAppBar, {
@@ -91,8 +90,6 @@ const Header = ({ open, setOpen }: AppBarProps) => {
                 </Typography>
 
                 <div className="flex items-center gap-12 max-lg:gap-6">
-
-                    <SearchBar />
 
                     <HeaderMenu name={name} email={email} loading={loading} />
                 </div>

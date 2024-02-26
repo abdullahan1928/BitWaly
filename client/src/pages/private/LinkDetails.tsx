@@ -9,7 +9,6 @@ import DateRangeFilter from "@/components/DateRangeFilter";
 import LinkCard from "@/features/private/Links/components/LinkCard";
 import LinkSummary from "@/features/private/LinkDetails/LinkSummary";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { authToken } from "@/config/authToken";
 import { DateFilterProvider } from "@/context/FilterLinkDetailsContext";
 
 interface IUrl {
@@ -36,6 +35,8 @@ const LinkDetails = () => {
     }, []);
 
     const fetchLink = async () => {
+        const authToken = localStorage.getItem("token");
+
         try {
             const res = await UrlRetrievalById(authToken ?? '', id ?? '');
             setUrlData(res.url);

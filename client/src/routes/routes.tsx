@@ -4,6 +4,8 @@ import { AuthRoutes } from './auth.routes';
 import AuthGuard from '@/guards/AuthGuard';
 import PublicGuard from '@/guards/PublicGuard';
 import PublicLayout from '@/layouts/public/PublicLayout';
+import { AdminRoutes } from './admin.routes';
+import AdminGuard from '@/guards/AdminGurad';
 
 interface IRoute {
     index?: boolean;
@@ -17,7 +19,6 @@ interface IRoutes {
     children?: IRoute[];
 }
 
-
 const routes: IRoutes[] = [
     {
         path: '/',
@@ -28,6 +29,11 @@ const routes: IRoutes[] = [
             </>
         ),
         children: PublicRoutes,
+    },
+    {
+        path: 'admin/*',
+        element: <AdminGuard />,
+        children: AdminRoutes,
     },
     {
         path: 'dashboard/*',

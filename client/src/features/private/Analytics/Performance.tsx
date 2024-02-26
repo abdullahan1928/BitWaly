@@ -1,24 +1,25 @@
 import InsightsIcon from '@mui/icons-material/Insights';
 import { useEffect, useState } from 'react';
-import { Skeleton } from '@mui/material'; // Import Skeleton component from Material-UI
+import { Skeleton } from '@mui/material';
 import { fetchClicks } from '@/services/analyticsSummary';
-import { authToken } from '@/config/authToken';
 
 const Performance = () => {
     const [clicksData, setClicksData] = useState<{ totalClicks: number; firstLinkDate: string } | null>(null);
-    const [loading, setLoading] = useState(true); // State to track loading status
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const authToken = localStorage.getItem('token');
+
         const fetchData = async () => {
             try {
                 if (authToken !== null) {
                     const response = await fetchClicks(authToken);
                     setClicksData(response);
-                    setLoading(false); // Set loading to false after data is fetched
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error('Error fetching clicks data:', error);
-                setLoading(false); // Set loading to false in case of error
+                setLoading(false);
             }
         };
 

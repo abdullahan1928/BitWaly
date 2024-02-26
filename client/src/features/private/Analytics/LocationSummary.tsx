@@ -1,15 +1,16 @@
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import InsightsIcon from '@mui/icons-material/Insights';
 import { fetchTopLocations } from '@/services/analyticsSummary';
-import { authToken } from '@/config/authToken';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@mui/material'; 
 
 const LocationSummary = () => {
     const [locationData, setLocationData] = useState<[string, number][]>([["", 0],]);
-    const [loading, setLoading] = useState(true); // State to track loading status
+    const [loading, setLoading] = useState(true); 
 
     useEffect(() => {
+        const authToken = localStorage.getItem('token');
+
         const fetchData = async () => {
             try {
                 if (authToken) {

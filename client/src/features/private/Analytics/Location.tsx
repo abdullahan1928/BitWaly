@@ -6,7 +6,6 @@ import { fetchLocations } from "@/services/analyticsSummary";
 import { CountryData } from "../LinkDetails/interfaces/CoutryData";
 import { CityData } from "../LinkDetails/interfaces/CityData";
 import VerticalLocationTable from "./VerticalLocationTable";
-import { authToken } from "@/config/authToken";
 
 const Location = () => {
     const [currentTab, setCurrentTab] = useState(0);
@@ -14,6 +13,8 @@ const Location = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const authToken = localStorage.getItem("token");
+
         const fetchData = async () => {
             try {
                 if (authToken !== null) {

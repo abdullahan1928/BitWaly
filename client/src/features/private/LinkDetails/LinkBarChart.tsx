@@ -5,7 +5,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
 import { fetchEngagement } from '@/services/engagementsWDates';
 import DatePicker from 'react-datepicker';
-import { authToken } from '@/config/authToken';
 import BarChartSkeleton from './LinkBarSkelton';
 
 interface LinkBarChartProps {
@@ -28,6 +27,8 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
   const minStartDate = new Date(createdAt);
 
   useEffect(() => {
+    const authToken = localStorage.getItem('token');
+
     if (!authToken) return;
 
     fetchEngagement(authToken, id)
@@ -50,7 +51,7 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
       .catch((err) => {
         console.error(err);
       });
-  }, [id, authToken]);
+  }, [id]);
 
   useEffect(() => {
     updateChartData(minStartDate, new Date());
@@ -114,56 +115,56 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
 
       <div className='bg-white rounded-xl'>
 
-      <h3 className="my-4 text-xl font-semibold text-center">
-        Engagements over time
-      </h3>
+        <h3 className="my-4 text-xl font-semibold text-center">
+          Engagements over time
+        </h3>
 
-      {loading ? (
-        <BarChartSkeleton barCount={7} width={80} />
-      ) : (
-        <HighchartsReact
-          highcharts={Highcharts}
-          options={{
-            chart: {
-              type: 'column',
-            },
-            title: {
-              text: '',
-            },
-            xAxis: {
-              categories: selectedChartData.categories,
-              crosshair: true,
-            },
-            yAxis: {
-              min: 0,
+        {loading ? (
+          <BarChartSkeleton barCount={7} width={80} />
+        ) : (
+          <HighchartsReact
+            highcharts={Highcharts}
+            options={{
+              chart: {
+                type: 'column',
+              },
               title: {
-                text: 'Engagements',
+                text: '',
               },
-            },
-            tooltip: {
-              headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-              pointFormat:
-                '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><b>{point.y} engagements</b></td></tr>',
-              footerFormat: '</table>',
-              shared: true,
-              useHTML: true,
-            },
-            plotOptions: {
-              column: {
-                pointPadding: 0.2,
+              xAxis: {
+                categories: selectedChartData.categories,
+                crosshair: true,
               },
-            },
-            series: [
-              {
-                name: 'Link Clicks',
-                data: selectedChartData.data,
-                color: '#E33E7F',
+              yAxis: {
+                min: 0,
+                title: {
+                  text: 'Engagements',
+                },
               },
-            ],
-          }}
-        />
-      )}
+              tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat:
+                  '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                  '<td style="padding:0"><b>{point.y} engagements</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true,
+              },
+              plotOptions: {
+                column: {
+                  pointPadding: 0.2,
+                },
+              },
+              series: [
+                {
+                  name: 'Link Clicks',
+                  data: selectedChartData.data,
+                  color: '#E33E7F',
+                },
+              ],
+            }}
+          />
+        )}
       </div>
     </div>
   );

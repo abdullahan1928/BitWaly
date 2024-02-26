@@ -7,7 +7,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { UpdateUrl } from "@/services/updateUrl.service";
 import { UrlRetrievalById } from "@/services/retrieveUrl.service";
 import ChipsInput from "@/components/ChipsInput";
-import { authToken } from "@/config/authToken";
 import CustomInput from "@/components/CustomInput";
 
 
@@ -31,6 +30,8 @@ const NewUrl = () => {
     };
 
     const getData = async () => {
+        const authToken = localStorage.getItem("token");
+
         UrlRetrievalById(authToken ?? '', id ?? '')
             .then((res) => {
                 setBackHalf(res.url.shortUrl);
@@ -44,6 +45,8 @@ const NewUrl = () => {
 
     const handleButtonClick = async () => {
         const data = { title, shortUrl: backHalf, tags };
+
+        const authToken = localStorage.getItem("token");
 
         if (authToken === null || id === undefined) { return }
 

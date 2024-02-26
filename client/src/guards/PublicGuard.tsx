@@ -1,14 +1,21 @@
 import { useAuth } from "@/hooks/useAuth";
-import { Outlet, Navigate, useLocation } from "react-router-dom";
+import { Outlet, Navigate } from "react-router-dom";
 
 export const PublicGuard = (): any => {
     const context = useAuth();
-    const location = useLocation();
 
-    if (context.isAuthenticated === true) {
-        return <Navigate to='/dashboard' state={{ from: location.pathname }} replace={true} />
+    if (!context.isAuthenticated) {
+        return <Outlet />;
+    }
+
+    console.log(context.isAdmin);
+
+    if (context.isAdmin) {
+        console.log("Admin");
+        return <Navigate to='/admin' replace={true} />;
     } else {
-        return <Outlet />
+        console.log("Dashboard");
+        return <Navigate to='/dashboard' replace={true} />;
     }
 };
 

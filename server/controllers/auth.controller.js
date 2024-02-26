@@ -61,7 +61,9 @@ const signinController = async (req, res) => {
         user.lastLogin = new Date();
         await user.save();
 
-        res.send({ authToken });
+        const role = user.role;
+
+        res.send({ authToken, role });
 
     } catch (error) {
         console.log(error);

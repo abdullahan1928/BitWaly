@@ -3,7 +3,6 @@ import Highcharts from 'highcharts';
 import AnalyticsCard from "@/features/private/Analytics/AnalyticsCard";
 import { fetchReferrers } from "@/services/analyticsSummary"; 
 import { useEffect, useState } from "react";
-import { authToken } from "@/config/authToken";
 import BarChartSkeleton from "../LinkDetails/LinkBarSkelton";
 
 const Referrer = () => {
@@ -11,6 +10,8 @@ const Referrer = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const authToken = localStorage.getItem('token');
+
         const fetchData = async () => {
             try {
                 if (authToken !== null) {

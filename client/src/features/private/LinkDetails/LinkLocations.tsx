@@ -7,7 +7,6 @@ import { CountryData } from "./interfaces/CoutryData";
 import { CityData } from "./interfaces/CityData";
 import CustomTab from "./components/CustomTab";
 import LocationTable from "./components/LocationTable";
-import { authToken } from "@/config/authToken";
 
 interface LinkLocationProps {
     id: string;
@@ -31,6 +30,8 @@ const LinkLocations = ({ id, startDate, endDate }: LinkLocationProps) => {
 
     const fetchData = async () => {
         setLoading(true);
+
+        const authToken = localStorage.getItem("token");
 
         axios.get(`${API_URL}/analytics/location/${id}`, {
             headers: {

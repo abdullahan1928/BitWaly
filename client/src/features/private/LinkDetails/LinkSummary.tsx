@@ -1,4 +1,3 @@
-import { authToken } from "@/config/authToken";
 import { FetchClicks, FetchWeeklyCount, FetchWeeklyChange } from "@/services/fetchClicks.service";
 import { useEffect, useState } from "react";
 import Skeleton from "@mui/material/Skeleton";
@@ -32,6 +31,8 @@ const LinkSummary = ({ id }: { id: string }) => {
     }, [loading]);
 
     const getData = async () => {
+        const authToken = localStorage.getItem('token');
+
         if (!authToken) return;
 
         const clickCount = await FetchClicks(authToken, id);

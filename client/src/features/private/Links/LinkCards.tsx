@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import LinkCard from "./components/LinkCard";
 import { getUserUrls } from "@/features/public/Home/services/url.service";
-import { authToken } from "@/config/authToken";
 import { useFilter } from "@/hooks/useFilter";
 import { useSearch } from "@/hooks/useSearch";
 import Skeleton from "@mui/material/Skeleton";
@@ -25,6 +24,8 @@ const LinkCards = () => {
     const { searchValue } = useSearch();
 
     useEffect(() => {
+        const authToken = localStorage.getItem("token");
+
         const fetchUserUrls = async () => {
             try {
                 const urls = await getUserUrls(authToken);

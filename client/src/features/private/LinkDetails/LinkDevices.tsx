@@ -1,4 +1,3 @@
-import { authToken } from '@/config/authToken';
 import { API_URL } from '@/config/urls';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -10,6 +9,8 @@ const LinkDevices = ({ id }: { id: string }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const authToken = localStorage.getItem('token');
+
         axios.get(`${API_URL}/analytics/device/${id}`, {
             headers: {
                 authToken: `${authToken}`

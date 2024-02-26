@@ -14,7 +14,6 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { deleteUrl, getUserUrls } from './services/url.service';
-import { authToken } from '@/config/authToken';
 
 interface Url {
     _id: string;
@@ -29,6 +28,8 @@ const UrlTable = () => {
     const [urlToDelete, setUrlToDelete] = useState<string | null>(null);
 
     useEffect(() => {
+        const authToken = localStorage.getItem('token');
+
         const fetchUserUrls = async () => {
             try {
                 const urls = await getUserUrls(authToken);
@@ -39,9 +40,11 @@ const UrlTable = () => {
         };
 
         fetchUserUrls();
-    }, [authToken]);
+    }, []);
 
     const handleDelete = async () => {
+        const authToken = localStorage.getItem('token');
+
         if (urlToDelete) {
             try {
                 await deleteUrl(authToken, urlToDelete);

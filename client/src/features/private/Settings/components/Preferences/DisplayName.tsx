@@ -1,5 +1,4 @@
 import PrimaryButton from '@/components/PrimaryButton'
-import { authToken } from '@/config/authToken'
 import { API_URL } from '@/config/urls'
 import { TextField } from '@mui/material'
 import axios from 'axios'
@@ -9,6 +8,8 @@ const DisplayName = () => {
     const [name, setName] = useState("")
 
     useEffect(() => {
+        const authToken = localStorage.getItem('authToken')
+
         axios.get(`${API_URL}/auth/getUser`, {
             headers: {
                 authToken: `${authToken}`
@@ -26,6 +27,8 @@ const DisplayName = () => {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+
+        const authToken = localStorage.getItem('authToken')
 
         axios.put(`${API_URL}/auth/name`,
             {

@@ -1,10 +1,9 @@
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
-import { Skeleton } from '@mui/material'; // Import Skeleton component from Material-UI
+import { Skeleton } from '@mui/material'; 
 import { fetchClicksWithDates } from '@/services/analyticsSummary';
 import { useEffect, useState } from 'react';
-import { authToken } from '@/config/authToken';
 
 const LineChart = () => {
     interface ClickData {
@@ -12,9 +11,11 @@ const LineChart = () => {
         clicks: number;
     }
     const [chartData, setChartData] = useState<ClickData[]>([]);
-    const [loading, setLoading] = useState(true); // State to track loading status
+    const [loading, setLoading] = useState(true); 
 
     useEffect(() => {
+        const authToken = localStorage.getItem('token');
+
         const fetchData = async () => {
             try {
                 if (authToken !== null) {
