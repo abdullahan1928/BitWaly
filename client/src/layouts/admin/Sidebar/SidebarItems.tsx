@@ -1,7 +1,4 @@
 import HomeIcon from "@mui/icons-material/Home";
-import LinkIcon from "@mui/icons-material/Link";
-import LeaderboardIcon from "@mui/icons-material/Leaderboard";
-import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { Divider, List } from "@mui/material";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,24 +15,9 @@ const SidebarItems = ({ open }: { open: boolean }) => {
                 text: "Home",
                 to: "/admin"
             },
-            // {
-            //     icon: <LinkIcon className="transform rotate-45" />,
-            //     text: "Links",
-            //     to: "/dashboard/links"
-            // },
-            // {
-            //     icon: <LeaderboardIcon />,
-            //     text: "Analytics",
-            //     to: "/dashboard/analytics"
-            // },
         ],
         <Divider className="w-[85%] flex self-center" />,
         [
-            // {
-            //     icon: <SettingsIcon />,
-            //     text: "Settings",
-            //     to: "/dashboard/settings"
-            // },
             {
                 icon: <LogoutIcon />,
                 text: "Log out",
@@ -56,8 +38,6 @@ const SidebarItems = ({ open }: { open: boolean }) => {
                                     open={open}
                                     icon={item.icon}
                                     text={item.text}
-                                    to={item.to}
-                                    onClick={item.onClick}
                                 />
                             ))}
                         </List>
