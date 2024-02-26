@@ -3,7 +3,7 @@ import UserTable from '@/features/Admin/Dashbord/UserTable';
 import AdminIcon from '@mui/icons-material/SupervisorAccount';
 import { Typography } from '@mui/material';
 
-const AdminDashboard: React.FC = () => {
+const AdminDashboard = () => {
 
   return (
     <div className="my-4">

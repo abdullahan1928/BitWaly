@@ -5,7 +5,6 @@ import NewLink from '@/pages/private/NewLink';
 import Settings from '@/pages/private/Settings';
 import EditLink from '@/pages/private/EditLink';
 import Analytics from '@/pages/private/Analytics';
-import AdminDasbhoard from '@/pages/admin/AdminDasbhoard';
 
 interface IDashboardRoute {
     index?: boolean;
@@ -21,5 +20,4 @@ export const DashboardRoutes: IDashboardRoute[] = [
     { path: 'link/edit/:id', element: <EditLink /> },
     { path: 'analytics', element: <Analytics /> },
     { path: 'settings', element: <Settings /> },
-    { path: 'admin', element: <AdminDasbhoard /> },
 ];
