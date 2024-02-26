@@ -20,6 +20,8 @@ interface ShortenUrlRequest {
 }
 
 const NewLink = () => {
+  const [loading, setLoading] = useState<boolean>(false);  
+
   const [domain, setDomain] = useState("default");
   const [longUrl, setLongUrl] = useState("");
   const [backHalf, setBackHalf] = useState("");
@@ -42,6 +44,7 @@ const NewLink = () => {
   };
 
   const handleButtonClick = async () => {
+    setLoading(true);
     if (
       showUtmFields &&
       !(utmSource && utmMedium && utmCampaign && utmTerm && utmContent)
@@ -76,6 +79,7 @@ const NewLink = () => {
       .catch((error) => {
         if (error.response.status === 409) {
           setDuplicateError(error.response.data);
+          setLoading(false)
         }
       });
   };
@@ -124,7 +128,7 @@ const NewLink = () => {
         onClick={handleButtonClick}
         className="self-start max-md:self-center"
       >
-        <PrimaryButton text="Create Link" disabled={!longUrl.trim()} />
+        <PrimaryButton text={loading ? "Creating Link..." : "Create Link"} disabled={!longUrl.trim()} />
       </div>
 
       {duplicateError && (
