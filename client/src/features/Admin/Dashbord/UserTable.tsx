@@ -66,6 +66,7 @@ const UserTable = () => {
     };
 
     const tableHead = [
+        { icon: <EmailIcon />, label: 'id' },
         { icon: <EmailIcon />, label: 'Email' },
         { icon: <RoleIcon />, label: 'Role' },
         { icon: <DateIcon />, label: 'Created' },
@@ -100,6 +101,7 @@ const UserTable = () => {
                         <TableBody>
                             {users.map((user) => (
                                 <TableRow key={user._id}>
+                                    <TableCell>{user._id}</TableCell>
                                     <TableCell>{user.email}</TableCell>
                                     <TableCell>{user.role}</TableCell>
                                     <TableCell>{user.createdAt}</TableCell>

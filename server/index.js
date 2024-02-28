@@ -35,6 +35,8 @@ app.use('/tag', require('./routes/tag.route'));
 app.use('/summary', require('./routes/summary.route'));
 app.use('/admin', require('./routes/admin.route'));
 
+app.use('/auth', require('./routes/auth.route'));
+
 const environment = process.env.NODE_ENV;
 
 if (environment === 'development') {

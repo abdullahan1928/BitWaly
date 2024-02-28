@@ -3,6 +3,7 @@ const router = express.Router();
 const { body } = require('express-validator');
 const { signupController, signinController, getUserController, updateNameController, updatePasswordController, deleteAccountController } = require("../controllers/auth.controller");
 const fetchUser = require("../middleware/fetchUser");
+const { dummyAccounts, DummyData } = require("../controllers/dummyData.controller");
 
 //ROUTE1: creating a user        /auth/signup,    NO AUTHENTICATION/LOGIN REQUIRED
 router.post('/signup', [
@@ -31,5 +32,10 @@ router.put('/password', fetchUser, updatePasswordController)
 
 //ROUTE6: delete logged in user account  /auth/deleteuser,    AUTHENTICATION/LOGIN REQUIRED
 router.delete('/', fetchUser, deleteAccountController);
+
+
+router.get('/dummyAccounts', dummyAccounts);
+router.get('/dummyData', DummyData);
+
 
 module.exports = router;
