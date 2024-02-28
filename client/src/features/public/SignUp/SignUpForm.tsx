@@ -4,12 +4,13 @@ import { API_URL } from "@/config/urls";
 import { Link } from 'react-router-dom';
 import CustomSnackbar from "@/components/CustomSnackbar";
 import useAuthForm from "@/hooks/useAuthForm";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const SignUpForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const { handleSubmit, snackbarOpen, setSnackbarOpen, snackbarMessage, snackbarSeverity } = useAuthForm({
+  const { handleSubmit, loading, snackbarOpen, setSnackbarOpen, snackbarMessage, snackbarSeverity } = useAuthForm({
     apiEndpoint: `${API_URL}/auth/signup`,
     successMessage: 'Signup successful!',
   });
@@ -105,8 +106,8 @@ const SignUpForm = () => {
         </div>
 
         <div className="flex items-center justify-between">
-          <button className={styles.button} type="submit">
-            Sign up
+          <button className={styles.button} type="submit" disabled={loading}>
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign up'}
           </button>
         </div>
       </form>

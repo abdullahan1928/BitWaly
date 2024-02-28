@@ -15,6 +15,7 @@ const useAuthForm = ({ apiEndpoint, successMessage }: IUseAuthForm) => {
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState<Severity>("success");
+    const [loading, setLoading] = useState(false);
 
     const { login } = useAuth();
 
@@ -27,6 +28,8 @@ const useAuthForm = ({ apiEndpoint, successMessage }: IUseAuthForm) => {
         const password = data.get("password") as string;
 
         try {
+            setLoading(true); 
+
             const res = await axios.post(apiEndpoint, { email, password });
 
             const { authToken, role } = res.data;
@@ -55,10 +58,12 @@ const useAuthForm = ({ apiEndpoint, successMessage }: IUseAuthForm) => {
             setSnackbarMessage(errorMessage);
             setSnackbarSeverity("error");
             setSnackbarOpen(true);
+        } finally {
+            setLoading(false); 
         }
     };
 
-    return { handleSubmit, snackbarOpen, setSnackbarOpen, snackbarMessage, snackbarSeverity };
+    return { handleSubmit, loading, snackbarOpen, setSnackbarOpen, snackbarMessage, snackbarSeverity };
 };
 
 export default useAuthForm;

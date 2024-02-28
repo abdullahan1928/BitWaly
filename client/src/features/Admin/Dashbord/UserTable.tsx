@@ -1,136 +1,220 @@
 import { useEffect, useState } from 'react';
-import { fetchUsers, deleteUser } from '@/services/admin';
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-    Button,
-    CircularProgress,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  CircularProgress,
+  TablePagination,
+  TextField,
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
+import KeyIcon from '@mui/icons-material/Key';
 import RoleIcon from '@mui/icons-material/Person';
 import DateIcon from '@mui/icons-material/Event';
 import LinksIcon from '@mui/icons-material/Link';
 import AccessCountIcon from '@mui/icons-material/Visibility';
 import { Delete } from '@mui/icons-material';
+import { fetchUsers, deleteUser } from '@/services/admin';
 
 interface IUser {
-    _id: string;
-    email: string;
-    role: string;
-    createdAt: string;
-    lastLogin: string;
-    linkCount: number;
-    totalAccessCount: number;
+  _id: string;
+  email: string;
+  name: string;
+  role: string;
+  createdAt: string;
+  lastLogin: string;
+  linkCount: number;
+  totalAccessCount: number;
 }
+
+const rowsPerPageOptions = [10, 25, 50];
 
 const UserTable = () => {
-    const [users, setUsers] = useState<IUser[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [sortCriteria, setSortCriteria] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
-    useEffect(() => {
-        const authToken = localStorage.getItem('token');
+  useEffect(() => {
+    const authToken = localStorage.getItem('token');
 
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const response = await fetchUsers(authToken || '');
-                setUsers(response);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    const handleDeleteUser = async (id: string) => {
+    const fetchData = async () => {
+      try {
         setLoading(true);
-
-        const authToken = localStorage.getItem('token');
-
-        try {
-            await deleteUser(authToken || '', id);
-            setUsers((prevUsers) => prevUsers.filter((user) => user._id !== id));
-        } catch (error) {
-            console.error('Error deleting user:', error);
-        } finally {
-            setLoading(false);
-        }
+        const response = await fetchUsers(authToken || '');
+        setUsers(response);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setLoading(false);
+      }
     };
 
-    const tableHead = [
-        { icon: <EmailIcon />, label: 'id' },
-        { icon: <EmailIcon />, label: 'Email' },
-        { icon: <RoleIcon />, label: 'Role' },
-        { icon: <DateIcon />, label: 'Created' },
-        { icon: <DateIcon />, label: 'Last Login' },
-        { icon: <LinksIcon />, label: 'Links' },
-        { icon: <AccessCountIcon />, label: 'Visits' },
-        { icon: <Delete />, label: 'Action' },
-    ];
+    fetchData();
+  }, []);
 
-    return (
+  const handleDeleteUser = async (id: string) => {
+    setLoading(true);
+
+    const authToken = localStorage.getItem('token');
+
+    try {
+      await deleteUser(authToken || '', id);
+      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== id));
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+    setPage(0);
+  };
+
+  const handleSort = (criteria: string) => {
+    if (sortCriteria === criteria) {
+      setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortCriteria(criteria);
+      setSortOrder('asc');
+    }
+  };
+
+  const sortedUsers = [...users];
+
+  if (sortCriteria === 'links') {
+    sortedUsers.sort((a, b) => (a.linkCount - b.linkCount) * (sortOrder === 'asc' ? 1 : -1));
+  } else if (sortCriteria === 'visits') {
+    sortedUsers.sort((a, b) => (a.totalAccessCount - b.totalAccessCount) * (sortOrder === 'asc' ? 1 : -1));
+  }
+
+  const filteredUsers = sortedUsers.filter((user) =>
+    Object.values(user)
+      .join(' ')
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+  );
+
+  const tableHead = [
+    { icon: <KeyIcon />, label: 'ID', sortable: true },
+    { icon: <EmailIcon />, label: 'Email', sortable: true },
+    { icon: <RoleIcon />, label: 'Name', sortable: true },
+    { icon: <DateIcon />, label: 'Created', sortable: true },
+    { icon: <DateIcon />, label: 'Last Login', sortable: true },
+    { icon: <LinksIcon />, label: 'Links', sortable: true },
+    { icon: <AccessCountIcon />, label: 'Visits', sortable: true },
+    { icon: <Delete />, label: 'Action' },
+  ];
+
+  return (
+    <>
+        {loading ? (
+        <div className="flex justify-center items-center">
+          <CircularProgress />
+        </div>
+      ) : (
         <>
-            {loading ? (
-                <div className="flex justify-center items-center" >
-                    <CircularProgress />
-                </div >
-            ) : (
-                <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead sx={{ backgroundColor: 'primary.main' }}>
-                            <TableRow>
-                                {tableHead.map((head, index) => (
-                                    <TableCell key={index} sx={{ color: 'white' }} align="center">
-                                        <span className="flex items-center">
-                                            {head.icon}
-                                            <span className="ml-2">{head.label}</span>
-                                        </span>
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        </TableHead>
+      <TextField
+        label="Search"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchQuery}
+        onChange={handleSearch}
+      />
+      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead sx={{ backgroundColor: 'primary.main' }}>
+            <TableRow>
+              {tableHead.map((head, index) => (
+                <TableCell
+                  key={index}
+                  sx={{ color: 'white', cursor: head.sortable ? 'pointer' : 'default' }}
+                  align="center"
+                  onClick={() => (head.sortable ? handleSort(head.label.toLowerCase()) : null)}
+                >
+                  <span className="flex items-center">
+                    {head.icon}
+                    <span className="ml-2">{head.label}</span>
+                    {head.sortable && (
+                      <span className="ml-1">
+                        {sortCriteria === head.label.toLowerCase() && (
+                          <span>{sortOrder === 'asc' ? '▲' : '▼'}</span>
+                        )}
+                      </span>
+                    )}
+                  </span>
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
 
-                        <TableBody>
-                            {users.map((user) => (
-                                <TableRow key={user._id}>
-                                    <TableCell>{user._id}</TableCell>
-                                    <TableCell>{user.email}</TableCell>
-                                    <TableCell>{user.role}</TableCell>
-                                    <TableCell>{user.createdAt}</TableCell>
-                                    <TableCell>{user.lastLogin}</TableCell>
-                                    <TableCell>{user.linkCount}</TableCell>
-                                    <TableCell>{user.totalAccessCount}</TableCell>
-                                    <TableCell>
-                                        {user.role === 'admin' ? (
-                                            <Button variant="contained" disabled>
-                                                Delete
-                                            </Button>
-                                        ) : (
-                                            <Button
-                                                variant="contained"
-                                                color="error"
-                                                onClick={() => handleDeleteUser(user._id)}
-                                            >
-                                                Delete
-                                            </Button>
-                                        )}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            )}
-        </>
-    );
-}
+          <TableBody>
+            {(rowsPerPage > 0
+              ? filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : filteredUsers
+            ).map((user) => (
+              <TableRow key={user._id}>
+                <TableCell>{user._id}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.createdAt}</TableCell>
+                <TableCell>{user.lastLogin}</TableCell>
+                <TableCell>{user.linkCount}</TableCell>
+                <TableCell>{user.totalAccessCount}</TableCell>
+                <TableCell>
+                  {user.role === 'admin' ? (
+                    <Button variant="contained" disabled>
+                      Delete
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleDeleteUser(user._id)}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={rowsPerPageOptions}
+        component="div"
+        count={filteredUsers.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </>
+  )};
+    </>
+  );
 
-export default UserTable
+};
+
+export default UserTable;
