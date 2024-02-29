@@ -20,6 +20,8 @@ import LinksIcon from '@mui/icons-material/Link';
 import AccessCountIcon from '@mui/icons-material/Visibility';
 import { Delete } from '@mui/icons-material';
 import { fetchUsers, deleteUser } from '@/services/admin';
+import { useCallback } from 'react';
+
 
 interface IUser {
   _id: string;
@@ -32,34 +34,62 @@ interface IUser {
   totalAccessCount: number;
 }
 
-const rowsPerPageOptions = [10, 25, 50];
+const rowsPerPageOptions = [10, 25, 50, 100, 500, 1000, 1500];
+
+
 
 const UserTable = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageOptions[0]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortCriteria, setSortCriteria] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [totalUsers, setTotalUsers] = useState(0);
+
+
+  const fetchData = useCallback(async () => {
+    const authToken = localStorage.getItem('token');
+    try {
+      setLoading(true);
+  
+      // Adjust the page and limit values to match the API's expectations
+      const response = await fetchUsers(authToken || '', {
+        page: page,
+        limit: rowsPerPage,
+        search: searchQuery,
+        sortField: sortCriteria,
+        sortOrder,
+      });
+  
+      // Update the state with the users and total count
+      setUsers(response.users);
+      setTotalUsers(response.totalCount);
+  
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setLoading(false);
+    }
+  }, [page, rowsPerPage, searchQuery, sortCriteria, sortOrder]);
+  
 
   useEffect(() => {
-    const authToken = localStorage.getItem('token');
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const response = await fetchUsers(authToken || '');
-        setUsers(response);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [fetchData]);
+
+
+  const handleChangePage = (_event:any, newPage:any) => {
+    setPage(newPage + 1); // Adjust the page value
+    fetchData(); // Call fetchData when page changes
+  };
+  
+  const handleChangeRowsPerPage = (event:any) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(1); // Reset page to 1
+    fetchData(); // Call fetchData when rows per page changes
+  };
 
   const handleDeleteUser = async (id: string) => {
     setLoading(true);
@@ -76,27 +106,15 @@ const UserTable = () => {
     }
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (event:any) => {
     setSearchQuery(event.target.value);
-    setPage(0);
+    setPage(1);
   };
 
-  const handleSort = (criteria: string) => {
-    if (sortCriteria === criteria) {
-      setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
-    } else {
-      setSortCriteria(criteria);
-      setSortOrder('asc');
-    }
+  const handleSort = (criteria:any) => {
+    setSortCriteria(criteria);
+    setSortOrder((prevOrder) => (prevOrder === 'asc' ? 'desc' : 'asc'));
+    setPage(1);
   };
 
   const sortedUsers = [...users];
@@ -127,94 +145,93 @@ const UserTable = () => {
 
   return (
     <>
-        {loading ? (
+      {loading ? (
         <div className="flex justify-center items-center">
           <CircularProgress />
         </div>
       ) : (
         <>
-      <TextField
-        label="Search"
-        variant="outlined"
-        fullWidth
-        margin="normal"
-        value={searchQuery}
-        onChange={handleSearch}
-      />
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead sx={{ backgroundColor: 'primary.main' }}>
-            <TableRow>
-              {tableHead.map((head, index) => (
-                <TableCell
-                  key={index}
-                  sx={{ color: 'white', cursor: head.sortable ? 'pointer' : 'default' }}
-                  align="center"
-                  onClick={() => (head.sortable ? handleSort(head.label.toLowerCase()) : null)}
-                >
-                  <span className="flex items-center">
-                    {head.icon}
-                    <span className="ml-2">{head.label}</span>
-                    {head.sortable && (
-                      <span className="ml-1">
-                        {sortCriteria === head.label.toLowerCase() && (
-                          <span>{sortOrder === 'asc' ? '▲' : '▼'}</span>
+          <TextField
+            label="Search"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+          <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead sx={{ backgroundColor: 'primary.main' }}>
+                <TableRow>
+                  {tableHead.map((head, index) => (
+                    <TableCell
+                      key={index}
+                      sx={{ color: 'white', cursor: head.sortable ? 'pointer' : 'default' }}
+                      align="center"
+                      onClick={() => (head.sortable ? handleSort(head.label.toLowerCase()) : null)}
+                    >
+                      <span className="flex items-center">
+                        {head.icon}
+                        <span className="ml-2">{head.label}</span>
+                        {head.sortable && (
+                          <span className="ml-1">
+                            {sortCriteria === head.label.toLowerCase() && (
+                              <span>{sortOrder === 'asc' ? '▲' : '▼'}</span>
+                            )}
+                          </span>
                         )}
                       </span>
-                    )}
-                  </span>
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
 
-          <TableBody>
-            {(rowsPerPage > 0
-              ? filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : filteredUsers
-            ).map((user) => (
-              <TableRow key={user._id}>
-                <TableCell>{user._id}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.createdAt}</TableCell>
-                <TableCell>{user.lastLogin}</TableCell>
-                <TableCell>{user.linkCount}</TableCell>
-                <TableCell>{user.totalAccessCount}</TableCell>
-                <TableCell>
-                  {user.role === 'admin' ? (
-                    <Button variant="contained" disabled>
-                      Delete
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => handleDeleteUser(user._id)}
-                    >
-                      Delete
-                    </Button>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={rowsPerPageOptions}
-        component="div"
-        count={filteredUsers.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-    </>
-  )};
+              <TableBody>
+                {(rowsPerPage > 0
+                  ? filteredUsers.slice((page - 1) * rowsPerPage, (page - 1) * rowsPerPage + rowsPerPage)
+                  : filteredUsers
+                ).map((user) => (
+                  <TableRow key={user._id}>
+                    <TableCell>{user._id}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.createdAt}</TableCell>
+                    <TableCell>{user.lastLogin}</TableCell>
+                    <TableCell>{user.linkCount}</TableCell>
+                    <TableCell>{user.totalAccessCount}</TableCell>
+                    <TableCell>
+                      {user.role === 'admin' ? (
+                        <Button variant="contained" disabled>
+                          Delete
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => handleDeleteUser(user._id)}
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={rowsPerPageOptions}
+            component="div"
+            count={totalUsers} // Use the totalUsers state here
+            rowsPerPage={rowsPerPage}
+            page={page - 1}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </>
+      )}
     </>
   );
-
 };
 
 export default UserTable;

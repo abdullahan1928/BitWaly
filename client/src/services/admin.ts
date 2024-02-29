@@ -12,12 +12,13 @@ axios.interceptors.response.use(
     }
   );
 
-export const fetchUsers = async (authToken: string) => {
+export const fetchUsers = async (authToken: string, queryParams: any) => {
     try {
         const response = await axios.get(`${API_URL}/admin/users`, {
             headers: {
                 authToken: `${authToken}`
-            }
+            },
+            params: queryParams,
         });
         if (response) {
             return response.data;
