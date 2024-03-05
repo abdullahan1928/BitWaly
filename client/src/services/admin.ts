@@ -5,12 +5,12 @@ import { AxiosError } from 'axios';
 axios.interceptors.response.use(
     (response) => response,
     (error: AxiosError) => {
-      if (error.response?.status === 403) {
-        window.location.replace('/dashboard');
-      }
-      return Promise.reject(error);
+        if (error.response?.status === 403) {
+            window.location.replace('/dashboard');
+        }
+        return Promise.reject(error);
     }
-  );
+);
 
 export const fetchUsers = async (authToken: string, queryParams: any) => {
     try {
