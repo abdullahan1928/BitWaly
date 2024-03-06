@@ -126,6 +126,7 @@ const LinksFilter = () => {
                     }}
                     name="allowedRange"
                     maxDate={dayjs()}
+                    format="DD/MM/YYYY"
                     sx={{
                         width: 260,
                         '& .MuiOutlinedInput-root': {

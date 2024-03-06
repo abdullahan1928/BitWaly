@@ -52,6 +52,7 @@ const LinkCard = (props: LinkCardProps) => {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
+            timeZone: 'UTC',
         }) :
         inputDate.toLocaleString('en-US', {
             month: 'long',
@@ -69,7 +70,7 @@ const LinkCard = (props: LinkCardProps) => {
             getClicks();
             getTags();
         }
-    }, [props.loading]);
+    });
 
     const getClicks = async () => {
         const authToken = localStorage.getItem('token');

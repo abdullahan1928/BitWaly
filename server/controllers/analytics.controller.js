@@ -11,11 +11,9 @@ const allAnalyticsController = async (req, res) => {
       return res.status(404).send('URL not found');
     }
 
-    // Use the URL ID to query the Analytics collection
     const analyticsData = await Analytics.find({ url: urlDocument._id })
-      .sort({ accessedAt: 1 }); // Sort by accessedAt date in ascending order
+      .sort({ accessedAt: 1 });
 
-    // Format the response
     const formattedData = analyticsData.map(data => ({
       date: data.accessedAt,
       ipAddress: data.ipAddress,
@@ -58,22 +56,19 @@ const weeklyChangeController = async (req, res) => {
   try {
     const startDate = new Date(new Date() - 7 * 24 * 60 * 60 * 1000);
 
-    // Get the count of clicks in the last 7 days
     const totalClicksLast7Days = await Analytics.countDocuments({
       url: id,
       accessedAt: { $gte: startDate }
     });
 
-    // Get the count of clicks in the week before the last 7 days
     const totalClicksPreviousWeek = await Analytics.countDocuments({
       url: id,
       accessedAt: { $lt: startDate, $gte: new Date(startDate - 7 * 24 * 60 * 60 * 1000) }
     });
 
-    // Calculate the percentage change
     const percentageChange = totalClicksPreviousWeek !== 0
       ? ((totalClicksLast7Days - totalClicksPreviousWeek) / totalClicksPreviousWeek) * 100
-      : 100; // Default to 100% if there were no clicks in the previous week
+      : 100;
 
     res.json({ percentageChange });
   } catch (error) {
@@ -103,6 +98,8 @@ const clicksController = async (req, res) => {
       },
       { $sort: { '_id': 1 } },
     ]);
+
+    console.log(clickData);
 
     const formattedData = clickData.map(data => ({
       date: data._id,
@@ -190,7 +187,7 @@ const deviceAnalyticsController = async (req, res) => {
 
     const analyticsData = await Analytics.find({ url: urlDocument._id });
 
-    const devices = analyticsData.map(data => data.device);
+    const devices = analyticsData.map(data => ({ device: data.device, date: data.accessedAt }));
 
     res.json(devices);
   } catch (error) {
@@ -234,34 +231,12 @@ const locationAnalyticsController = async (req, res) => {
 
     const analyticsData = await Analytics.find({ url: urlDocument._id });
 
-    const locations = analyticsData.reduce((acc, data) => {
-      const { country, city } = data.location;
-
-      if (!acc.countryCounts[country]) {
-        acc.countryCounts[country] = 1;
-      } else {
-        acc.countryCounts[country] += 1;
-      }
-
-      if (!acc.cityCounts[city]) {
-        acc.cityCounts[city] = 1;
-      } else {
-        acc.cityCounts[city] += 1;
-      }
-
-      return acc;
-    }, { countryCounts: {}, cityCounts: {} });
-
-    const formattedData = {
-      countries: Object.keys(locations.countryCounts).map(country => ({
-        country,
-        count: locations.countryCounts[country],
-      })),
-      cities: Object.keys(locations.cityCounts).map(city => ({
-        city,
-        count: locations.cityCounts[city],
-      })),
-    };
+    const formattedData = analyticsData.map(data => ({
+      date: data.accessedAt,
+      country: data.location.country,
+      city: data.location.city,
+      count: data.count,
+    }));
 
     res.json(formattedData);
   } catch (error) {
@@ -283,7 +258,7 @@ const referrerAnalyticsController = async (req, res) => {
 
     const analyticsData = await Analytics.find({ url: urlDocument._id });
 
-    const referrers = analyticsData.map(data => data.referrer);
+    const referrers = analyticsData.map(data => ({ referrer: data.referrer, date: data.accessedAt }));
 
     res.json(referrers);
   } catch (error) {

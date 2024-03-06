@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { API_URL } from "@/config/urls";
 import { Tabs, Paper } from "@mui/material";
@@ -7,28 +7,28 @@ import { CountryData } from "./interfaces/CoutryData";
 import { CityData } from "./interfaces/CityData";
 import CustomTab from "./components/CustomTab";
 import LocationTable from "./components/LocationTable";
+import { useDateFilter } from "@/hooks/useDateFilter";
 
 interface LinkLocationProps {
     id: string;
-    startDate: Date;
-    endDate: Date;
 }
 
-const LinkLocations = ({ id, startDate, endDate }: LinkLocationProps) => {
+interface LocationData {
+    date: string;
+    country: string;
+    city: string;
+}
+
+const LinkLocations = ({ id }: LinkLocationProps) => {
+    const [locationData, setLocationData] = useState<LocationData[]>([]);
     const [countryData, setCountryData] = useState<CountryData[]>([]);
     const [cityData, setCityData] = useState<CityData[]>([]);
     const [currentTab, setCurrentTab] = useState(0);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    const { startDate, endDate } = useDateFilter();
 
-    useEffect(() => {
-        fetchData();
-    }, [startDate, endDate]);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
 
         const authToken = localStorage.getItem("token");
@@ -38,26 +38,73 @@ const LinkLocations = ({ id, startDate, endDate }: LinkLocationProps) => {
                 authToken: `${authToken}`,
             },
         }).then((res) => {
-            const data = res.data;
+            const data: LocationData[] = res.data;
 
-            const countryData: CountryData[] = data.countries.map((data: CountryData) => ({
-                country: data.country,
-                count: data.count,
-            })
-            );
-            const cityData: CityData[] = data.cities.map((data: CityData) => ({
-                city: data.city,
-                count: data.count,
-            }));
+            setLocationData(data);
 
-            setCountryData(countryData);
-            setCityData(cityData);
+            showData(data);
+
             setLoading(false);
         }).catch((err) => {
             console.log(err);
             setLoading(false);
         });
-    };
+    }, [id]);
+
+    const showData = (data: LocationData[]) => {
+        const countryMap = new Map<string, number>();
+        const cityMap = new Map<string, number>();
+
+        const countryData: CountryData[] = data.reduce((acc, item) => {
+            if (countryMap.has(item.country)) {
+                const index = acc.findIndex((country) => country.country === item.country);
+                acc[index].count += 1;
+            } else {
+                countryMap.set(item.country, 1);
+                acc.push({
+                    country: item.country,
+                    count: 1,
+                });
+            }
+
+            return acc;
+        }, [] as CountryData[]);
+
+        const cityData: CityData[] = data.reduce((acc, item) => {
+            if (cityMap.has(item.city)) {
+                const index = acc.findIndex((city) => city.city === item.city);
+                acc[index].count += 1;
+            } else {
+                cityMap.set(item.city, 1);
+                acc.push({
+                    city: item.city,
+                    count: 1,
+                });
+            }
+
+            return acc;
+        }, [] as CityData[]);
+
+        setCountryData(countryData);
+        setCityData(cityData);
+    }
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    const updateData = (start: Date, end: Date) => {
+        const filteredData = locationData.filter((data) => {
+            const date = new Date(data.date);
+            return date >= start && date <= end;
+        });
+
+        showData(filteredData);
+    }
+
+    useEffect(() => {
+        updateData(startDate, endDate);
+    }, [startDate, endDate]);
 
     const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
         setCurrentTab(newValue);
@@ -86,10 +133,18 @@ const LinkLocations = ({ id, startDate, endDate }: LinkLocationProps) => {
                 </Tabs>
             </div>
             <TabPanel value={currentTab} index={0}>
-                <LocationTable title="Country" data={countryData} loading={loading} />
+                <LocationTable
+                    title="Country"
+                    data={countryData}
+                    loading={loading}
+                />
             </TabPanel>
             <TabPanel value={currentTab} index={1}>
-                <LocationTable title="City" data={cityData} loading={loading} />
+                <LocationTable
+                    title="City"
+                    data={cityData}
+                    loading={loading}
+                />
             </TabPanel>
         </Paper>
     );

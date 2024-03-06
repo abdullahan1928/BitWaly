@@ -5,7 +5,7 @@ const Analytics = require('../models/Analytics.model');
 
 const fetchUsers = async (req, res) => {
   try {
-    const { page = 1, limit = 10, search, sortField, sortOrder } = req.query;
+    const { page, limit , search, sortField, sortOrder } = req.query;
 
     let query = {};
     if (search) {

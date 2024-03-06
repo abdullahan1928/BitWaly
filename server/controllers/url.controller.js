@@ -1,160 +1,31 @@
-const crypto = require('crypto');
 const Url = require('../models/Url.model');
 const Tag = require('../models/Tag.model');
 const axios = require('axios');
 const Analytics = require('../models/Analytics.model');
-const fetch = require('node-fetch');
-const cheerio = require('cheerio');
-const { getCountry } = require('iso-3166-1-alpha-2')
+const { getCountry } = require('iso-3166-1-alpha-2');
+const { getTitleAndImageFromUrl, checkAndUpdateTags, generateUniqueShortUrl } = require('../helper/url.helper');
 
 const LOCATION_API_KEY = process.env.LOCATION_API_KEY;
-
-async function checkAndUpdateTags(userId, urlId, tags) {
-  const existingUrl = await Url.findOne({ user: userId, _id: urlId });
-
-  if (existingUrl) {
-    await updateTagsForUrl(userId, urlId, tags);
-  } else {
-    return res.status(404).send("URL not found");
-  }
-};
-
-async function updateTagsForUrl(userId, urlId, tags) {
-  const existingTags = await Tag.find({ user: userId });
-  const url = await Url.findOne({ user: userId, _id: urlId });
-
-  // Remove tags that are no longer associated with the URL
-  for (const existingTag of existingTags) {
-
-    if (!tags.includes(existingTag.name)) {
-
-      existingTag.urls = existingTag.urls.filter((urlId) =>
-        urlId.toString() !== url._id.toString()
-      );
-
-      if (existingTag.urls.length === 0) {
-        await Tag.findByIdAndDelete(existingTag._id);
-      } else {
-        await existingTag.save();
-      }
-    } else {
-      if (!url.tags.includes(existingTag._id)) {
-        url.tags.push(existingTag._id);
-      }
-    }
-  }
-
-  // Remove tag ids from the URL that are no longer associated with it
-  url.tags = url.tags.filter((tagId) => {
-    const tag = existingTags.find((t) => t._id.toString() === tagId.toString());
-
-    if (tag) {
-      return tags.includes(tag.name);
-    } else {
-      return false;
-    }
-  });
-
-  // Add new tags and update existing ones
-  if (tags && tags.length > 0) {
-
-    for (const tag of tags) {
-
-      const existingTag = existingTags.find((t) => t.name === tag);
-
-      if (existingTag) {
-        if (!existingTag.urls.includes(urlId)) {
-          existingTag.urls.push(urlId);
-          await existingTag.save();
-
-          if (!url.tags.includes(existingTag._id)) {
-            url.tags.push(existingTag._id);
-          }
-        }
-      } else {
-        const newTag = new Tag({
-          user: userId,
-          name: tag,
-          urls: [urlId],
-        });
-        await newTag.save();
-
-        url.tags.push(newTag._id);
-      }
-
-    }
-  }
-
-  await url.save();
-};
-
-function generateBaseHash(originalUrl) {
-  const fullHash = crypto.createHash('md5').update(originalUrl).digest('hex');
-  let shortHash = '';
-  for (let i = 0; i < 7; i++) {
-    const randomIndex = Math.floor(Math.random() * fullHash.length);
-    shortHash += fullHash[randomIndex];
-  }
-  return shortHash;
-}
-
-function modifyHash(hash) {
-  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const randomChar = chars[Math.floor(Math.random() * chars.length)];
-  const replaceIndex = Math.floor(Math.random() * hash.length);
-  return hash.substring(0, replaceIndex) + randomChar + hash.substring(replaceIndex + 1);
-}
-
-async function generateUniqueShortUrl(originalUrl) {
-  const startTime = new Date();
-
-  const shortUrl = generateBaseHash(originalUrl);
-  const shardKey = shortUrl[0].toLowerCase();
-
-  let uniqueShortUrl = shortUrl;
-  let collisions = 0;
-
-  while (await Url.exists({ shardKey, shortUrl: uniqueShortUrl })) {
-    uniqueShortUrl = modifyHash(uniqueShortUrl);
-    collisions++;
-  }
-
-  const endTime = new Date();
-  const totalTime = (endTime - startTime) / 1000;
-
-  return { shortUrl: uniqueShortUrl, shardKey, totalTime, collisions };
-}
-
 
 const shortenUrl = async (req, res) => {
   const { origUrl, customUrl, title, tags, utmSource, utmMedium, utmCampaign, utmTerm, utmContent } = req.body;
 
-  const user = req.user; // Assuming you have the user object available in req.user
+  const user = req.user;
 
-
-  const originalUrl = utmSource && utmMedium && utmCampaign && utmTerm && utmContent
-    ? origUrl + `?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}&utm_term=${utmTerm}&utm_content=${utmContent}`
+  const originalUrl = utmSource && utmMedium && utmCampaign
+    ? origUrl + `?utm_source=${utmSource}&utm_medium=${utmMedium}&utm_campaign=${utmCampaign}` +
+    (utmTerm ? `&utm_term=${utmTerm}` : '') +
+    (utmContent ? `&utm_content=${utmContent}` : '')
     : origUrl;
 
   try {
     const existingUserUrl = await Url.findOne({ originalUrl, user });
 
     if (existingUserUrl) {
-      // return res.status(200).send({ shortUrl: existingUserUrl.shortUrl });
       return res.status(409).send("You have already created a short URL for this destination URL.");
     }
 
-    const html = await (await fetch(originalUrl)).text();
-    const $ = cheerio.load(html);
-
-    const linkTitle = title || $('head title').text() || originalUrl.split('/')[2] + '- untitled';
-
-    let image = $('head link[rel="icon"]').attr('href') || $('head link[rel="shortcut icon"]').attr('href') || $('head meta[property="og:image"]').attr('content') || $('head meta[name="twitter:image"]').attr('content') || $('head meta[itemprop="image"]').attr('content') || $('head meta[name="image"]').attr('content') || $('head meta[name="twitter:image:src"]').attr('content') || $('head meta[name="twitter:image"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content') || $('head meta[property="og:image:url"]').attr('content') || $('head meta[property="og:image:secure_url"]').attr('content');
-
-    if (image !== undefined && !image.startsWith('http') && !image.startsWith('https')) {
-      const domain = originalUrl.match(/^https?:\/\/[^/]+/)[0];
-      image = domain + '/' + image;
-    }
+    let { linkTitle, image } = await getTitleAndImageFromUrl(originalUrl, title);
 
     if (customUrl) {
       const existingUrl = await Url.findOne({ shortUrl: customUrl });
@@ -202,8 +73,6 @@ const shortenUrl = async (req, res) => {
   }
 };
 
-
-
 const retrieveUrl = async (req, res) => {
   const { shortUrl } = req.params;
   const shardKey = shortUrl[0].toLowerCase();
@@ -214,25 +83,19 @@ const retrieveUrl = async (req, res) => {
     if (url) {
       console.log('Url access count before increment', url.accessCount);
 
-      // Increment accessCount
       url.accessCount += 1;
 
       console.log('Url access count after increment', url.accessCount);
 
-      // Save the updated URL without waiting for analytics data
       await url.save();
 
-      // Respond with the original URL immediately
       res.status(200).send({ originalUrl: url.originalUrl });
 
-      // Now proceed with analytics
       const userIP = req.body.userIP || '192.168.10.1';
-      
-      // Fetch location data
+
       const location = await axios.get(`https://geo.ipify.org/api/v2/country,city?apiKey=${LOCATION_API_KEY}&ipAddress=${userIP}`);
       const country = getCountry(location.data.location.country);
 
-      // Create analytics data
       const analyticsData = new Analytics({
         url: url._id,
         accessedAt: new Date(),
@@ -252,7 +115,6 @@ const retrieveUrl = async (req, res) => {
         utmContent: req.query.utm_content || '',
       });
 
-      // Save analytics data
       await analyticsData.save();
     } else {
       res.status(404).send('URL not found');
@@ -262,7 +124,6 @@ const retrieveUrl = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
-
 
 const retrieveUrlsForUser = async (req, res) => {
   try {
@@ -326,8 +187,13 @@ const updateUrl = async (req, res) => {
 
     const userId = req.user;
     const { id } = req.params;
-    const { title, shortUrl, tags } = req.body;
-    console.log(tags)
+    const { origUrl, title, shortUrl, tags } = req.body;
+
+    const existingUrl = await Url.findOne({ originalUrl: origUrl });
+
+    if (existingUrl && existingUrl._id.toString() !== id) {
+      return res.status(409).send("You have already created a short URL for this destination URL.");
+    }
 
     const existingUrls = await Url.find({ shortUrl });
     const url = await Url.findOne({ user: userId, _id: id });
@@ -337,13 +203,19 @@ const updateUrl = async (req, res) => {
     }
 
     if (url) {
+
+      url.originalUrl = origUrl;
+
       if (shortUrl !== url.shortUrl) {
         url.isCustom = true;
         url.shortUrl = shortUrl;
         url.shardKey = shortUrl[0].toLowerCase();
       }
 
-      url.meta.title = title;
+      let { linkTitle, image } = await getTitleAndImageFromUrl(origUrl, title);
+
+      url.meta.image = image;
+      url.meta.title = linkTitle;
 
       await url.save();
 

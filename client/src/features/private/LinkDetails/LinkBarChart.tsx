@@ -4,27 +4,20 @@ import HighchartsReact from 'highcharts-react-official';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
 import { fetchEngagement } from '@/services/engagementsWDates';
-import DatePicker from 'react-datepicker';
 import BarChartSkeleton from './LinkBarSkelton';
-
-interface LinkBarChartProps {
-  id: string;
-  createdAt: string;
-}
+import { useDateFilter } from '@/hooks/useDateFilter';
 
 interface ChartData {
   categories: string[];
   data: number[];
 }
 
-const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
+const LinkBarChart = ({ id }: { id: string; }) => {
   const [originalChartData, setOriginalChartData] = useState<ChartData>({ categories: [], data: [] });
   const [selectedChartData, setSelectedChartData] = useState<ChartData>({ categories: [], data: [] });
-  const [startDate, setStartDate] = useState(new Date(createdAt));
-  const [endDate, setEndDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
 
-  const minStartDate = new Date(createdAt);
+  const { startDate, endDate } = useDateFilter();
 
   useEffect(() => {
     const authToken = localStorage.getItem('token');
@@ -53,14 +46,6 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
       });
   }, [id]);
 
-  useEffect(() => {
-    updateChartData(minStartDate, new Date());
-  }, []);
-
-  useEffect(() => {
-    updateChartData(startDate, endDate);
-  }, [startDate, endDate]);
-
   const updateChartData = (start: Date, end: Date) => {
 
     const formattedDates = originalChartData.categories.map((date: string) => {
@@ -68,15 +53,13 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
       return new Date(`${month}/${day}/${year}`);
     });
 
-    const filteredCategories = originalChartData.categories.filter((date: string, index: number) => {
-      console.log('date', date);
+    const filteredCategories = originalChartData.categories.filter((_: string, index: number) => {
       const currentDate = formattedDates[index];
       const isInDateRange = currentDate >= start && currentDate <= end;
       return isInDateRange;
     });
 
-    const filteredData = originalChartData.data.filter((clicks: number, index: number) => {
-      console.log('clicks', clicks);
+    const filteredData = originalChartData.data.filter((_: number, index: number) => {
       const currentDate = formattedDates[index];
       const isInDateRange = currentDate >= start && currentDate <= end;
       return isInDateRange;
@@ -86,33 +69,15 @@ const LinkBarChart = ({ id, createdAt }: LinkBarChartProps) => {
       categories: filteredCategories,
       data: filteredData,
     });
-  };
+  }
+
+  useEffect(() => {
+    updateChartData(startDate, endDate);
+  }, [startDate, endDate]);
+
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex gap-2">
-        <label>Start Date:</label>
-        <DatePicker
-          selected={startDate}
-          onChange={(date) => {
-            setStartDate(date as Date);
-            updateChartData(date as Date, endDate);
-          }}
-          dateFormat="dd/MM/yyyy"
-        />
-      </div>
-      <div className="flex gap-2">
-        <label>End Date:</label>
-        <DatePicker
-          selected={endDate}
-          onChange={(date) => {
-            setEndDate(date as Date);
-            updateChartData(startDate, date as Date);
-          }}
-          dateFormat="dd/MM/yyyy"
-        />
-      </div>
-
       <div className='bg-white rounded-xl'>
 
         <h3 className="my-4 text-xl font-semibold text-center">

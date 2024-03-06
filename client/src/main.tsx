@@ -8,6 +8,7 @@ import { ThemeProvider } from '@mui/material';
 import theme from './mui.config.ts';
 import { SearchProvider } from './context/SearchContext.tsx';
 import { FilterProvider } from './context/FilterLinksContext.tsx';
+import { DateFilterProvider } from './context/FilterLinkDetailsContext.tsx';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -15,9 +16,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <SearchProvider>
           <FilterProvider>
-            <ThemeProvider theme={theme}>
-              <App />
-            </ThemeProvider>
+            <DateFilterProvider>
+              <ThemeProvider theme={theme}>
+                <App />
+              </ThemeProvider>
+            </DateFilterProvider>
           </FilterProvider>
         </SearchProvider>
       </AuthProvider>

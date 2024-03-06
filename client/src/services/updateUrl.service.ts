@@ -2,6 +2,7 @@ import axios from 'axios';
 import { API_URL } from '@/config/urls';
 
 interface UpdateUrlData {
+    origUrl: string;
     title: string;
     shortUrl: string;
     tags: string[];

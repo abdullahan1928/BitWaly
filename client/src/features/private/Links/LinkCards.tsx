@@ -4,6 +4,7 @@ import { getUserUrls } from "@/features/public/Home/services/url.service";
 import { useFilter } from "@/hooks/useFilter";
 import { useSearch } from "@/hooks/useSearch";
 import Skeleton from "@mui/material/Skeleton";
+import { Pagination } from "@mui/material";
 
 interface Url {
     _id: string;
@@ -22,6 +23,8 @@ const LinkCards = () => {
     const [loading, setLoading] = useState(true);
     const { linkTypeFilter, tagFilter, dateFilter, linkTypeFilterApplied, tagFilterApplied, dateFilterApplied } = useFilter();
     const { searchValue } = useSearch();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [urlsPerPage] = useState(10);
 
     useEffect(() => {
         const authToken = localStorage.getItem("token");
@@ -79,6 +82,12 @@ const LinkCards = () => {
         setFilteredUserUrls(filteredUrls);
     }, [userUrls, linkTypeFilter, tagFilter, searchValue, dateFilterApplied, dateFilter]);
 
+    // Pagination logic
+    const indexOfLastUrl = currentPage * urlsPerPage;
+    const indexOfFirstUrl = indexOfLastUrl - urlsPerPage;
+    const currentUrls = filteredUserUrls.slice(indexOfFirstUrl, indexOfLastUrl);
+
+    const paginate = (_: React.ChangeEvent<unknown>, page: number) => setCurrentPage(page);
 
     const formatCreatedAt = (createdAt: string) => {
         const date = new Date(createdAt);
@@ -104,7 +113,7 @@ const LinkCards = () => {
                         </h3>
                         <Skeleton variant="text" width={50} height={50} />
                     </div>
-                    {[...Array(5)].map((_, index) => (
+                    {[...Array(urlsPerPage)].map((_, index) => (
                         <div key={index}>
                             <Skeleton variant="rectangular" height={200} />
                         </div>
@@ -112,7 +121,7 @@ const LinkCards = () => {
                 </>
             ) : (
                 <>
-                    {filteredUserUrls.length > 0 ? (
+                    {currentUrls.length > 0 ? (
                         <>
                             <div className="flex font-bold">
                                 <h3 className="text-2xl">
@@ -128,7 +137,7 @@ const LinkCards = () => {
                                 </p>
                             </div>
 
-                            {filteredUserUrls.map(url => (
+                            {currentUrls.map(url => (
                                 <LinkCard
                                     key={url._id}
                                     _id={url._id}
@@ -141,13 +150,16 @@ const LinkCards = () => {
                                 />
                             ))}
 
-                            <div className="flex items-center justify-center gap-7">
-                                <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
-                                <div className="text-lg text-center text-gray-400">
-                                    It's the end of the list!
-                                </div>
-                                <div className="w-20 border-b-[0.1rem] border-b-[#71809f]"></div>
-                            </div>
+                            <Pagination
+                                className="mt-4 flex justify-end"
+                                count={Math.ceil(filteredUserUrls.length / urlsPerPage)}
+                                page={currentPage}
+                                onChange={paginate}
+                                color="primary"
+                                shape="rounded"
+                                showFirstButton
+                                showLastButton
+                            />
                         </>
                     ) : (
                         <div className="flex items-center justify-center gap-2">

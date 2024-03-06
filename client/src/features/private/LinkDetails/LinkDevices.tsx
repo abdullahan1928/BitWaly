@@ -2,11 +2,48 @@ import { API_URL } from '@/config/urls';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import PieChart from './components/PieChart';
+import { useDateFilter } from '@/hooks/useDateFilter';
+
+interface IDeviceData {
+    device: string;
+    date: string;
+}
 
 const LinkDevices = ({ id }: { id: string }) => {
+    const [deviceData, setDeviceData] = useState<IDeviceData[]>([]);
     const [chartData, setChartData] = useState<{ name: string; y: number }[]>([]);
     const [totalDevices, setTotalDevices] = useState<number>(0);
     const [loading, setLoading] = useState(true);
+
+    const { startDate, endDate } = useDateFilter();
+
+    const showData = (data: IDeviceData[]) => {
+        let total = 0;
+
+        const countMap: { [key: string]: number } = {};
+
+        Object.values(data).forEach((value) => {
+            countMap[value.device] = (countMap[value.device] || 0) + 1;
+            total++;
+        });
+
+        const chartDataArray = Object.keys(countMap).map((key) => {
+            return {
+                name: `
+                    <div>
+                        <div style="color: #666666">${key}</div>&nbsp;&nbsp;&nbsp;
+                        <div style="color: #666666;">${countMap[key]}</div>
+                    </div>
+                    `,
+                y: countMap[key]
+            };
+        });
+
+        setChartData(chartDataArray);
+        setTotalDevices(total);
+
+        setLoading(false);
+    }
 
     useEffect(() => {
         const authToken = localStorage.getItem('token');
@@ -16,35 +53,28 @@ const LinkDevices = ({ id }: { id: string }) => {
                 authToken: `${authToken}`
             }
         }).then((res) => {
-            const data: { [key: string]: string } = res.data;
-            const countMap: { [key: string]: number } = {};
-            let total = 0;
+            const data: IDeviceData[] = res.data;
 
-            Object.values(data).forEach((value) => {
-                countMap[value] = (countMap[value] || 0) + 1;
-                total++;
-            });
+            setDeviceData(data);
+            showData(data);
 
-            const chartDataArray = Object.keys(countMap).map((key) => {
-                return {
-                    name: `
-                    <div>
-                        <div style="color: #666666">${key}</div>&nbsp;&nbsp;&nbsp;
-                        <div style="color: #666666;">${countMap[key]}</div>
-                    </div>
-                    `,
-                    y: countMap[key]
-                };
-            });
-
-            setChartData(chartDataArray);
-            setTotalDevices(total);
-
-            setLoading(false);
         }).catch((err) => {
             console.log(err);
         });
     }, [id]);
+
+    const updateData = (start: Date, end: Date) => {
+        const filteredData = deviceData.filter((data) => {
+            const date = new Date(data.date);
+            return date >= start && date <= end;
+        });
+
+        showData(filteredData);
+    }
+
+    useEffect(() => {
+        updateData(startDate, endDate);
+    }, [startDate, endDate]);
 
     return (
         <div className="bg-white rounded-md shadow-md p-4 w-[48%] max-lg:w-full">

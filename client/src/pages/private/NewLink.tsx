@@ -20,7 +20,7 @@ interface ShortenUrlRequest {
 }
 
 const NewLink = () => {
-  const [loading, setLoading] = useState<boolean>(false);  
+  const [loading, setLoading] = useState<boolean>(false);
 
   const [domain, setDomain] = useState("default");
   const [longUrl, setLongUrl] = useState("");
@@ -47,13 +47,14 @@ const NewLink = () => {
     setLoading(true);
     if (
       showUtmFields &&
-      !(utmSource && utmMedium && utmCampaign && utmTerm && utmContent)
+      !(utmSource && utmMedium && utmCampaign)
     ) {
       setUtmError(
-        "Either UTM fields should be empty or all UTM fields are required when one is filled."
+        "Please fill in all the required fields for UTM parameters."
       );
       return;
     }
+
     const origUrl = /^https?:\/\//i.test(longUrl)
       ? longUrl
       : `https://${longUrl}`;
@@ -69,8 +70,6 @@ const NewLink = () => {
       utmTerm,
       utmContent,
     };
-
-    console.log(data);
 
     await UrlShortener(data)
       .then(() => {

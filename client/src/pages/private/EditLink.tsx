@@ -11,10 +11,12 @@ import CustomInput from "@/components/CustomInput";
 
 
 const NewUrl = () => {
+    const [longUrl, setLongUrl] = useState("");
     const [domain, setDomain] = useState("default");
     const [backHalf, setBackHalf] = useState("");
     const [title, setTitle] = useState("");
-    const [duplicateError, setDuplicateError] = useState<string | null>(null);
+    const [backHalfError, setBackHalfError] = useState<string | null>(null);
+    const [longUrlError, setLongUrlError] = useState<string | null>(null);
     const [tags, setTags] = useState<string[]>([]);
 
     const navigate = useNavigate();
@@ -34,6 +36,7 @@ const NewUrl = () => {
 
         UrlRetrievalById(authToken ?? '', id ?? '')
             .then((res) => {
+                setLongUrl(res.url.originalUrl);
                 setBackHalf(res.url.shortUrl);
                 setTitle(res.url.meta.title);
                 setTags(res.tags);
@@ -44,7 +47,11 @@ const NewUrl = () => {
     }
 
     const handleButtonClick = async () => {
-        const data = { title, shortUrl: backHalf, tags };
+        const origUrl = /^https?:\/\//i.test(longUrl)
+            ? longUrl
+            : `https://${longUrl}`;
+
+        const data = { origUrl, title, shortUrl: backHalf, tags };
 
         const authToken = localStorage.getItem("token");
 
@@ -54,8 +61,10 @@ const NewUrl = () => {
             .then(() => {
                 navigate('/dashboard/links');
             }).catch((error) => {
-                if (error.response.status === 409) {
-                    setDuplicateError(error.response.data);
+                if (error.response.status === 409 && error.response.data === "Short URL already exists") {
+                    setBackHalfError(error.response.data);
+                } else {
+                    setLongUrlError(error.response.data);
                 }
             });
     };
@@ -65,11 +74,22 @@ const NewUrl = () => {
             <h3 className="text-4xl">Update Link</h3>
 
             <CustomInput
+                label="New Destination"
+                value={longUrl}
+                onChange={setLongUrl}
+                placeholder="https://example.com"
+                sx={{
+                    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+                        borderColor: longUrlError ? "red" : "",
+                    },
+                }}
+            />
+
+            <CustomInput
                 label="Title"
                 value={title}
                 onChange={setTitle}
                 placeholder="My favorite link"
-                optional
             />
 
             <hr className="w-full" />
@@ -93,10 +113,9 @@ const NewUrl = () => {
                     value={backHalf}
                     onChange={setBackHalf}
                     placeholder="example: favorite link"
-                    optional
                     sx={{
                         "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-                            borderColor: duplicateError ? "red" : "",
+                            borderColor: backHalfError ? "red" : "",
                         },
                     }}
                 />
@@ -105,9 +124,6 @@ const NewUrl = () => {
             <div className="flex flex-col w-full gap-2">
                 <p className="flex flex-row items-end justify-between">
                     Tags
-                    <span className="text-base text-gray-500">
-                        (optional)
-                    </span>
                 </p>
 
                 <ChipsInput tags={tags} onTagChange={handleTagChange} />
@@ -117,9 +133,15 @@ const NewUrl = () => {
                 <PrimaryButton text="Update Link" />
             </div>
 
-            {duplicateError && (
+            {backHalfError && (
                 <Alert severity="error" className="w-full" style={{ fontSize: '16px', padding: '16px' }}>
-                    {duplicateError}
+                    {backHalfError}
+                </Alert>
+            )}
+
+            {longUrlError && (
+                <Alert severity="error" className="w-full" style={{ fontSize: '16px', padding: '16px' }}>
+                    {longUrlError}
                 </Alert>
             )}
         </div>
