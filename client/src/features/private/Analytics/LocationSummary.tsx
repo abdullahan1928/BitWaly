@@ -1,12 +1,15 @@
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import InsightsIcon from '@mui/icons-material/Insights';
-import { fetchTopLocations } from '@/services/analyticsSummary.service';
+import { fetchTopLocations } from '@/services/adminAnalytics.service';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@mui/material'; 
+import { useParams } from 'react-router-dom';
+
 
 const LocationSummary = () => {
     const [locationData, setLocationData] = useState<[string, number][]>([["", 0],]);
     const [loading, setLoading] = useState(true); 
+    const { id } = useParams();
 
     useEffect(() => {
         const authToken = localStorage.getItem('token');
@@ -14,7 +17,7 @@ const LocationSummary = () => {
         const fetchData = async () => {
             try {
                 if (authToken) {
-                    const response: any = await fetchTopLocations(authToken);
+                    const response: any = await fetchTopLocations(authToken, id);
                     setLocationData(response.data);
                     setLoading(false);
                 }

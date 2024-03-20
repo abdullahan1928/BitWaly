@@ -2,8 +2,9 @@ import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { Skeleton } from '@mui/material'; 
-import { fetchClicksWithDates } from '@/services/analyticsSummary.service';
+import { fetchClicksWithDates } from '@/services/adminAnalytics.service';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 const LineChart = () => {
     interface ClickData {
@@ -12,6 +13,7 @@ const LineChart = () => {
     }
     const [chartData, setChartData] = useState<ClickData[]>([]);
     const [loading, setLoading] = useState(true); 
+    const { id } = useParams();
 
     useEffect(() => {
         const authToken = localStorage.getItem('token');
@@ -19,7 +21,7 @@ const LineChart = () => {
         const fetchData = async () => {
             try {
                 if (authToken !== null) {
-                    const response = await fetchClicksWithDates(authToken);
+                    const response = await fetchClicksWithDates(authToken, id);
 
                     // Check if response and response.data are defined
                     if (response && response.data) {

@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { API_URL } from '@/config/urls';
 
-export const fetchLocations = async (authToken: string) => {
+export const fetchLocations = async (authToken: any, id:any) => {
     try {
-        const response = await axios.get(`${API_URL}/admin/summary/locations`, {
+        const response = await axios.get(`${API_URL}/admin/locations/${id}`, {
             headers: {
                 authToken: `${authToken}`
             }
@@ -18,9 +18,9 @@ export const fetchLocations = async (authToken: string) => {
     }
 };
 
-export const fetchTopLocations = async (authToken: string) => {
+export const fetchTopLocations = async (authToken: any, id:any) => {
     try {
-        const response = await axios.get(`${API_URL}/admin/summary/toplocations`, {
+        const response = await axios.get(`${API_URL}/admin/toplocations/${id}`, {
             headers: {
                 authToken: `${authToken}`
             }
@@ -35,9 +35,9 @@ export const fetchTopLocations = async (authToken: string) => {
     }
 };
 
-export const fetchReferrers = async (authToken: string) => {
+export const fetchReferrers = async (authToken: any, id:any) => {
     try {
-        const response = await axios.get(`${API_URL}/admin/summary/referrers`, {
+        const response = await axios.get(`${API_URL}/admin/referrers/${id}`, {
             headers: {
                 authToken: `${authToken}`
             }
@@ -53,9 +53,9 @@ export const fetchReferrers = async (authToken: string) => {
 };
 
 
-export const fetchDevices = async (authToken: string) => {
+export const fetchDevices = async (authToken: any, id:any) => {
     try {
-        const response = await axios.get(`${API_URL}/admin/summary/devices`, {
+        const response = await axios.get(`${API_URL}/admin/devices/${id}`, {
             headers: {
                 authToken: `${authToken}`
             }
@@ -70,9 +70,9 @@ export const fetchDevices = async (authToken: string) => {
     }
 };
 
-export const fetchClicks = async (authToken: string) => {
+export const fetchClicks = async (authToken: any, id:any) => {
     try {
-        const response = await axios.get(`${API_URL}/admin/summary/clicks`, {
+        const response = await axios.get(`${API_URL}/admin/clicks/${id}`, {
             headers: {
                 authToken: `${authToken}`
             }
@@ -88,9 +88,9 @@ export const fetchClicks = async (authToken: string) => {
 };
 
 
-export const fetchClicksWithDates = async (authToken: string) => {
+export const fetchClicksWithDates = async (authToken: any, id:any) => {
     try {
-        const response = await axios.get(`${API_URL}/admin/summary/clickswithdates`, {
+        const response = await axios.get(`${API_URL}/admin/clickswithdates/${id}`, {
             headers: {
                 authToken: `${authToken}`
             }

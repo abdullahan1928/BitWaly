@@ -2,8 +2,9 @@ import { useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
-import { fetchDevices } from '@/services/analyticsSummary.service';
+import { fetchDevices } from '@/services/adminAnalytics.service';
 import { Skeleton } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
 const Devices = () => {
     const [subtitle, setSubtitle] = useState<string>('');
@@ -11,6 +12,7 @@ const Devices = () => {
     const [chartData, setChartData] = useState<{ name: string; y: number; color?: string }[]>([]);
     const [totalEngagements, setTotalEngagements] = useState<number>(0);
     const [loading, setLoading] = useState(true);
+    const { id } = useParams();
 
     useEffect(() => {
         const authToken = localStorage.getItem('token');
@@ -18,7 +20,7 @@ const Devices = () => {
         const fetchData = async () => {
             try {
                 if (authToken !== null) {
-                    const response = await fetchDevices(authToken);
+                    const response = await fetchDevices(authToken, id);
                     const data = response.map((deviceData: any) => ({
                         name: deviceData.device,
                         y: deviceData.count,
@@ -50,7 +52,7 @@ const Devices = () => {
         const fetchData = async () => {
             try {
                 if (authToken !== null) {
-                    const response = await fetchDevices(authToken);
+                    const response = await fetchDevices(authToken, id);
                     const data = response.map((deviceData: any) => ({
                         name: deviceData.device,
                         y: deviceData.count,

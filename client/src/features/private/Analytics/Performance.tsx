@@ -1,19 +1,20 @@
 import InsightsIcon from '@mui/icons-material/Insights';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@mui/material';
-import { fetchClicks } from '@/services/analyticsSummary.service';
+import { fetchClicks } from '@/services/adminAnalytics.service';
+import { useParams } from 'react-router-dom';
 
 const Performance = () => {
     const [clicksData, setClicksData] = useState<{ totalClicks: number; firstLinkDate: string } | null>(null);
     const [loading, setLoading] = useState(true);
+    const authToken = localStorage.getItem('token');
+    const { id } = useParams();
 
     useEffect(() => {
-        const authToken = localStorage.getItem('token');
-
         const fetchData = async () => {
             try {
-                if (authToken !== null) {
-                    const response = await fetchClicks(authToken);
+                if (id !== null) {
+                    const response = await fetchClicks(authToken, id);
                     setClicksData(response);
                     setLoading(false);
                 }
