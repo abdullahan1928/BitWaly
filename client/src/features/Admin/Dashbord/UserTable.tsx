@@ -18,9 +18,12 @@ import RoleIcon from '@mui/icons-material/Person';
 import DateIcon from '@mui/icons-material/Event';
 import LinksIcon from '@mui/icons-material/Link';
 import AccessCountIcon from '@mui/icons-material/Visibility';
-import { Delete } from '@mui/icons-material';
-import { fetchUsers, deleteUser } from '@/services/admin';
+import { fetchUsers, deleteUser } from '@/services/admin.service';
 import { useCallback } from 'react';
+import InsightsIcon from '@mui/icons-material/Insights';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Delete } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 interface IUser {
   _id: string;
@@ -46,6 +49,8 @@ const UserTable = () => {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [totalUsers, setTotalUsers] = useState(0);
   const [searchLoading, setSearchLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const fetchData = useCallback(async () => {
     const authToken = localStorage.getItem('token');
@@ -227,19 +232,22 @@ const UserTable = () => {
                   <TableCell>{user.lastLogin}</TableCell>
                   <TableCell>{user.linkCount}</TableCell>
                   <TableCell>{user.totalAccessCount}</TableCell>
-                  <TableCell>
+                  <TableCell colSpan={2}>
                     {user.role === 'admin' ? (
                       <Button variant="contained" disabled>
-                        Delete
+                        <DeleteIcon />
                       </Button>
                     ) : (
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => handleDeleteUser(user._id)}
-                      >
-                        Delete
-                      </Button>
+                      <>
+                        <Button onClick={() => navigate(`/admin/analytics/${user._id}`)}>
+                          <InsightsIcon />
+                        </Button>
+                        <Button
+                          onClick={() => handleDeleteUser(user._id)}
+                        >
+                          <DeleteIcon color="error" />
+                        </Button>
+                      </>
                     )}
                   </TableCell>
                 </TableRow>

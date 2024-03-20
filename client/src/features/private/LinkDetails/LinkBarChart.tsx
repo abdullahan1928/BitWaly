@@ -3,7 +3,7 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import 'react-datepicker/dist/react-datepicker.css';
 import { format } from 'date-fns';
-import { fetchEngagement } from '@/services/engagementsWDates';
+import { fetchEngagement } from '@/services/engagementsWDates.service';
 import BarChartSkeleton from './LinkBarSkelton';
 import { useDateFilter } from '@/hooks/useDateFilter';
 

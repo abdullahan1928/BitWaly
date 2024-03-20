@@ -1,6 +1,6 @@
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import InsightsIcon from '@mui/icons-material/Insights';
-import { fetchTopLocations } from '@/services/analyticsSummary';
+import { fetchTopLocations } from '@/services/analyticsSummary.service';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@mui/material'; 
 

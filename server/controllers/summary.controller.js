@@ -1,7 +1,11 @@
 const Url = require('../models/Url.model');
 const Analytics = require('../models/Analytics.model');
+
 const totalClicks = async (req, res) => {
-  const userId = req.user
+  const userId = req.user;
+
+  console.log('User ID:', userId);
+
   try {
     const userUrls = await Url.find({ user: userId });
 

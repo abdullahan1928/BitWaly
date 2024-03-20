@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Tabs } from "@mui/material";
 import CustomTab from "../LinkDetails/components/CustomTab";
 import TabPanel from "../LinkDetails/components/TabPanel";
-import { fetchLocations } from "@/services/analyticsSummary";
+import { fetchLocations } from "@/services/analyticsSummary.service";
 import { CountryData } from "../LinkDetails/interfaces/CoutryData";
 import { CityData } from "../LinkDetails/interfaces/CityData";
 import VerticalLocationTable from "./VerticalLocationTable";

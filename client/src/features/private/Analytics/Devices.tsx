@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
-import { fetchDevices } from '@/services/analyticsSummary';
+import { fetchDevices } from '@/services/analyticsSummary.service';
 import { Skeleton } from '@mui/material';
 
 const Devices = () => {

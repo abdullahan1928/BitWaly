@@ -1,7 +1,7 @@
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from 'highcharts';
 import AnalyticsCard from "@/features/private/Analytics/AnalyticsCard";
-import { fetchReferrers } from "@/services/analyticsSummary"; 
+import { fetchReferrers } from "@/services/analyticsSummary.service"; 
 import { useEffect, useState } from "react";
 import BarChartSkeleton from "../LinkDetails/LinkBarSkelton";
 

@@ -1,7 +1,7 @@
 import InsightsIcon from '@mui/icons-material/Insights';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@mui/material';
-import { fetchClicks } from '@/services/analyticsSummary';
+import { fetchClicks } from '@/services/analyticsSummary.service';
 
 const Performance = () => {
     const [clicksData, setClicksData] = useState<{ totalClicks: number; firstLinkDate: string } | null>(null);
