@@ -1,41 +1,29 @@
-const express = require("express");
+const express = require("express"); 
 const router = express.Router();
+
+// Importing middleware, controllers, and validators for handling user authentication and account management
 const { body } = require('express-validator');
 const { signupController, signinController, getUserController, updateNameController, updatePasswordController, deleteAccountController } = require("../controllers/auth.controller");
 const fetchUser = require("../middleware/fetchUser");
 const { dummyAccounts, DummyData } = require("../controllers/dummyData.controller");
 
-//ROUTE1: creating a user        /auth/signup,    NO AUTHENTICATION/LOGIN REQUIRED
+// Defining routes for user authentication and account management
 router.post('/signup', [
     body('email').not().isEmpty().withMessage('Email is required').isEmail(),
     body('password').not().isEmpty().withMessage('Password is required').isLength({ min: 5 }),
-], signupController);
+], signupController); // Route for user signup
 
-
-//ROUTE2: authenticating a user  /auth/signin,    NO AUTHENTICATION/LOGIN REQUIRED
 router.post('/signin', [
     body('email').not().isEmpty().withMessage('Email is required').isEmail(),
     body('password').not().isEmpty().withMessage('Password is required').isLength({ min: 5 })
-], signinController);
+], signinController); // Route for user signin
 
+router.get('/getUser', fetchUser, getUserController); // Route to get user details
+router.put('/name', fetchUser, updateNameController); // Route to update user name
+router.put('/password', fetchUser, updatePasswordController); // Route to update user password
+router.delete('/', fetchUser, deleteAccountController); // Route to delete user account
 
-//ROUTE3: get logged in user details  /auth/getuser,    AUTHENTICATION/LOGIN REQUIRED
-router.get('/getUser', fetchUser, getUserController);
+router.get('/dummyAccounts', dummyAccounts); // Route to fetch dummy accounts
+router.get('/dummyData', DummyData); // Route to fetch dummy data
 
-
-//ROUTE4: update logged in user details  /auth/updateuser,    AUTHENTICATION/LOGIN REQUIRED
-router.put('/name', fetchUser, updateNameController);
-
-//ROUTE5: update logged in user password  /auth/updatepassword,    AUTHENTICATION/LOGIN REQUIRED
-router.put('/password', fetchUser, updatePasswordController)
-
-
-//ROUTE6: delete logged in user account  /auth/deleteuser,    AUTHENTICATION/LOGIN REQUIRED
-router.delete('/', fetchUser, deleteAccountController);
-
-
-router.get('/dummyAccounts', dummyAccounts);
-router.get('/dummyData', DummyData);
-
-
-module.exports = router;
+module.exports = router; 

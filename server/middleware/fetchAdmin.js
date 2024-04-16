@@ -5,6 +5,7 @@ const Users = require('../models/User.model');
 const fetchAdmin = async (req, res, next) => {
     const authHeader = req.header('authToken');
 
+    // cannot proceed if the user is not authenticated
     if (!authHeader) {
         res.status(401).json({ msg: 'Not authenticated' });
     }
@@ -12,9 +13,9 @@ const fetchAdmin = async (req, res, next) => {
     try {
         const data = jwt.verify(authHeader, jwt_secret);
         req.user = data; 
-        console.log(data)
         const id = data;
 
+        // check if the token is valid
         if (!id) {
             res.status(401).json({ msg: 'Invalid token' });
             return;
@@ -22,11 +23,13 @@ const fetchAdmin = async (req, res, next) => {
 
         const user = await Users.findById(id);
 
+        // check if the user exists 
         if (!user) {
             res.status(401).json({ msg: 'User not found' });
             return;
         }
 
+        // check if the user is an admin
         if (user.role === 'admin') {
             next();
         } else {

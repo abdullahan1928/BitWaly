@@ -57,8 +57,6 @@ const LinkReferres = ({ id }: { id: string }) => {
 
             setReferrerData(data);
 
-            console.log(data);
-
             showData(data);
         }).catch((err) => {
             console.log(err);

@@ -28,7 +28,7 @@ const LinkSummary = ({ id }: { id: string }) => {
 
     useEffect(() => {
         getData();
-    }, [loading]);
+    }, [loading, id]);
 
     const getData = async () => {
         const authToken = localStorage.getItem('token');

@@ -15,6 +15,9 @@ import dayjs, { Dayjs } from "dayjs";
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { SingleInputDateRangeField } from '@mui/x-date-pickers-pro/SingleInputDateRangeField';
 import { useDateFilter } from "@/hooks/useDateFilter";
+import { MenuItem, Select } from "@mui/material";
+import axios from "axios";
+import { API_URL } from "@/config/urls";
 
 interface IUrl {
     _id: string;
@@ -77,10 +80,17 @@ const LinkDetails = () => {
     const [dateRange, setDateRange] = useState<DateRange<Dayjs>>([null, null]);
     const [loading, setLoading] = useState(true);
     const [minDate, setMinDate] = useState<Dayjs | null>(dayjs());
+    const [formerUrls, setFormerUrls] = useState<string[]>([]);
+    const [urlDataMap, setUrlDataMap] = useState<IUrl[]>([]);
+    const { id } = useParams<{ id: string }>();
+    const [urlId, setUrlId] = useState<string>(id ?? '');
 
     const createdDate = new Date(urlData.createdAt).toLocaleString('en-US', {
         timeZone: 'UTC',
     });
+
+    const { updateDates } = useDateFilter();
+
 
     useEffect(() => {
         const minDateFromUrlData = dayjs(createdDate);
@@ -92,9 +102,28 @@ const LinkDetails = () => {
         setDateRange([minDate, dayjs()]);
     }, [createdDate]);
 
-    const { updateDates } = useDateFilter();
+    useEffect(() => {
+        const authToken = localStorage.getItem("token");
+        const fetchFormerTitles = async () => {
+            try {
+                const promises = formerUrls.map(async (url) => {
+                    const res = await axios.get(`${API_URL}/formerUrl/id/${url}`, {
+                        headers: {
+                            authToken: `${authToken}`,
+                        },
+                    });
+                    return res.data;
+                });
 
-    const { id } = useParams<{ id: string }>();
+                const formerData = await Promise.all(promises);
+                setUrlDataMap([urlData, ...formerData]);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchFormerTitles();
+    }, [formerUrls]);
 
     useEffect(() => {
         fetchLink();
@@ -106,6 +135,7 @@ const LinkDetails = () => {
         try {
             const res = await UrlRetrievalById(authToken ?? '', id ?? '');
             setUrlData(res.url);
+            setFormerUrls(res.url.formerUrls);
             setLoading(false);
         } catch (error) {
             console.log(error);
@@ -127,8 +157,26 @@ const LinkDetails = () => {
                 </p>
             </Link>
 
+            <Select
+                label="Filter by Created Date"
+                variant="standard"
+                defaultValue={id}
+            >
+                {urlDataMap.map((data) => (
+                    <MenuItem key={data._id} value={data._id}
+                        onClick={() => {
+                            setUrlData(data);
+                            setUrlId(data._id);
+                        }}
+                    >
+                        {data.meta?.title}
+                    </MenuItem>
+                ))}
+            </Select>
+
+
             <LinkCard
-                _id={id ?? ''}
+                _id={urlId}
                 originalUrl={urlData?.originalUrl ?? ''}
                 shortUrl={urlData?.shortUrl ?? ''}
                 createdAt={createdDate ?? ''}
@@ -138,7 +186,7 @@ const LinkDetails = () => {
                 loading={loading}
             />
 
-            <LinkSummary id={id ?? ''} />
+            <LinkSummary id={urlId} />
 
             <div className="flex flex-row gap-4 items-center">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -163,14 +211,14 @@ const LinkDetails = () => {
                 </LocalizationProvider>
             </div>
 
-            <LinkBarChart id={id ?? ''} />
+            <LinkBarChart id={urlId} />
 
-            <LinkLocations id={id ?? ''} />
+            <LinkLocations id={urlId} />
 
             <div className="flex flex-row flex-wrap gap-10 mb-4 max-lg:flex-col">
-                <LinkReferres id={id ?? ''} />
+                <LinkReferres id={urlId} />
 
-                <LinkDevices id={id ?? ''} />
+                <LinkDevices id={urlId} />
             </div>
         </div >
     );

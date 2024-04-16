@@ -3,22 +3,27 @@ const Url = require('../models/Url.model');
 const Tag = require('../models/Tag.model');
 const Analytics = require('../models/Analytics.model');
 
+// Controller to fetch users with statistics
 const fetchUsers = async (req, res) => {
   try {
-    const { page, limit , search, sortField, sortOrder } = req.query;
+    // Extracting query parameters
+    const { page, limit, search, sortField, sortOrder } = req.query;
 
     let query = {};
     if (search) {
       query = { name: { $regex: new RegExp(search), $options: 'i' } };
     }
 
+    // Counting total users
     const totalCount = await Users.countDocuments(query);
 
+    // Fetching users with pagination and excluding password field
     const users = await Users.find(query)
       .select('-password')
       .skip((page - 1) * limit)
       .limit(parseInt(limit));
 
+    // Adding statistics to each user
     const usersWithStats = await Promise.all(
       users.map(async (user) => {
         const linkCount = await Url.countDocuments({ user: user._id });
@@ -42,6 +47,7 @@ const fetchUsers = async (req, res) => {
       })
     );
 
+    // Sorting users based on provided field and order
     if (sortField && sortOrder) {
       usersWithStats.sort((a, b) => {
         const valueA = a[sortField];
@@ -63,6 +69,7 @@ const fetchUsers = async (req, res) => {
   }
 };
 
+// Controller to delete a user and associated data
 const deleteUser = async (req, res) => {
   try {
     const userId = req.params.id
@@ -80,6 +87,7 @@ const deleteUser = async (req, res) => {
     const anaId = await Analytics.find({ url: { $in: linkIds } }).select('_id');
     const anaIds = anaId.map(id => id._id);
 
+    // Deleting associated analytics, URLs, tags, and user
     await Analytics.deleteMany({ _id: { $in: anaIds } });
     await Url.deleteMany({ _id: { $in: linkIds } });
     await Tag.deleteMany({ _id: { $in: tags } });
@@ -92,16 +100,16 @@ const deleteUser = async (req, res) => {
   }
 }
 
+// Controller to get total clicks for a user
 const totalClicks = async (req, res) => {
   const { userId } = req.params
 
-  console.log('User ID:', userId);
-
   try {
+    // Finding all URLs created by the user
     const userUrls = await Url.find({ user: userId });
 
+    // Calculating total clicks and date of first link creation
     const totalClicks = userUrls.reduce((acc, url) => acc + url.accessCount, 0);
-
     const firstLinkDate = userUrls.length > 0 ? userUrls[0].createdAt : null;
 
     res.status(200).json({ totalClicks, firstLinkDate });
@@ -111,32 +119,32 @@ const totalClicks = async (req, res) => {
   }
 }
 
-
+// Controller to get device-wise clicks for a user
 const deviceClicks = async (req, res) => {
   try {
     const { userId } = req.params
 
-    // Find all URLs created by the user
+    // Finding all URLs created by the user
     const userUrls = await Url.find({ user: userId });
 
-    // Extract analytics for each URL
+    // Extracting analytics for each URL
     const analyticsPromises = userUrls.map(async (url) => {
       return await Analytics.find({ url: url._id });
     });
 
     const analyticsArray = await Promise.all(analyticsPromises);
 
-    // Flatten the array of analytics
+    // Flattening the array of analytics
     const allAnalytics = [].concat(...analyticsArray);
 
-    // Count devices
+    // Counting clicks per device type
     const deviceCounts = allAnalytics.reduce((acc, analytics) => {
       const deviceType = analytics.device || 'Unknown';
       acc[deviceType] = (acc[deviceType] || 0) + 1;
       return acc;
     }, {});
 
-    // Convert device counts to the required format for a pie graph
+    // Converting device counts to the required format for a pie graph
     const deviceData = Object.entries(deviceCounts).map(([device, count]) => ({ device, count }));
 
     res.status(200).json(deviceData);
@@ -146,39 +154,32 @@ const deviceClicks = async (req, res) => {
   }
 }
 
+// Controller to get referrer-wise clicks for a user
 const referrerClicks = async (req, res) => {
   try {
     const { userId } = req.params
 
-    // Find all URLs created by the user
+    // Finding all URLs created by the user
     const userUrls = await Url.find({ user: userId });
 
-    console.log('User URLs:', userUrls);
-
-    // Extract analytics for each URL
+    // Extracting analytics for each URL
     const analyticsPromises = userUrls.map(async (url) => {
       return await Analytics.find({ url: url._id });
     });
 
     const analyticsArray = await Promise.all(analyticsPromises);
 
-    console.log('All Analytics:', analyticsArray);
-
-    // Flatten the array of analytics
+    // Flattening the array of analytics
     const allAnalytics = [].concat(...analyticsArray);
 
-    console.log('Flattened Analytics:', allAnalytics);
-
-    // Count referrers
+    // Counting clicks per referrer
     const referrerCounts = allAnalytics.reduce((acc, analytics) => {
       const referrer = analytics.referrer || 'Direct';
       acc[referrer] = (acc[referrer] || 0) + 1;
       return acc;
     }, {});
 
-    console.log('Referrer Counts:', referrerCounts);
-
-    // Convert referrer counts to the required format for a pie graph
+    // Converting referrer counts to the required format for a pie graph
     const referrerData = Object.entries(referrerCounts).map(([referrer, count]) => ({ referrer, count }));
 
     res.status(200).json(referrerData);
@@ -188,46 +189,38 @@ const referrerClicks = async (req, res) => {
   }
 }
 
-
+// Controller to get all locations and their click counts for a user
 const allLocations = async (req, res) => {
   try {
     const { userId } = req.params
 
-    // Find all URLs created by the user
+    // Finding all URLs created by the user
     const userUrls = await Url.find({ user: userId });
 
-    console.log('User URLs:', userUrls);
-
-    // Extract analytics for each URL
+    // Extracting analytics for each URL
     const analyticsPromises = userUrls.map(async (url) => {
       return await Analytics.find({ url: url._id });
     });
 
     const analyticsArray = await Promise.all(analyticsPromises);
 
-    console.log('All Analytics:', analyticsArray);
-
-    // Flatten the array of analytics
+    // Flattening the array of analytics
     const allAnalytics = [].concat(...analyticsArray);
 
-    console.log('Flattened Analytics:', allAnalytics);
-
-    // Count countries and cities
+    // Counting countries and cities
     const locationCounts = allAnalytics.reduce((acc, analytics) => {
       const { country, city } = analytics.location || { country: 'Unknown', city: 'Unknown' };
 
-      // Count countries
+      // Counting countries
       acc.countries[country] = (acc.countries[country] || 0) + 1;
 
-      // Count cities
+      // Counting cities
       acc.cities[city] = (acc.cities[city] || 0) + 1;
 
       return acc;
     }, { countries: {}, cities: {} });
 
-    console.log('Location Counts:', locationCounts);
-
-    // Convert location counts to the required format
+    // Converting location counts to the required format
     const locationData = {
       countries: Object.entries(locationCounts.countries).map(([country, count]) => ({ country, count })),
       cities: Object.entries(locationCounts.cities).map(([city, count]) => ({ city, count })),
@@ -240,8 +233,7 @@ const allLocations = async (req, res) => {
   }
 }
 
-
-
+// Controller to get top locations by click counts for a user
 const topLocations = async (req, res) => {
   try {
     const { userId } = req.params
@@ -256,22 +248,22 @@ const topLocations = async (req, res) => {
 
     const allAnalytics = [].concat(...analyticsArray);
 
-    // Count cities
+    // Counting cities
     const locationCounts = allAnalytics.reduce((acc, analytics) => {
       const { city } = analytics.location || { country: 'Unknown', city: 'Unknown' };
 
-      // Count cities
+      // Counting cities
       acc.cities[city] = (acc.cities[city] || 0) + 1;
 
       return acc;
     }, { cities: {} });
 
-    // Sort cities by count in descending order
+    // Sorting cities by count in descending order and getting top 3
     const sortedCities = Object.entries(locationCounts.cities)
       .sort(([, countA], [, countB]) => countB - countA)
       .slice(0, 3);
 
-    // Convert sorted cities to the required format
+    // Converting sorted cities to the required format
     const locationData = sortedCities
     res.status(200).json(locationData);
   } catch (error) {
@@ -280,6 +272,7 @@ const topLocations = async (req, res) => {
   }
 };
 
+// Controller to get click counts with dates for a user
 const clicksWithDates = async (req, res) => {
   const { userId } = req.params
 
@@ -287,6 +280,7 @@ const clicksWithDates = async (req, res) => {
     const userUrls = await Url.find({ user: userId });
 
     const clickDataPromises = userUrls.map(async (url) => {
+      // Aggregating click data for each URL by date
       const clickData = await Analytics.aggregate([
         { $match: { url: url._id } },
         {
@@ -298,6 +292,7 @@ const clicksWithDates = async (req, res) => {
         { $sort: { '_id': 1 } },
       ]);
 
+      // Formatting aggregated click data
       const formattedData = clickData.map(data => ({
         date: data._id,
         clicks: data.count,
@@ -306,6 +301,7 @@ const clicksWithDates = async (req, res) => {
       return formattedData;
     });
 
+    // Getting click data for all URLs and merging
     const allClickData = await Promise.all(clickDataPromises);
     const mergedData = mergeClickData(allClickData);
 
@@ -333,6 +329,5 @@ const mergeClickData = (dataArrays) => {
 
   return Object.keys(mergedData).map(date => ({ date, clicks: mergedData[date] }));
 };
-
 
 module.exports = { fetchUsers, deleteUser, totalClicks, deviceClicks, referrerClicks, allLocations, topLocations, clicksWithDates }

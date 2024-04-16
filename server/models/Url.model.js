@@ -13,6 +13,7 @@ const urlSchema = new mongoose.Schema({
   },
   isCustom: { type: Boolean, default: false },
   tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
+  formerUrls: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FormerUrl' }] // Array of former URLs
 });
 
 urlSchema.index({ shardKey: 1, shortUrl: 1 }, { unique: true });
