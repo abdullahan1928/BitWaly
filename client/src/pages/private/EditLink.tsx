@@ -19,6 +19,8 @@ const NewUrl = () => {
     const [longUrlError, setLongUrlError] = useState<string | null>(null);
     const [tags, setTags] = useState<string[]>([]);
 
+    const [loading, setLoading] = useState<boolean>(false);
+
     const navigate = useNavigate();
 
     const { id } = useParams<{ id: string }>();
@@ -47,6 +49,8 @@ const NewUrl = () => {
     }
 
     const handleButtonClick = async () => {
+        setLoading(true);
+
         const origUrl = /^https?:\/\//i.test(longUrl)
             ? longUrl
             : `https://${longUrl}`;
@@ -63,8 +67,11 @@ const NewUrl = () => {
             }).catch((error) => {
                 if (error.response.status === 409 && error.response.data === "Short URL already exists") {
                     setBackHalfError(error.response.data);
+                    setLoading(false)
+
                 } else {
                     setLongUrlError(error.response.data);
+                    setLoading(false)
                 }
             });
     };
@@ -130,7 +137,7 @@ const NewUrl = () => {
             </div>
 
             <div onClick={handleButtonClick} className="self-start max-md:self-center">
-                <PrimaryButton text="Update Link" />
+                <PrimaryButton text={loading ? "Updating Link..." : "Update Link"} />
             </div>
 
             {backHalfError && (

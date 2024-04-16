@@ -1,6 +1,12 @@
 import Skeleton from '@mui/material/Skeleton';
 
-const BarChartSkeleton = ({ barCount, width }: { barCount: number; width: number }) => {
+interface BarChartSkeletonProps {
+    barCount: number;
+    width: number;
+    animation?: 'wave' | 'pulse' | false;
+}
+
+const BarChartSkeleton = ({ barCount, width, animation }: BarChartSkeletonProps) => {
     // Define an array to store the Skeleton components for each bar
     const bars = [];
 
@@ -13,6 +19,7 @@ const BarChartSkeleton = ({ barCount, width }: { barCount: number; width: number
                 width={width}
                 height={Math.floor(Math.random() * 100) + 100}
                 className='mr-1'
+                animation={animation}
             />
         );
     }

@@ -132,8 +132,6 @@ const accessCountController = async (req, res) => {
   try {
     const urlDocument = await Url.findById(id) || await FormerUrl.findById(id);
 
-    console.log(urlDocument.accessCount);
-
     if (!urlDocument) {
       return res.status(404).send('URL not found');
     }

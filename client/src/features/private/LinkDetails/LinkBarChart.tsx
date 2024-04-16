@@ -16,6 +16,7 @@ const LinkBarChart = ({ id }: { id: string; }) => {
   const [originalChartData, setOriginalChartData] = useState<ChartData>({ categories: [], data: [] });
   const [selectedChartData, setSelectedChartData] = useState<ChartData>({ categories: [], data: [] });
   const [loading, setLoading] = useState(true);
+  const [isEmpty, setIsEmpty] = useState(true);
 
   const { startDate, endDate } = useDateFilter();
 
@@ -40,6 +41,7 @@ const LinkBarChart = ({ id }: { id: string; }) => {
         setSelectedChartData(chartData);
 
         setLoading(false);
+        setIsEmpty(updatedData.length === 0);
       })
       .catch((err) => {
         console.error(err);
@@ -87,48 +89,65 @@ const LinkBarChart = ({ id }: { id: string; }) => {
         {loading ? (
           <BarChartSkeleton barCount={7} width={80} />
         ) : (
-          <HighchartsReact
-            highcharts={Highcharts}
-            options={{
-              chart: {
-                type: 'column',
-              },
-              title: {
-                text: '',
-              },
-              xAxis: {
-                categories: selectedChartData.categories,
-                crosshair: true,
-              },
-              yAxis: {
-                min: 0,
+          isEmpty ? (
+            <div className="flex flex-col gap-4 p-4 relative">
+              <BarChartSkeleton animation={false} barCount={20} width={40} />
+
+              <div className="absolute flex flex-col items-center justify-center p-4 w-full h-full top-0 left-0 bg-white bg-opacity-70 rounded-md">
+                <p className="absolute text-2xl font-bold text-center text-gray-500">
+                  No engagements found for the selected date range.
+                  <span className="block text-lg text-gray-500 font-medium">
+                    <br />
+                    Share your link to get engagements.
+                  </span>
+                </p>
+              </div>
+
+            </div>
+          ) : (
+            <HighchartsReact
+              highcharts={Highcharts}
+              options={{
+                chart: {
+                  type: 'column',
+                },
                 title: {
-                  text: 'Engagements',
+                  text: '',
                 },
-              },
-              tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat:
-                  '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                  '<td style="padding:0"><b>{point.y} engagements</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true,
-              },
-              plotOptions: {
-                column: {
-                  pointPadding: 0.2,
+                xAxis: {
+                  categories: selectedChartData.categories,
+                  crosshair: true,
                 },
-              },
-              series: [
-                {
-                  name: 'Link Clicks',
-                  data: selectedChartData.data,
-                  color: '#E33E7F',
+                yAxis: {
+                  min: 0,
+                  title: {
+                    text: 'Engagements',
+                  },
                 },
-              ],
-            }}
-          />
+                tooltip: {
+                  headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                  pointFormat:
+                    '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y} engagements</b></td></tr>',
+                  footerFormat: '</table>',
+                  shared: true,
+                  useHTML: true,
+                },
+                plotOptions: {
+                  column: {
+                    pointPadding: 0.2,
+                  },
+                },
+                series: [
+                  {
+                    name: 'Link Clicks',
+                    data: selectedChartData.data,
+                    color: '#E33E7F',
+                  },
+                ],
+              }}
+            />
+          )
         )}
       </div>
     </div>

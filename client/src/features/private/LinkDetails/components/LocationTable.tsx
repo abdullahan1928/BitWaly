@@ -12,9 +12,11 @@ interface DataTableProps {
     title: string;
     data: CountryData[] | CityData[];
     loading?: boolean;
+    isEmpty?: boolean;
 }
 
-const LocationTable = ({ title, data, loading }: DataTableProps) => {
+
+const LocationTable = ({ title, data, loading, isEmpty }: DataTableProps) => {
     const isCountryData = (
         data: CountryData | CityData
     ): data is CountryData => {
@@ -34,6 +36,36 @@ const LocationTable = ({ title, data, loading }: DataTableProps) => {
         return totalCount > 0 ? totalCount : 1;
     };
 
+    const SingleSkelton = ({ width }: { width?: number }) => (
+        <TableCell>
+            <Skeleton variant="text" width={width} height={20} animation={isEmpty && false} />
+        </TableCell>
+    );
+
+    const TableSkeleton = () => (
+        <div className="flex flex-col gap-4 p-4 relative">
+            {[1, 2, 3, 4, 5].map((_, index) => (
+                <TableRow key={index}>
+                    <SingleSkelton width={50} />
+                    <SingleSkelton width={100} />
+                    <SingleSkelton width={500} />
+                    <SingleSkelton width={100} />
+                    <SingleSkelton width={100} />
+                </TableRow>
+            ))}
+
+            <div className="absolute flex flex-col items-center justify-center p-4 w-full h-full top-0 left-0 bg-white bg-opacity-60 rounded-md">
+                <p className="absolute text-2xl font-bold text-center text-gray-500">
+                    No engagements found for the selected date range.
+                    <span className="block text-lg text-gray-500 font-medium">
+                        <br />
+                        Share your link to get engagements.
+                    </span>
+                </p>
+            </div>
+        </div>
+    );
+
     return (
         <Table sx={{
             minWidth: 650,
@@ -41,40 +73,30 @@ const LocationTable = ({ title, data, loading }: DataTableProps) => {
                 minWidth: 300,
             },
         }}>
-            <TableHead>
-                <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
-                    <TableCell>Sr#</TableCell>
-                    <TableCell>
-                        {title}
-                    </TableCell>
-                    <TableCell
-                        sx={{
-                            '@media (max-width: 640px)': {
-                                display: 'none',
-                            },
-                        }}
-                    ></TableCell>
-                    <TableCell sx={{ textAlign: 'right' }}>Engagements</TableCell>
-                    <TableCell sx={{ textAlign: 'right' }}>%</TableCell>
-                </TableRow>
-            </TableHead>
+
+            {!isEmpty ? (
+                <TableHead>
+                    <TableRow sx={{ '& th': { fontWeight: 'bold' } }}>
+                        <TableCell>Sr#</TableCell>
+                        <TableCell>
+                            {title}
+                        </TableCell>
+                        <TableCell
+                            sx={{
+                                '@media (max-width: 640px)': {
+                                    display: 'none',
+                                },
+                            }}
+                        ></TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>Engagements</TableCell>
+                        <TableCell sx={{ textAlign: 'right' }}>%</TableCell>
+                    </TableRow>
+                </TableHead>
+            ) : null}
+
             <TableBody sx={{ '& td': { border: 'none' }, }}>
-                {loading ? (
-                    <>
-                        {[1, 2, 3, 4, 5].map((_, index) => (
-                            <TableRow key={index}>
-                                {[1, 2, 3, 4, 5].map((_, index) => (
-                                    <TableCell key={index}>
-                                        {index === 0 ? <Skeleton variant="text" width={50} height={50} /> : ""}
-                                        {index === 1 ? <Skeleton variant="text" width={100} height={50} /> : ""}
-                                        {index === 2 ? <Skeleton variant="text" width={500} height={50} /> : ""}
-                                        {index === 3 ? <Skeleton variant="text" width={100} height={50} /> : ""}
-                                        {index === 4 ? <Skeleton variant="text" width={100} height={50} /> : ""}
-                                    </TableCell>
-                                ))}
-                            </TableRow>
-                        ))}
-                    </>
+                {loading || isEmpty ? (
+                    <TableSkeleton />
                 ) : (
                     data.map((item, index) => (
                         <TableRow key={index} style={{ whiteSpace: 'nowrap' }}>

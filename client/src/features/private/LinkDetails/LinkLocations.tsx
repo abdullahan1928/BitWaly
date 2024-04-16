@@ -25,6 +25,7 @@ const LinkLocations = ({ id }: LinkLocationProps) => {
     const [cityData, setCityData] = useState<CityData[]>([]);
     const [currentTab, setCurrentTab] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [isEmpty, setIsEmpty] = useState(true);
 
     const { startDate, endDate } = useDateFilter();
 
@@ -45,6 +46,7 @@ const LinkLocations = ({ id }: LinkLocationProps) => {
             showData(data);
 
             setLoading(false);
+            setIsEmpty(data.length === 0);
         }).catch((err) => {
             console.log(err);
             setLoading(false);
@@ -137,6 +139,7 @@ const LinkLocations = ({ id }: LinkLocationProps) => {
                     title="Country"
                     data={countryData}
                     loading={loading}
+                    isEmpty={isEmpty}
                 />
             </TabPanel>
             <TabPanel value={currentTab} index={1}>
@@ -144,6 +147,7 @@ const LinkLocations = ({ id }: LinkLocationProps) => {
                     title="City"
                     data={cityData}
                     loading={loading}
+                    isEmpty={isEmpty}
                 />
             </TabPanel>
         </Paper>
