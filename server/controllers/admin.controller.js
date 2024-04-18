@@ -248,22 +248,22 @@ const topLocations = async (req, res) => {
 
     const allAnalytics = [].concat(...analyticsArray);
 
-    // Counting cities
+    // Count cities
     const locationCounts = allAnalytics.reduce((acc, analytics) => {
       const { city } = analytics.location || { country: 'Unknown', city: 'Unknown' };
 
-      // Counting cities
+      // Count cities
       acc.cities[city] = (acc.cities[city] || 0) + 1;
 
       return acc;
     }, { cities: {} });
 
-    // Sorting cities by count in descending order and getting top 3
+    // Sort cities by count in descending order
     const sortedCities = Object.entries(locationCounts.cities)
       .sort(([, countA], [, countB]) => countB - countA)
       .slice(0, 3);
 
-    // Converting sorted cities to the required format
+    // Convert sorted cities to the required format
     const locationData = sortedCities
     res.status(200).json(locationData);
   } catch (error) {

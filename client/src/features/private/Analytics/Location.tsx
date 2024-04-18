@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Tabs } from "@mui/material";
 import CustomTab from "../LinkDetails/components/CustomTab";
 import TabPanel from "../LinkDetails/components/TabPanel";
-import { fetchLocations } from '@/services/adminAnalytics.service';
+import { fetchLocationsWithAdmin } from '@/services/adminAnalytics.service';
 import { CountryData } from "../LinkDetails/interfaces/CoutryData";
 import { CityData } from "../LinkDetails/interfaces/CityData";
 import VerticalLocationTable from "./VerticalLocationTable";
 import { useParams } from "react-router-dom";
+import { fetchLocations } from "@/services/analyticsSummary.service";
 
 const Location = () => {
     const [currentTab, setCurrentTab] = useState(0);
@@ -16,32 +17,39 @@ const Location = () => {
 
     useEffect(() => {
         const authToken = localStorage.getItem("token");
-        
+
+        if (authToken === null) { return; }
 
         const fetchData = async () => {
             try {
-                if (authToken !== null) {
-                    const responseData = await fetchLocations(authToken, id);
-                    if (responseData && responseData.countries && responseData.cities) {
-                        setLocationData({
-                            countries: responseData.countries.map((data: CountryData) => ({
-                                country: data.country,
-                                count: data.count,
-                            })),
-                            cities: responseData.cities.map((data: CityData) => ({
-                                city: data.city,
-                                count: data.count,
-                            })),
-                        });
-                        setLoading(false); // Set loading to false after data is fetched
-                    } else {
-                        console.error('Invalid response structure:', responseData);
-                        setLoading(false); // Set loading to false in case of invalid response
-                    }
+                let response: any;
+
+                if (id !== null && id !== undefined) {
+                    response = await fetchLocationsWithAdmin(authToken, id);
+                } else {
+                    response = await fetchLocations(authToken);
                 }
+
+                if (response && response.countries && response.cities) {
+                    setLocationData({
+                        countries: response.countries.map((data: CountryData) => ({
+                            country: data.country,
+                            count: data.count,
+                        })),
+                        cities: response.cities.map((data: CityData) => ({
+                            city: data.city,
+                            count: data.count,
+                        })),
+                    });
+                    setLoading(false);
+                } else {
+                    console.error('Invalid response structure:', response);
+                    setLoading(false);
+                }
+
             } catch (error) {
                 console.error('Error fetching location data:', error);
-                setLoading(false); // Set loading to false in case of error
+                setLoading(false);
             }
         };
 

@@ -3,7 +3,6 @@ import Analytics from "../private/Analytics"
 const AdminAnalytics = () => {
     return (
         <>
-
             <Analytics />
         </>
     )

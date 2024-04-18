@@ -158,14 +158,13 @@ const topLocations = async (req, res) => {
       return acc;
     }, { cities: {} });
 
-    // Sort cities by count in descending order and get top 3
+    // Sort cities by count in descending order
     const sortedCities = Object.entries(locationCounts.cities)
       .sort(([, countA], [, countB]) => countB - countA)
       .slice(0, 3);
 
     // Convert sorted cities to the required format
-    const locationData = sortedCities.map(([city, count]) => ({ city, count }));
-
+    const locationData = sortedCities
     res.status(200).json(locationData);
   } catch (error) {
     console.error(error);

@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
-import { fetchDevices } from '@/services/adminAnalytics.service';
+import { fetchDevicesWithAdmin } from '@/services/adminAnalytics.service';
 import { Skeleton } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { fetchDevices } from '@/services/analyticsSummary.service';
 
 const Devices = () => {
     const [subtitle, setSubtitle] = useState<string>('');
@@ -17,60 +18,36 @@ const Devices = () => {
     useEffect(() => {
         const authToken = localStorage.getItem('token');
 
+        if (authToken === null) { return; }
+
         const fetchData = async () => {
             try {
-                if (authToken !== null) {
-                    const response = await fetchDevices(authToken, id);
-                    const data = response.map((deviceData: any) => ({
-                        name: deviceData.device,
-                        y: deviceData.count,
-                    }));
+                let response: any;
 
-                    setChartData(() => {
-                        const updatedChartData = data.map((dataItem: any) => ({
-                            ...dataItem,
-                        }));
-                        return updatedChartData;
-                    });
-
-                    const total = data.reduce((acc: any, dataItem: any) => acc + dataItem.y, 0);
-                    setTotalEngagements(total);
-                    setLoading(false);
+                if (id !== null && id !== undefined) {
+                    response = await fetchDevicesWithAdmin(authToken, id);
+                } else {
+                    response = await fetchDevices(authToken);
                 }
+
+                const data = response.map((deviceData: any) => ({
+                    name: deviceData.device,
+                    y: deviceData.count,
+                }));
+
+                setChartData(() => {
+                    const updatedChartData = data.map((dataItem: any) => ({
+                        ...dataItem,
+                    }));
+                    return updatedChartData;
+                });
+
+                const total = data.reduce((acc: any, dataItem: any) => acc + dataItem.y, 0);
+                setTotalEngagements(total);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching device data:', error);
                 setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [hoveredData]);
-
-    useEffect(() => {
-        const authToken = localStorage.getItem('token');
-
-        const fetchData = async () => {
-            try {
-                if (authToken !== null) {
-                    const response = await fetchDevices(authToken, id);
-                    const data = response.map((deviceData: any) => ({
-                        name: deviceData.device,
-                        y: deviceData.count,
-                    }));
-
-                    setChartData(() => {
-                        const updatedChartData = data.map((dataItem: any) => ({
-                            ...dataItem,
-                        }));
-
-                        return updatedChartData;
-                    });
-
-                    const total = data.reduce((acc: any, dataItem: any) => acc + dataItem.y, 0);
-                    setTotalEngagements(total);
-                }
-            } catch (error) {
-                console.error('Error fetching device data:', error);
             }
         };
 

@@ -64,7 +64,6 @@ const UserTable = () => {
         sortOrder,
       });
       setUsers(response.users);
-      console.log('response.users:', response.users);
       setTotalUsers(response.totalCount);
       setLoading(false);
     } catch (error) {

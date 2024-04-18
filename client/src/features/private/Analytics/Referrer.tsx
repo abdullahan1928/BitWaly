@@ -1,10 +1,11 @@
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from 'highcharts';
 import AnalyticsCard from "@/features/private/Analytics/AnalyticsCard";
-import { fetchReferrers } from '@/services/adminAnalytics.service';
+import { fetchReferrersWithAdmin } from '@/services/adminAnalytics.service';
 import { useEffect, useState } from "react";
 import BarChartSkeleton from "../LinkDetails/LinkBarSkelton";
 import { useParams } from "react-router-dom";
+import { fetchReferrers } from "@/services/analyticsSummary.service";
 
 const Referrer = () => {
     const [referrerData, setReferrerData] = useState<any[]>([]);
@@ -14,13 +15,19 @@ const Referrer = () => {
     useEffect(() => {
         const authToken = localStorage.getItem('token');
 
+        if (authToken === null) { return; }
+
         const fetchData = async () => {
             try {
-                if (authToken !== null) {
-                    const response = await fetchReferrers(authToken, id);
-                    setReferrerData(response);
-                    setLoading(false);
+                let response: any;
+
+                if (id !== null && id !== undefined) {
+                    response = await fetchReferrersWithAdmin(authToken, id);
+                } else {
+                    response = await fetchReferrers(authToken);
                 }
+                setReferrerData(response);
+                setLoading(false);
             } catch (error) {
                 console.error('Error fetching referrer data:', error);
                 setLoading(false);

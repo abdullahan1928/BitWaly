@@ -1,26 +1,35 @@
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import InsightsIcon from '@mui/icons-material/Insights';
-import { fetchTopLocations } from '@/services/adminAnalytics.service';
+import { fetchTopLocationsWithAdmin } from '@/services/adminAnalytics.service';
 import { useEffect, useState } from 'react';
-import { Skeleton } from '@mui/material'; 
+import { Skeleton } from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { fetchTopLocations } from '@/services/analyticsSummary.service';
 
 
 const LocationSummary = () => {
     const [locationData, setLocationData] = useState<[string, number][]>([["", 0],]);
-    const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
     const { id } = useParams();
 
     useEffect(() => {
         const authToken = localStorage.getItem('token');
 
+        if (authToken === null) { return; }
+
         const fetchData = async () => {
             try {
-                if (authToken) {
-                    const response: any = await fetchTopLocations(authToken, id);
-                    setLocationData(response.data);
-                    setLoading(false);
+                let response: any;
+
+                if (id !== null && id !== undefined) {
+                    response = await fetchTopLocationsWithAdmin(authToken, id);
+                } else {
+                    response = await fetchTopLocations(authToken);
                 }
+
+                setLocationData(response);
+                setLoading(false);
+
             } catch (error) {
                 console.error('Error fetching location data:', error);
                 setLoading(false);

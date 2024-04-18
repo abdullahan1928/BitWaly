@@ -26,7 +26,7 @@ export const fetchTopLocations = async (authToken: string) => {
             }
         });
         if (response) {
-            return response;
+            return response.data;
         } else {
             console.error('Failed to fetch user data');
         }
@@ -96,7 +96,7 @@ export const fetchClicksWithDates = async (authToken: string) => {
             }
         });
         if (response) {
-            return response;
+            return response.data;
         } else {
             console.error('Failed to fetch user data');
         }
