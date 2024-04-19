@@ -70,7 +70,7 @@ const LinkCard = (props: LinkCardProps) => {
             getClicks();
             getTags();
         }
-    });
+    }, []);
 
     const getClicks = async () => {
         const authToken = localStorage.getItem('token');
