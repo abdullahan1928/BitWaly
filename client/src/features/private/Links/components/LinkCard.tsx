@@ -20,6 +20,7 @@ interface IUrl {
     originalUrl: string;
     shortUrl: string;
     createdAt: string;
+    completedAt?: string;
     meta?: {
         title: string;
         image: string;
@@ -45,16 +46,16 @@ const LinkCard = (props: LinkCardProps) => {
     const shortLink = `${REDIRECT_URL}/${props.shortUrl}`;
     const shortLinkWithoutProtocol = shortLink.replace('https://', '').replace('http://', '');
 
-    const inputDateString = props.createdAt;
-    const inputDate = new Date(inputDateString);
-    const formattedDate = props.isLinksPage ?
-        inputDate.toLocaleString('en-US', {
+    const createdAtString = props.createdAt;
+    const createdAt = new Date(createdAtString);
+    const formattedCreatedAt = props.isLinksPage ?
+        createdAt.toLocaleString('en-US', {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
             timeZone: 'UTC',
         }) :
-        inputDate.toLocaleString('en-US', {
+        createdAt.toLocaleString('en-US', {
             month: 'long',
             day: 'numeric',
             year: 'numeric',
@@ -64,6 +65,16 @@ const LinkCard = (props: LinkCardProps) => {
             timeZone: 'UTC',
         });
 
+    const formattedCompletedAt = props.completedAt ? new Date(props.completedAt).toLocaleString('en-US',
+        {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            timeZone: 'UTC',
+        }) : '';
 
     useEffect(() => {
         if (!props.loading) {
@@ -197,9 +208,19 @@ const LinkCard = (props: LinkCardProps) => {
                                     {props.loading ? (
                                         <Skeleton variant="text" width={200} height={30} />
                                     ) : (
-                                        <p className="text-sm text-gray-500">
-                                            {formattedDate}
-                                        </p>
+                                        <>
+                                            <p className="text-sm text-gray-500">
+                                                {formattedCreatedAt}
+                                            </p>
+                                            {formattedCompletedAt &&
+                                                <>
+                                                    -
+                                                    <p className="text-sm text-gray-500">
+                                                        {formattedCompletedAt}
+                                                    </p>
+                                                </>
+                                            }
+                                        </>
                                     )}
                                 </div>
 

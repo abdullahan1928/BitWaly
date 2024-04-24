@@ -24,6 +24,7 @@ interface IUrl {
     originalUrl: string;
     shortUrl: string;
     createdAt: string;
+    completedAt?: string;
     meta?: {
         title: string;
         image: string;
@@ -127,6 +128,7 @@ const LinkDetails = () => {
 
     useEffect(() => {
         fetchLink();
+        console.log(urlDataMap)
     }, []);
 
     const fetchLink = async () => {
@@ -180,6 +182,7 @@ const LinkDetails = () => {
                 originalUrl={urlData?.originalUrl ?? ''}
                 shortUrl={urlData?.shortUrl ?? ''}
                 createdAt={createdDate ?? ''}
+                completedAt={urlData?.completedAt}
                 meta={urlData?.meta}
                 onDeleteUrl={() => { }}
                 isLinksPage={false}
