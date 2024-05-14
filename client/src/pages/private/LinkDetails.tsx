@@ -151,7 +151,7 @@ const LinkDetails = () => {
     }
 
     return (
-        <div className="container flex flex-col max-w-6xl gap-8 p-4 mx-auto" >
+        <div className="container flex flex-col max-w-6xl gap-8 p-4 mx-auto w-full h-full">
             <Link to="/dashboard/links" className="flex items-center text-primary hover:underline">
                 <ChevronLeftIcon className='inline-block text-base' />
                 <p className='inline-block ml-2 text-base'>
@@ -175,7 +175,6 @@ const LinkDetails = () => {
                     </MenuItem>
                 ))}
             </Select>
-
 
             <LinkCard
                 _id={urlId}
@@ -218,7 +217,7 @@ const LinkDetails = () => {
 
             <LinkLocations id={urlId} />
 
-            <div className="flex flex-row flex-wrap gap-10 mb-4 max-lg:flex-col">
+            <div className="flex flex-row flex-wrap gap-10 mb-4">
                 <LinkReferres id={urlId} />
 
                 <LinkDevices id={urlId} />

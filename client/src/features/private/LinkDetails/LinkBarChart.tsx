@@ -82,7 +82,7 @@ const LinkBarChart = ({ id }: { id: string; }) => {
     <div className="flex flex-col gap-4">
       <div className='bg-white rounded-xl'>
 
-        <h3 className="my-4 text-xl font-semibold text-center">
+        <h3 className="my-4 text-xl font-semibold text-center p-6">
           Engagements over time
         </h3>
 

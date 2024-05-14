@@ -4,7 +4,7 @@ const ListItem = ({ icon, text }: { icon: JSX.Element, text: string }) => {
     return (
         <li className="flex items-center space-x-4">
             {icon}
-            <p className="text-lg font-normal">
+            <p className="text-lg font-normal max-md:text-2xl">
                 {text}
             </p>
         </li>
@@ -51,17 +51,6 @@ const GettingStarted = () => {
                 </div>
 
                 <div className="w-1/2 flex flex-row justify-center items-center cursor-pointer transform hover:scale-105 max-md:w-full">
-                    <h2 className="text-[130px] font-bold max-md:text-[60px]">
-                        <span className="text-primary">
-                            B
-                        </span>
-                        <span className="text-secondary">
-                            i
-                        </span>
-                        <span className="text-primary">
-                            t
-                        </span>
-                    </h2>
                     <img src="/logo1.png" alt="Logo" className="p-2 h-2/3" />
                 </div>
             </div>

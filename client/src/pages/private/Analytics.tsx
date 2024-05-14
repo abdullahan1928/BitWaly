@@ -14,8 +14,8 @@ const Analytics = () => {
                 Analytics
             </h3>
 
-            <div className="flex flex-row w-auto gap-4">
-                <div className="flex flex-col w-1/2 gap-4">
+            <div className="flex flex-row w-auto gap-4 max-md:flex-col">
+                <div className="flex flex-col w-1/2 gap-4 max-md:w-full">
                     <Performance />
 
                     <LineChart />
@@ -26,7 +26,7 @@ const Analytics = () => {
 
                 </div>
 
-                <div className="flex flex-col w-1/2 gap-4">
+                <div className="flex flex-col w-1/2 gap-4 max-md:w-full">
                     <Devices />
 
                     <Referrer />

@@ -63,7 +63,7 @@ const DisplayName = () => {
 
             <PrimaryButton
                 text="Update Display Name"
-                className="w-1/6 px-0 py-3 text-lg"
+                className="w-1/6 min-w-[300px] px-0 py-3 text-lg max-md:w-full"
                 disabled={name === ""}
                 onClick={handleSubmit}
             />

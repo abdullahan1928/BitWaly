@@ -39,7 +39,7 @@ const DeleteAccount = () => {
 
             <PrimaryButton
                 text="Delete Account"
-                className="w-1/6 px-0 py-3 text-lg bg-red-600 hover:bg-red-700"
+                className="w-1/6 min-w-[300px] px-0 py-3 text-lg bg-red-600 hover:bg-red-700 max-md:w-full"
                 onClick={() => setDeleteDialogOpen(true)}
             />
 
