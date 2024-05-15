@@ -47,8 +47,7 @@ const ChangePassword = () => {
                     authToken: `${authToken}`
                 }
             }
-        ).then(res => {
-            console.log(res.data);
+        ).then(() => {
             setCurrentPassword('');
             setNewPassword('');
             setConfirmNewPassword('');

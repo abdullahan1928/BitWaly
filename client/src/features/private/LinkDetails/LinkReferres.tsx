@@ -70,11 +70,9 @@ const LinkReferres = ({ id }: { id: string }) => {
     const updateData = (start: Date, end: Date) => {
         const filteredData = referrerData.filter((data) => {
             const date = data.date;
-            console.log('date', date);
             return new Date(date) >= start && new Date(date) <= end;
         });
 
-        console.log('filteredData', filteredData);
 
         showData(filteredData);
     }

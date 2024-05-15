@@ -18,8 +18,7 @@ const DeleteAccount = () => {
             headers: {
                 authToken: `${authToken}`
             }
-        }).then((res: any) => {
-            console.log(res);
+        }).then(() => {
             closeDeleteDialog()
             localStorage.removeItem('token')
             window.location.href = '/'
