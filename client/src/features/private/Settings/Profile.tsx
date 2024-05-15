@@ -1,3 +1,4 @@
+// Desc: Profile settings page
 import DeleteAccount from './components/DeleteAccount'
 import Preferences from './components/Preferences'
 import Security from './components/Security'

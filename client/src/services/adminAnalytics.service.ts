@@ -1,3 +1,4 @@
+//service file that requests admin analytics apis from the server for individual user
 import axios from 'axios';
 import { API_URL } from '@/config/urls';
 

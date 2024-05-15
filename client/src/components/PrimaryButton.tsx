@@ -1,3 +1,5 @@
+//primary button component
+
 import { twMerge } from 'tailwind-merge';
 import { useState } from 'react';
 

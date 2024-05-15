@@ -1,3 +1,4 @@
+//ssettings page component to delete user's account
 import DeleteDialog from '@/components/DeleteDialog'
 import PrimaryButton from '@/components/PrimaryButton'
 import { API_URL } from '@/config/urls'

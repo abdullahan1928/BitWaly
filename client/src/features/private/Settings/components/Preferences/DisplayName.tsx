@@ -1,3 +1,4 @@
+//component to change user's display name
 import PrimaryButton from '@/components/PrimaryButton'
 import { API_URL } from '@/config/urls'
 import { TextField } from '@mui/material'

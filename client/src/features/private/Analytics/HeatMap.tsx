@@ -1,3 +1,4 @@
+//heatmap for location across the globe. not dynamic yet.
 import HighchartsReact from 'highcharts-react-official'
 import AnalyticsCard from './AnalyticsCard'
 import Highcharts from 'highcharts'

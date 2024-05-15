@@ -1,3 +1,4 @@
+//graph that shows the devices in analytics
 import { useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';
 import Highcharts from 'highcharts';

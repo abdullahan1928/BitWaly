@@ -1,3 +1,4 @@
+//card for showing location summary
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import InsightsIcon from '@mui/icons-material/Insights';
 import { fetchTopLocationsWithAdmin } from '@/services/adminAnalytics.service';

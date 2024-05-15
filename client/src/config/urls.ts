@@ -1,3 +1,5 @@
+//config file that contains all the urls for the project as well processes data from env file depending on production or development environment
+
 const NODE_ENV = import.meta.env.VITE_NODE_ENV;
 
 const DEV_API_URL = import.meta.env.VITE_DEV_API_URL || 'http://localhost:3000';

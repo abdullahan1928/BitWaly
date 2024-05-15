@@ -1,3 +1,4 @@
+//page that lists all user links as cards
 import LinksFilter from '@/features/private/Links/LinksFilter';
 import LinkCards from '@/features/private/Links/LinkCards';
 

@@ -1,3 +1,4 @@
+// service file that requests all types of analtyics for a particular link
 import axios from 'axios';
 import { API_URL } from '@/config/urls';
 

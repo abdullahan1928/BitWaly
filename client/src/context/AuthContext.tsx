@@ -1,3 +1,5 @@
+//storing authentication state in the context to use across the application
+
 import { createContext, useState, useEffect, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 

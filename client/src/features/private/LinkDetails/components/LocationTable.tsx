@@ -1,3 +1,5 @@
+//location table when user clicks on link details
+
 import { CityData } from "../interfaces/CityData";
 import { CountryData } from "../interfaces/CoutryData";
 import LinearProgress from "@mui/material/LinearProgress";

@@ -1,3 +1,4 @@
+//showing percentage performance compared with the last week's performance
 import InsightsIcon from '@mui/icons-material/Insights';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@mui/material';

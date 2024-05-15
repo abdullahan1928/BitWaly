@@ -1,3 +1,4 @@
+//graph that has tabs to switch between country and city and shows location analytics
 import React, { useState, useEffect } from "react";
 import { Tabs } from "@mui/material";
 import CustomTab from "../LinkDetails/components/CustomTab";

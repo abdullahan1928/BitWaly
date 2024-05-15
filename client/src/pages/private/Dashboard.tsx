@@ -1,3 +1,4 @@
+//homepage for BitWaly
 import DashboardCards from "@/features/private/Dashboard/DashboardCards";
 import GettingStarted from "@/features/private/Dashboard/GettingStarted";
 

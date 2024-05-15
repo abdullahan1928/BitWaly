@@ -1,3 +1,4 @@
+// Visual Button to copy text to clipboard
 import { Snackbar, Tooltip } from '@mui/material'
 import { useState } from 'react'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';

@@ -1,3 +1,4 @@
+//analtyics page that is rendered when user clicks on a link for its details
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import LinkBarChart from "@/features/private/LinkDetails/LinkBarChart";

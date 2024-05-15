@@ -1,3 +1,4 @@
+//component to change user password
 import CustomSnackbar from "@/components/CustomSnackbar";
 import PrimaryButton from "@/components/PrimaryButton";
 import { API_URL } from "@/config/urls";

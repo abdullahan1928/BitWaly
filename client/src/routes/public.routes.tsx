@@ -1,3 +1,4 @@
+//public routes. no authentication required
 import Home from '@/pages/public/Home';
 import Pricing from '@/pages/public/Pricing';
 import Products from '@/pages/public/Products';

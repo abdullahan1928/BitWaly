@@ -1,3 +1,5 @@
+//storing the search value in the context to use across the application
+
 import { ReactNode, createContext, useState } from 'react';
 
 interface SearchContextProps {
