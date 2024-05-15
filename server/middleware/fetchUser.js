@@ -1,3 +1,5 @@
+// Desc: Middleware to check if the user is logged in or not. all the routes which require user to be logged in will pass through this middleware
+
 const jwt = require('jsonwebtoken');
 const jwt_secret = 'thisismysecretforjsonwebtoken';
 

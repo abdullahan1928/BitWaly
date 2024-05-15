@@ -1,3 +1,4 @@
+// controller file that fetches all analytics data for a specific URL
 const Url = require('../models/Url.model');
 const Analytics = require('../models/Analytics.model');
 const FormerUrl = require('../models/FormerUrl');

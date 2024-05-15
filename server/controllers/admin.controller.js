@@ -1,3 +1,4 @@
+//controller functions for all admin actions
 const Users = require('../models/User.model');
 const Url = require('../models/Url.model');
 const Tag = require('../models/Tag.model');

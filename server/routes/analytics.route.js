@@ -1,3 +1,5 @@
+// analytics routes. all routes will pass through fetchUser middleware to check if the user is authenticated or not.
+// all the analytics routes will be protected by this middleware
 const express = require("express");
 const router = express.Router();
 
