@@ -95,9 +95,11 @@ const LinkDetails = () => {
 
     useEffect(() => {
         const minDateFromUrlData = dayjs(createdDate);
+        console.log(minDateFromUrlData)
         const lastMonth = dayjs().subtract(1, 'month');
+        console.log('last month',lastMonth)
 
-        const minDate = minDateFromUrlData.isAfter(lastMonth) ? minDateFromUrlData : lastMonth;
+        const minDate = minDateFromUrlData.isAfter(lastMonth) ? lastMonth : minDateFromUrlData;
 
         setMinDate(minDate);
         setDateRange([minDate, dayjs()]);
