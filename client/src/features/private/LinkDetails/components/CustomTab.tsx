@@ -1,3 +1,4 @@
+//Custom tab component 
 import { Tab } from '@mui/material';
 
 const CustomTab = (props: any) => {

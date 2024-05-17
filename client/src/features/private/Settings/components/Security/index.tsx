@@ -1,3 +1,4 @@
+//settings page component to update user password
 import ChangePassword from './ChangePassword'
 
 const Security = () => {

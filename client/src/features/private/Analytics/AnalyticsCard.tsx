@@ -1,4 +1,4 @@
-
+//card to show analytics
 interface AnalyticsCardProps {
     title: string;
     children: React.ReactNode;

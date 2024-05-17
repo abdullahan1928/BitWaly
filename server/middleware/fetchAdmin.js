@@ -1,3 +1,5 @@
+// Desc: Middleware to check if the user is an admin. all the admin routes will pass through this middleware
+
 const jwt = require('jsonwebtoken');
 const jwt_secret = 'thisismysecretforjsonwebtoken';
 const Users = require('../models/User.model');

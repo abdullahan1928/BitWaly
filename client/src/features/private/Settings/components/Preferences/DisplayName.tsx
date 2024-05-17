@@ -1,3 +1,4 @@
+//component to change user's display name
 import PrimaryButton from '@/components/PrimaryButton'
 import { API_URL } from '@/config/urls'
 import { TextField } from '@mui/material'
@@ -37,8 +38,7 @@ const DisplayName = () => {
                     authToken: `${authToken}`
                 }
             }
-        ).then(res => {
-            console.log(res.data)
+        ).then(() => {
             window.location.reload()
         }).catch(err => {
             console.log(err)

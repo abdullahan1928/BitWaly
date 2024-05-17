@@ -1,3 +1,4 @@
+//admin routes
 import AdminAnalytics from '@/pages/Admin/AdminAnalytics';
 import AdminDasbhoard from '@/pages/Admin/AdminDasbhoard';
 

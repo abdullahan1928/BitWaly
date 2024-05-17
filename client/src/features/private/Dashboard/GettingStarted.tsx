@@ -1,3 +1,5 @@
+//Homepage of Bitwaly
+
 import { Analytics, AutoFixNormal, Link, Share, Leaderboard } from "@mui/icons-material"
 
 const ListItem = ({ icon, text }: { icon: JSX.Element, text: string }) => {

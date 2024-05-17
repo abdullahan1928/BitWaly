@@ -1,3 +1,5 @@
+// Desc: Controller for generating and storing dummy data in the database. not in use when app is live.
+
 const crypto = require('crypto');
 const Url = require('../models/Url.model');
 const bcrypt = require('bcryptjs');

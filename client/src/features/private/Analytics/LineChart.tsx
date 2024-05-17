@@ -1,3 +1,4 @@
+//Line chart for showing engagements
 import AnalyticsCard from '@/features/private/Analytics/AnalyticsCard';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';

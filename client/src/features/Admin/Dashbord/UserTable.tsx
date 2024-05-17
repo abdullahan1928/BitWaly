@@ -1,3 +1,4 @@
+//component that renders admin panel/users table for admin which contains data of all users
 import { useEffect, useState } from 'react';
 import {
   Table,

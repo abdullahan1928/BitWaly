@@ -1,3 +1,4 @@
+//page that renders admin dashboard with users table
 
 import UserTable from '@/features/Admin/Dashbord/UserTable';
 import AdminIcon from '@mui/icons-material/SupervisorAccount';

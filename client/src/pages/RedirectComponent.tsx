@@ -1,3 +1,4 @@
+//when a correct short link on bitwaly domain will be requested in browser, this page will be rendered and it will immediately redirect to the original url.
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ErrorRedirection from './ErrorRedirection';

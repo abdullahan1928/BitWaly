@@ -1,3 +1,4 @@
+// rotues for authetnication and account management
 const express = require("express"); 
 const router = express.Router();
 

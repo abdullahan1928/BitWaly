@@ -1,3 +1,4 @@
+//routes file that combines all routes in previous files and adds guards to them
 import { DashboardRoutes } from './dashboard.routes';
 import { PublicRoutes } from './public.routes';
 import { AuthRoutes } from './auth.routes';

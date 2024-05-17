@@ -1,3 +1,4 @@
+//authentication routes
 import Login from '@/pages/public/Login';
 import SignUp from '@/pages/public/SignUp';
 

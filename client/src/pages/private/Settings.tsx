@@ -1,3 +1,4 @@
+//settings page to update profile
 import Profile from "@/features/private/Settings/Profile"
 
 const Settings = () => {

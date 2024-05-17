@@ -1,3 +1,4 @@
+//showing referrers of a link
 import HighchartsReact from "highcharts-react-official";
 import Highcharts from 'highcharts';
 import AnalyticsCard from "@/features/private/Analytics/AnalyticsCard";

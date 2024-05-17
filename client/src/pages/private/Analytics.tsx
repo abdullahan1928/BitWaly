@@ -1,3 +1,4 @@
+//page that renders analytics component for a user
 import Devices from "@/features/private/Analytics/Devices"
 import HeatMap from "@/features/private/Analytics/HeatMap"
 import LineChart from "@/features/private/Analytics/LineChart"

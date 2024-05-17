@@ -1,3 +1,5 @@
+// admin routes. all routes will pass through fetchAdmin middleware to check if the user is an admin or not
+
 const express = require("express");
 const router = express.Router();
 

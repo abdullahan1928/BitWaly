@@ -1,3 +1,4 @@
+//ssettings page component to delete user's account
 import DeleteDialog from '@/components/DeleteDialog'
 import PrimaryButton from '@/components/PrimaryButton'
 import { API_URL } from '@/config/urls'
@@ -17,8 +18,7 @@ const DeleteAccount = () => {
             headers: {
                 authToken: `${authToken}`
             }
-        }).then((res: any) => {
-            console.log(res);
+        }).then(() => {
             closeDeleteDialog()
             localStorage.removeItem('token')
             window.location.href = '/'

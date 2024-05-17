@@ -1,3 +1,4 @@
+//settings page component to update user preferences
 import DisplayName from "./DisplayName"
 
 const Preferences = () => {

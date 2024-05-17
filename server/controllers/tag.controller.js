@@ -1,3 +1,5 @@
+//controller that manages the tags associated with a link
+
 const Tag = require("../models/Tag.model");
 
 // Controller to get all tags for the user

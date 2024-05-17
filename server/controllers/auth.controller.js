@@ -1,3 +1,4 @@
+// functions for authentication including signup, signin, get user details, update name, update password, and delete account
 const Users = require('../models/User.model');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');

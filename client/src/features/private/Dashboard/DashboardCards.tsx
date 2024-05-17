@@ -1,3 +1,4 @@
+//Dashboard cards
 import { Link } from "react-router-dom"
 
 interface CardProps {

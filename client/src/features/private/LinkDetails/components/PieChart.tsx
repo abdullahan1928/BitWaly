@@ -1,3 +1,5 @@
+//pie chart when user clicks on link details
+
 import Highcharts from 'highcharts';
 import { useEffect, useState } from 'react';
 import HighchartsReact from 'highcharts-react-official';

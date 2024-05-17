@@ -1,3 +1,5 @@
+// controller for managing edited urls whose destination was also edited
+
 const FormerUrl = require('../models/FormerUrl');
 
 // Function to retrieve a URL by its ID

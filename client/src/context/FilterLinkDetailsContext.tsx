@@ -1,3 +1,4 @@
+// storing the filtered date range in the context to use across the application
 import { ReactNode, createContext, useState } from 'react';
 
 interface DateFilterContextProps {

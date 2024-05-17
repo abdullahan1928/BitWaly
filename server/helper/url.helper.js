@@ -1,3 +1,5 @@
+// Description: Helper functions for URL operations including generating unique short URLs, extracting title and image from a URL, and updating tags for a URL.
+
 const cheerio = require('cheerio');
 const fetch = require('node-fetch');
 const crypto = require('crypto');

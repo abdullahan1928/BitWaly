@@ -1,3 +1,4 @@
+//when a short link is requested on bitwaly domain that doesn't exist, this page will render
 import { Link } from 'react-router-dom';
 const ErrorRedirection = () => {
     return (

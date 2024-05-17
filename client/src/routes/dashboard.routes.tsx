@@ -1,3 +1,4 @@
+//dashboard routes
 import LinkDetails from '@/pages/private/LinkDetails';
 import Dashboard from '@/pages/private/Dashboard';
 import Links from '@/pages/private/Links';

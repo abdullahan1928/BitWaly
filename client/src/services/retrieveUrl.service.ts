@@ -1,3 +1,5 @@
+//service file that fetcches original url when a short link is requested at the domain
+
 import axios from 'axios';
 import { API_URL } from '@/config/urls';
 import { browserName, osName, mobileVendor, deviceType } from 'react-device-detect';
